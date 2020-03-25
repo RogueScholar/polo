@@ -41,7 +41,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 	private Device device;
 	private string iso_file = "";
 	private string format = "";
-	
+
 	// ui
 	public Gtk.Label lbl_header;
 	public Gtk.Label lbl_status;
@@ -49,7 +49,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 	public Gtk.ProgressBar progressbar;
 
 	public ProgressPanelDeviceWriterTask(FileViewPane _pane){
-		base(_pane, null, FileActionType.ISO_WRITE);
+		init(_pane, null, FileActionType.ISO_WRITE);
 	}
 
 	public void set_parameters(DiskAction _action, string _iso_file, Device _device, string _format){
@@ -69,7 +69,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 		label.margin_bottom = 12;
 		contents.add(label);
 		lbl_header = label;
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -150,7 +150,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 
 		pane.refresh_file_action_panel();
 		pane.clear_messages();
-		
+
 		start_task();
 	}
 
@@ -162,7 +162,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelDeviceWriterTask: start_task()");
@@ -182,22 +182,22 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 		}
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add (500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelDeviceWriterTask: update_status()");
-			
+
 			lbl_status.label = "%s: %s".printf(_("File"), file_basename(iso_file));
-			
+
 			lbl_stats.label = task.stat_status_line;
-				
+
 			progressbar.fraction = task.progress;
-			
+
 			gtk_do_events();
 		}
 		else{
@@ -211,11 +211,11 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 	public override void cancel(){
 
 		log_debug("ProgressPanelDeviceWriterTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -228,7 +228,7 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 		task_complete();
 
 		stop_status_timer();
-		
+
 		log_debug("ProgressPanelDeviceWriterTask: finish()");
 
 		pane.file_operations.remove(this);
@@ -236,11 +236,11 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 
 		//log_debug("read_status(): %d".printf(task.read_status()));
 		//log_debug("task.get_error_message()(): %s".printf(task.get_error_message()));
-		
+
 		if ((task.read_status() != 0) && (task.get_error_message().length > 0)){
 			gtk_messagebox("Finished with errors", task.get_error_message(), window, true);
 			//pane.add_message("%s: %s".printf(_("Error"), task.get_error_message()), Gtk.MessageType.ERROR);
-		}		
+		}
 		else if (!aborted){
 
 			switch(action){
@@ -249,13 +249,13 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 				string msg = _("Device safely ejected and ready for use");
 				gtk_messagebox(txt, msg, window, false);
 				break;
-				
+
 			case DiskAction.BACKUP:
 				string txt = _("Backup Complete");
 				string msg = _("Disk image was created successfully from device");
 				gtk_messagebox(txt, msg, window, false);
 				break;
-				
+
 			case DiskAction.RESTORE:
 				string txt = _("Restore Complete");
 				string msg = _("Device was restored successfully from disk image");
@@ -267,7 +267,3 @@ public class ProgressPanelDeviceWriterTask : ProgressPanel {
 		}
 	}
 }
-
-
-
-

@@ -6,7 +6,7 @@ cd "$DIR"
 
 . ./BUILD_CONFIG
 
-languages="am ar az bg ca cs da de el en_GB es et eu fi fr he hi hr hu ia id is it ko lt nb ne nl pl pt pt_BR ro ru sk sr sv tr uk vi zh_CN"
+languages="am ar az bg ca cs da de el en_GB es et eu fi fr he hi hr hu ia id is it ko lt nb ne nl pl pt pt_BR ro ru sk sr sv uk vi zh_CN"
 
 echo ""
 echo "=========================================================================="

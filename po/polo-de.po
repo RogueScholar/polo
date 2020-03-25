@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: polo 1.6\n"
 "Report-Msgid-Bugs-To: teejeetech@gmail.com\n"
-"POT-Creation-Date: 2020-03-25 18:58+0100\n"
+"POT-Creation-Date: 2020-03-25 20:10+0100\n"
 "PO-Revision-Date: 2017-09-17 16:04+0530\n"
 "Last-Translator: Phil Roggenbuck\n"
 "Language-Team: Thomas Gorzka <thomas.gorzka@gmail.com>, Phil Roggenbuck "
@@ -196,7 +196,7 @@ msgstr "Almquist shell (ash)"
 msgid "Amount of RAM to allocate for guest machine"
 msgstr "RAM-Menge für Gastmaschinen zuteilen"
 
-#: Gtk/FileViewList.vala:4601
+#: Gtk/FileViewList.vala:4549
 msgid "Another file exists with this name"
 msgstr "Eine andere Datei mit dem gleichen Namen existiert bereits"
 
@@ -446,11 +446,11 @@ msgstr "Abgebrochen"
 msgid "Cancelled by user"
 msgstr "Abgebrochen durch Benutzer"
 
-#: Gtk/FileViewList.vala:6184
+#: Gtk/FileViewList.vala:6132
 msgid "Cannot create archive in this location"
 msgstr "Kann an dieser Position kein Archiv erstellen"
 
-#: Gtk/FileViewList.vala:6024
+#: Gtk/FileViewList.vala:5972
 msgid "Cannot extract to this location"
 msgstr "Kann an dieser Stelle das Archiv nicht entpacken"
 
@@ -900,7 +900,7 @@ msgstr "Kann den Pfad nicht finden"
 msgid "Could not find file"
 msgstr "Datei konnte nicht gefunden werden"
 
-#: Gtk/FileViewList.vala:5038
+#: Gtk/FileViewList.vala:4986
 #, fuzzy, c-format
 msgid "Could not find file in opposite pane"
 msgstr "Kann den anderen Bereich nicht finden!"
@@ -909,11 +909,11 @@ msgstr "Kann den anderen Bereich nicht finden!"
 msgid "Could not find path"
 msgstr "Kann den Pfad nicht finden"
 
-#: Gtk/FileViewList.vala:4327
+#: Gtk/FileViewList.vala:4297
 msgid "Could not find the opposite pane!"
 msgstr "Kann den anderen Bereich nicht finden!"
 
-#: Gtk/FileViewList.vala:5977
+#: Gtk/FileViewList.vala:5925
 msgid "Could not open file as archive"
 msgstr "Datei konnte nicht als Archiv geöffnet werden"
 
@@ -934,7 +934,7 @@ msgstr ""
 msgid "Create Derived Disk..."
 msgstr ""
 
-#: Gtk/FileViewList.vala:4646
+#: Gtk/FileViewList.vala:4594
 msgid "Create Directory"
 msgstr "Verzeichnis erstellen"
 
@@ -942,7 +942,7 @@ msgstr "Verzeichnis erstellen"
 msgid "Create Disk..."
 msgstr "Erstelle Laufwerk..."
 
-#: Gtk/FileViewList.vala:4680 Gtk/FileViewList.vala:4716
+#: Gtk/FileViewList.vala:4628 Gtk/FileViewList.vala:4664
 msgid "Create File"
 msgstr "Datei erstellen"
 
@@ -975,10 +975,6 @@ msgstr ""
 #: Gtk/FileContextMenu.vala:2100
 msgid "Create a virtual hard disk file that uses selected disk as the base"
 msgstr ""
-
-#: Gtk/FileViewList.vala:4454
-msgid "Create copies of selected items?"
-msgstr "Kopien der ausgewählten Objekten erstellen?"
 
 #: Gtk/FileContextMenu.vala:783
 msgid "Create new file from template"
@@ -1110,7 +1106,7 @@ msgstr ""
 msgid "Delete selected items permanently"
 msgstr "Lösche gewählte Dateien permanent"
 
-#: Gtk/FileViewList.vala:4531
+#: Gtk/FileViewList.vala:4479
 msgid "Delete selected items?"
 msgstr "Gewählte Elemente löschen?"
 
@@ -1142,11 +1138,11 @@ msgstr ""
 msgid "Desktop"
 msgstr "Desktop"
 
-#: Gtk/FileViewList.vala:6024 Gtk/FileViewList.vala:6046
+#: Gtk/FileViewList.vala:5972 Gtk/FileViewList.vala:5994
 msgid "Destination directory does not exist"
 msgstr "Zielverzeichnis existiert nicht"
 
-#: Gtk/FileViewList.vala:6184
+#: Gtk/FileViewList.vala:6132
 msgid "Destination path is inside an archive (!)"
 msgstr "Zielverzeichnis ist in einem Archiv (!)"
 
@@ -1230,7 +1226,7 @@ msgstr "Wörterbuch"
 msgid "Dir not found"
 msgstr "Verzeichnis nicht gefunden"
 
-#: Gtk/FileViewList.vala:4654
+#: Gtk/FileViewList.vala:4602
 msgid "Directory exists"
 msgstr "Wörterbuch existiert"
 
@@ -1251,7 +1247,7 @@ msgstr "Festplattennutzung"
 msgid "Disk image was created successfully from device"
 msgstr "Image erfolgreich vom Gerät erstellt"
 
-#: Gtk/FileViewList.vala:5238
+#: Gtk/FileViewList.vala:5186
 msgid "Disk is Read-Only"
 msgstr "Gerät hat nur Lesezugriff"
 
@@ -1488,20 +1484,20 @@ msgstr "Passwort eingeben"
 msgid "Enter Password to Unlock"
 msgstr "Passwort zum Entsperren eingeben"
 
-#: Gtk/FileViewList.vala:4654 Gtk/FileViewList.vala:4688
-#: Gtk/FileViewList.vala:4728 Gtk/MainWindow.vala:1482
+#: Gtk/FileViewList.vala:4602 Gtk/FileViewList.vala:4636
+#: Gtk/FileViewList.vala:4676 Gtk/MainWindow.vala:1482
 msgid "Enter another name"
 msgstr "Gib einen anderen Namen ein"
 
-#: Gtk/FileViewList.vala:4646
+#: Gtk/FileViewList.vala:4594
 msgid "Enter directory name"
 msgstr "Verzeichnisnamen eingeben"
 
-#: Gtk/FileViewList.vala:4680 Gtk/FileViewList.vala:4716
+#: Gtk/FileViewList.vala:4628 Gtk/FileViewList.vala:4664
 msgid "Enter file name"
 msgstr "Neuen Namen eingeben"
 
-#: Gtk/FileViewList.vala:4582
+#: Gtk/FileViewList.vala:4530
 msgid "Enter new name"
 msgstr "Neuen Namen eingeben"
 
@@ -1510,7 +1506,7 @@ msgstr "Neuen Namen eingeben"
 msgid "Enter passphrase to unlock '%s'"
 msgstr "Passphrase eingeben um zu entsperren '%s'"
 
-#: Gtk/FileViewList.vala:5491
+#: Gtk/FileViewList.vala:5439
 msgid "Enter password for PDF document"
 msgstr "Passwort des PDF Dokuments eingeben"
 
@@ -1527,7 +1523,7 @@ msgstr ""
 msgid "Enter share name to connect (Required)"
 msgstr "Geben Sie den Freigabenamen für die Verbindung ein (erforderlich)."
 
-#: Gtk/FileViewList.vala:4601
+#: Gtk/FileViewList.vala:4549
 msgid "Enter unique name for selected file"
 msgstr "Einen eindeutigen Namen für die ausgewählte Datei eingeben"
 
@@ -1568,7 +1564,7 @@ msgid "Executing action..."
 msgstr "Führe Aktion aus..."
 
 #: Gtk/DevicePopover.vala:1045 Gtk/DiskFormatContextMenu.vala:103
-#: Gtk/FileViewList.vala:5175
+#: Gtk/FileViewList.vala:5123
 #, c-format
 msgid "Existing data on device will be destroyed"
 msgstr "Existierende Datein auf diesem Gerät werden zerstört"
@@ -1808,7 +1804,7 @@ msgstr "Dateimanager"
 msgid "File Name"
 msgstr "Datei Name"
 
-#: Gtk/FileViewList.vala:5037
+#: Gtk/FileViewList.vala:4985
 #, fuzzy
 msgid "File Not Found"
 msgstr "Datei nicht gefunden"
@@ -1823,7 +1819,7 @@ msgstr "Dateioperation läuft"
 msgid "File Properties"
 msgstr "Eigenschaften"
 
-#: Gtk/FileViewList.vala:4688 Gtk/FileViewList.vala:4728
+#: Gtk/FileViewList.vala:4636 Gtk/FileViewList.vala:4676
 #: Gtk/MainWindow.vala:1482
 msgid "File exists"
 msgstr "Datei existiert"
@@ -1974,7 +1970,7 @@ msgstr "Feste Spalte"
 msgid "Flash Complete"
 msgstr "Flash abgeschlossen"
 
-#: Gtk/FileViewList.vala:5174
+#: Gtk/FileViewList.vala:5122
 #, c-format
 msgid "Flash ISO to device?"
 msgstr "Flashe ISO auf Ger"
@@ -2287,7 +2283,7 @@ msgstr "Installiere von ISO-Datei..."
 msgid "Install p7zip 16.02 (Archive Support)"
 msgstr "Installiere p7zip 16.02 (Archive Support)"
 
-#: Gtk/FileViewList.vala:5786 Gtk/FileViewList.vala:5807
+#: Gtk/FileViewList.vala:5734 Gtk/FileViewList.vala:5755
 msgid "Install required packages and try again"
 msgstr "Installiere notwendige Pakete und versuche es erneut"
 
@@ -2296,7 +2292,7 @@ msgstr "Installiere notwendige Pakete und versuche es erneut"
 msgid "Install/Update Rclone (Cloud Storage Support)"
 msgstr "Installiere Rclone (Cloud Storage Support)"
 
-#: Gtk/FileViewList.vala:4327
+#: Gtk/FileViewList.vala:4297
 msgid "Internal Error"
 msgstr "Interner Fehler"
 
@@ -2304,7 +2300,7 @@ msgstr "Interner Fehler"
 msgid "Invalid Passphrase"
 msgstr "Ungütlige Passphrase"
 
-#: Gtk/FileViewList.vala:6046
+#: Gtk/FileViewList.vala:5994
 msgid "Invalid Path"
 msgstr "Ungültiger Pfad"
 
@@ -2571,7 +2567,7 @@ msgstr "Fehlt"
 msgid "Missing Dependencies"
 msgstr "Fehlende Abhängigkeiten"
 
-#: Gtk/DeviceContextMenu.vala:579 Gtk/FileViewList.vala:5785
+#: Gtk/DeviceContextMenu.vala:579 Gtk/FileViewList.vala:5733
 msgid "Missing Dependency"
 msgstr ""
 
@@ -2579,7 +2575,7 @@ msgstr ""
 msgid "Missing Icon"
 msgstr "Fehlendes Icon"
 
-#: Gtk/FileViewList.vala:5806
+#: Gtk/FileViewList.vala:5754
 msgid "Missing Plugin"
 msgstr "Fehlendes Plugin"
 
@@ -2632,7 +2628,7 @@ msgstr "Dieses Laufwerk einhängen"
 msgid "MountPath"
 msgstr "Einhängen"
 
-#: Gtk/FileViewList.vala:5124
+#: Gtk/FileViewList.vala:5072
 #, c-format
 msgid "Mounted ISO"
 msgstr "Eingehängte ISO"
@@ -2742,11 +2738,11 @@ msgstr "Neu"
 msgid "New Admin Window"
 msgstr "Neues Admin Fenster"
 
-#: Gtk/FileViewList.vala:4675
+#: Gtk/FileViewList.vala:4623
 msgid "New File"
 msgstr "Neue Datei"
 
-#: Gtk/FileViewList.vala:4641
+#: Gtk/FileViewList.vala:4589
 msgid "New Folder"
 msgstr "Neuer Ordner"
 
@@ -2783,25 +2779,25 @@ msgstr "Nächste"
 msgid "No"
 msgstr "Nein"
 
-#: Gtk/FileViewList.vala:6179
+#: Gtk/FileViewList.vala:6127
 msgid "No Files Selected"
 msgstr "Keine Dateien gewählt"
 
-#: Gtk/FileViewList.vala:5615 Gtk/FileViewList.vala:5635
-#: Gtk/FileViewList.vala:5655 Gtk/FileViewList.vala:5675
-#: Gtk/FileViewList.vala:5695 Gtk/FileViewList.vala:5715
+#: Gtk/FileViewList.vala:5563 Gtk/FileViewList.vala:5583
+#: Gtk/FileViewList.vala:5603 Gtk/FileViewList.vala:5623
+#: Gtk/FileViewList.vala:5643 Gtk/FileViewList.vala:5663
 msgid "No Images Selected"
 msgstr "Keine Bilder ausgewählt"
 
-#: Gtk/FileViewList.vala:5595
+#: Gtk/FileViewList.vala:5543
 msgid "No JPEGs Selected"
 msgstr "Keine JPEGs ausgewählt"
 
-#: Gtk/FileViewList.vala:5573
+#: Gtk/FileViewList.vala:5521
 msgid "No PNGs Selected"
 msgstr "Keine PNGs ausgewählt"
 
-#: Gtk/FileViewList.vala:4598
+#: Gtk/FileViewList.vala:4546
 msgid "No Permission"
 msgstr "Keine Berechtigung"
 
@@ -2823,8 +2819,8 @@ msgstr "Löschen"
 msgid "Normal"
 msgstr "Normal"
 
-#: Gtk/FileViewList.vala:5071 Gtk/FileViewList.vala:5078
-#: Gtk/FileViewList.vala:5976 Gtk/FileViewList.vala:6072
+#: Gtk/FileViewList.vala:5019 Gtk/FileViewList.vala:5026
+#: Gtk/FileViewList.vala:5924 Gtk/FileViewList.vala:6020
 msgid "Not Supported"
 msgstr "Nicht unterstützt"
 
@@ -3062,7 +3058,7 @@ msgstr "Anderer"
 msgid "Others"
 msgstr "Andere"
 
-#: Gtk/FileViewList.vala:5814
+#: Gtk/FileViewList.vala:5762
 msgid "Outdated Plugin"
 msgstr "Veraltetes Plugin"
 
@@ -3100,7 +3096,7 @@ msgstr "Felder"
 msgid "PartLabel"
 msgstr "Beschriftung"
 
-#: Gtk/FileViewList.vala:6073
+#: Gtk/FileViewList.vala:6021
 msgid "Partial extraction not supported for solid archives"
 msgstr "Partielle Extraktion wird nicht für solide Archive unterstützt"
 
@@ -3397,7 +3393,7 @@ msgstr ""
 msgid "Read"
 msgstr "Lesen"
 
-#: Gtk/FileViewList.vala:5238
+#: Gtk/FileViewList.vala:5186
 msgid ""
 "Read-only disks cannot be booted.\n"
 "\n"
@@ -3548,7 +3544,7 @@ msgid "Removing items..."
 msgstr "Lösche Elemente..."
 
 #: Gtk/BookmarkContextMenu.vala:89 Gtk/FileContextMenu.vala:943
-#: Gtk/FileViewList.vala:4582 Gtk/MainMenubar.vala:741 Gtk/Sidebar.vala:1182
+#: Gtk/FileViewList.vala:4530 Gtk/MainMenubar.vala:741 Gtk/Sidebar.vala:1182
 msgid "Rename"
 msgstr "Umbenennen"
 
@@ -3596,10 +3592,6 @@ msgstr "Ersetze die gewählten Dateien"
 #: Gtk/ProgressPanelImageTask.vala:207
 msgid "Replaced"
 msgstr "Ersetzt"
-
-#: Gtk/FileViewList.vala:4448
-msgid "Requested operation is not possible"
-msgstr "Gewünschte Operation ist nicht möglich"
 
 #: Gtk/ToolsWindow.vala:98
 msgid "Required for"
@@ -3807,11 +3799,11 @@ msgstr ""
 msgid "Select Columns"
 msgstr "Spalten auswählen"
 
-#: Gtk/FileViewList.vala:4342
+#: Gtk/FileViewList.vala:4312
 msgid "Select Copy Destination"
 msgstr "Wähle Kopieziel"
 
-#: Gtk/FileViewList.vala:6017
+#: Gtk/FileViewList.vala:5965
 msgid "Select Destination"
 msgstr "Wähle Ziel"
 
@@ -3840,7 +3832,7 @@ msgstr ""
 msgid "Select Format"
 msgstr ""
 
-#: Gtk/FileViewList.vala:5266
+#: Gtk/FileViewList.vala:5214
 msgid "Select ISO File"
 msgstr ""
 
@@ -3852,7 +3844,7 @@ msgstr "Layout wählen"
 msgid "Select ListView Columns"
 msgstr "Spalten für Listenansicht auswählen"
 
-#: Gtk/FileViewList.vala:4342
+#: Gtk/FileViewList.vala:4312
 msgid "Select Move Destination"
 msgstr "Ziel zum verschieben auswählen"
 
@@ -3904,21 +3896,21 @@ msgstr "Wähle ein Element zum verschieben"
 msgid "Select some items"
 msgstr "Ausschneiden der gewählten Elemente"
 
-#: Gtk/FileViewList.vala:5595
+#: Gtk/FileViewList.vala:5543
 msgid "Select the JPEG image files to convert"
 msgstr ""
 
-#: Gtk/FileViewList.vala:5573
+#: Gtk/FileViewList.vala:5521
 msgid "Select the PNG image files to convert"
 msgstr ""
 
-#: Gtk/FileViewList.vala:5615 Gtk/FileViewList.vala:5635
-#: Gtk/FileViewList.vala:5655 Gtk/FileViewList.vala:5675
-#: Gtk/FileViewList.vala:5695 Gtk/FileViewList.vala:5715
+#: Gtk/FileViewList.vala:5563 Gtk/FileViewList.vala:5583
+#: Gtk/FileViewList.vala:5603 Gtk/FileViewList.vala:5623
+#: Gtk/FileViewList.vala:5643 Gtk/FileViewList.vala:5663
 msgid "Select the image files to convert"
 msgstr ""
 
-#: Gtk/FileViewList.vala:5072 Gtk/FileViewList.vala:5079
+#: Gtk/FileViewList.vala:5020 Gtk/FileViewList.vala:5027
 #, fuzzy, c-format
 msgid "Selected item is not a text file"
 msgstr "Wähle Dateien die ersetzt werden sollen:"
@@ -4196,10 +4188,6 @@ msgstr "Absteigend sortieren"
 msgid "Source"
 msgstr ""
 
-#: Gtk/FileViewList.vala:4447 Gtk/FileViewList.vala:4453
-msgid "Source and destination are same"
-msgstr "Quelle und Ziel sind gleich"
-
 #: Gtk/FilePermissionsBox.vala:159
 #, fuzzy
 msgid "Special"
@@ -4337,7 +4325,7 @@ msgstr ""
 msgid "Testing"
 msgstr "Teste"
 
-#: Gtk/FileViewList.vala:6179
+#: Gtk/FileViewList.vala:6127
 msgid "There are no files selected for compression"
 msgstr "Keine Dateien Zum packen gewählt"
 
@@ -4455,7 +4443,7 @@ msgid ""
 "Move selected items to recycle bin"
 msgstr ""
 
-#: Gtk/FileViewList.vala:4466
+#: Gtk/FileViewList.vala:4414
 msgid "Trash selected items?"
 msgstr "Objekt(e) in den Papierkorb verschieben?"
 
@@ -4588,7 +4576,7 @@ msgstr "Hoch"
 msgid "Update recursively for all items inside the folder"
 msgstr ""
 
-#: Gtk/FileViewList.vala:5815
+#: Gtk/FileViewList.vala:5763
 msgid "Update required packages and try again"
 msgstr ""
 
@@ -4747,7 +4735,7 @@ msgstr ""
 msgid "Yes"
 msgstr "Ja"
 
-#: Gtk/FileViewList.vala:4598
+#: Gtk/FileViewList.vala:4546
 msgid "You do not have permission to rename this item"
 msgstr "Sie besitzen keine Rechte um das Element umzubenennen"
 
@@ -4796,11 +4784,11 @@ msgstr ""
 msgid "items"
 msgstr ""
 
-#: Gtk/FileViewList.vala:4532
+#: Gtk/FileViewList.vala:4480
 msgid "selected item(s) will be deleted permanently"
 msgstr "Gewählte Elemente werden permanent gelöscht"
 
-#: Gtk/FileViewList.vala:4467
+#: Gtk/FileViewList.vala:4415
 msgid "selected item(s) will be moved to trash"
 msgstr "Gewählte(s) Element(e) werden in den Papierkorb verschoben."
 
@@ -4816,6 +4804,15 @@ msgstr ""
 #: Utility/FileTask.vala:1379
 msgid "trashed"
 msgstr ""
+
+#~ msgid "Create copies of selected items?"
+#~ msgstr "Kopien der ausgewählten Objekten erstellen?"
+
+#~ msgid "Requested operation is not possible"
+#~ msgstr "Gewünschte Operation ist nicht möglich"
+
+#~ msgid "Source and destination are same"
+#~ msgstr "Quelle und Ziel sind gleich"
 
 #~ msgid "Close Window"
 #~ msgstr "Fenster schließen"

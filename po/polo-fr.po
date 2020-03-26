@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: polo 1.6\n"
 "Report-Msgid-Bugs-To: teejeetech@gmail.com\n"
-"POT-Creation-Date: 2020-03-25 20:28+0100\n"
+"POT-Creation-Date: 2020-03-26 12:43+0100\n"
 "PO-Revision-Date: 2017-09-17 16:05+0530\n"
 "Last-Translator: Fabeuss <fabeuss@pm.me>\n"
 "Language-Team: Clement Bois <contact@clementbois.fr>\n"
@@ -90,11 +90,11 @@ msgstr ""
 "Un disque dynamiquement alloué va étre créé avec la taille spécifiée. La "
 "taille du fichier va augmenter avec les modifications."
 
-#: Gtk/MainWindow.vala:1000
+#: Gtk/MainWindow.vala:981
 msgid "A modern file manager for Linux"
 msgstr "Un gestionnaire de fichiers moderne pour Linux"
 
-#: Gtk/FileViewToolbar.vala:518 Gtk/MainMenubar.vala:2107
+#: Gtk/FileViewToolbar.vala:495 Gtk/MainMenubar.vala:2095
 msgid "About"
 msgstr "À propos"
 
@@ -209,7 +209,7 @@ msgstr "Configuration de l'application chargée"
 msgid "App config saved"
 msgstr "Configuration de l'application sauvegardée"
 
-#: Gtk/FileViewToolbar.vala:519
+#: Gtk/FileViewToolbar.vala:496
 msgid "Application Info"
 msgstr "Information de l'application"
 
@@ -266,7 +266,7 @@ msgstr "Disponible"
 msgid "BZip2 Compressed Disk Image"
 msgstr "Image disque compressée BZip2"
 
-#: Gtk/FileViewToolbar.vala:159 Gtk/MainMenubar.vala:1257 Gtk/Pathbar.vala:820
+#: Gtk/FileViewToolbar.vala:155 Gtk/MainMenubar.vala:1257 Gtk/Pathbar.vala:820
 #: Gtk/Settings.vala:395 Gtk/Settings.vala:820 Utility/Gtk/AboutWindow.vala:343
 #: Utility/Gtk/AboutWindow.vala:375
 msgid "Back"
@@ -288,10 +288,6 @@ msgstr "Sauvegarde terminée"
 #: Gtk/KvmCreateDiskWindow.vala:278
 msgid "Base"
 msgstr "Base"
-
-#: Utility/Gtk/DonationWindow.vala:80
-msgid "Become a Patron"
-msgstr "Devenir un Patron"
 
 #: Gtk/ProgressPanelVideoDownloadTask.vala:162
 msgid "Best (audio + video)"
@@ -322,7 +318,7 @@ msgstr "Blocs"
 msgid "Bookmark"
 msgstr "Signet"
 
-#: Gtk/FileViewToolbar.vala:291 Gtk/Pathbar.vala:172 Gtk/Settings.vala:565
+#: Gtk/FileViewToolbar.vala:287 Gtk/Pathbar.vala:172 Gtk/Settings.vala:565
 #: Gtk/Settings.vala:780 Gtk/Settings.vala:1037 Gtk/Sidebar.vala:362
 msgid "Bookmarks"
 msgstr "Signets"
@@ -427,7 +423,7 @@ msgstr "Calcul de la taille du répertoire..."
 msgid "Cancel"
 msgstr "Annuler"
 
-#: Gtk/FileViewTab.vala:462 Gtk/LayoutBox.vala:508 Gtk/MainWindow.vala:162
+#: Gtk/FileViewTab.vala:462 Gtk/LayoutBox.vala:508 Gtk/MainWindow.vala:156
 msgid "Cancel File Operations?"
 msgstr "Annuler les opérations sur fichiers?"
 
@@ -451,7 +447,7 @@ msgstr "Impossible de créer une archive à cet emplacement"
 msgid "Cannot extract to this location"
 msgstr "Impossible d'extraire vers cet emplacement"
 
-#: Gtk/FileViewToolbar.vala:479 Gtk/MainHeaderBar.vala:265
+#: Gtk/FileViewToolbar.vala:475 Gtk/MainHeaderBar.vala:265
 msgid "Change Application Settings"
 msgstr "Modifier les paramètres de l'application"
 
@@ -582,7 +578,7 @@ msgstr "Liste classique (panneau unique + barre latérale + vue liste)"
 msgid "Clean thumbnail cache"
 msgstr "Nettoyer la mémoire cache des vignettes"
 
-#: Gtk/MainWindow.vala:1027
+#: Gtk/MainWindow.vala:1008
 msgid "Cleaning Thumbnail Cache..."
 msgstr "Nettoyage de la mémoire cache des vignettes..."
 
@@ -629,7 +625,6 @@ msgstr "Cliquez pour éditer le chemin"
 #: Gtk/ClamScanBox.vala:482 Gtk/DevicePopoverSettingsWindow.vala:292
 #: Gtk/FileViewTab.vala:329 Gtk/MessageBar.vala:152 Gtk/SelectionBar.vala:204
 #: Gtk/WizardWindow.vala:143 Utility/Gtk/AboutWindow.vala:400
-#: Utility/Gtk/DonationWindow.vala:137
 msgid "Close"
 msgstr "Fermer"
 
@@ -641,7 +636,7 @@ msgstr "Bouton de fermeture (R)"
 msgid "Close this window"
 msgstr "Fermer cette fenêtre"
 
-#: Gtk/MainWindow.vala:163
+#: Gtk/MainWindow.vala:157
 msgid ""
 "Closing the application will cancel running file operations.\n"
 "Do you want to cancel?"
@@ -1227,7 +1222,7 @@ msgstr "Le périphérique a été restauré avec succès à partir de l'image di
 msgid "Device was unmounted"
 msgstr "Le périphérique n'est pas monté"
 
-#: Gtk/FileViewToolbar.vala:315 Gtk/Pathbar.vala:204 Gtk/Settings.vala:582
+#: Gtk/FileViewToolbar.vala:311 Gtk/Pathbar.vala:204 Gtk/Settings.vala:582
 #: Gtk/Settings.vala:800 Gtk/Settings.vala:1055 Gtk/Sidebar.vala:381
 msgid "Devices"
 msgstr "Périphériques"
@@ -1287,15 +1282,6 @@ msgstr "Documents"
 #: Gtk/ConnectServerWindow.vala:332
 msgid "Domain"
 msgstr "Domaine"
-
-#: Gtk/FileViewToolbar.vala:498 Gtk/MainMenubar.vala:2097
-#: Utility/Gtk/DonationWindow.vala:44 Utility/Gtk/DonationWindow.vala:77
-msgid "Donate"
-msgstr "Faire un don"
-
-#: Utility/Gtk/DonationWindow.vala:118 Utility/Gtk/DonationWindow.vala:126
-msgid "Donation Features"
-msgstr "Fonctionnalités des dons"
 
 #: Utility/Gtk/AboutWindow.vala:474
 msgid "Donations"
@@ -1364,7 +1350,7 @@ msgstr ""
 msgid "Dual"
 msgstr "Double"
 
-#: Gtk/FileViewToolbar.vala:360
+#: Gtk/FileViewToolbar.vala:356
 msgid "Dual Horizontal"
 msgstr "Double Horizontal"
 
@@ -1372,7 +1358,7 @@ msgstr "Double Horizontal"
 msgid "Dual Pane Mode"
 msgstr "Mode panneau Double"
 
-#: Gtk/FileViewToolbar.vala:350
+#: Gtk/FileViewToolbar.vala:346
 msgid "Dual Vertical"
 msgstr "Double Vertical"
 
@@ -1506,7 +1492,7 @@ msgid "Enter Password to Unlock"
 msgstr "Entrer le mot de passe pour déverrouiller"
 
 #: Gtk/FileViewList.vala:4602 Gtk/FileViewList.vala:4636
-#: Gtk/FileViewList.vala:4676 Gtk/MainWindow.vala:1482
+#: Gtk/FileViewList.vala:4676 Gtk/MainWindow.vala:1463
 msgid "Enter another name"
 msgstr "Entrer un autre nom"
 
@@ -1547,7 +1533,7 @@ msgstr "Entrez le nom de partage pour connecter (obligatoire)"
 msgid "Enter unique name for selected file"
 msgstr "Entrer un nom unique pour le fichier sélectionné"
 
-#: Gtk/MainWindow.vala:1474
+#: Gtk/MainWindow.vala:1455
 #, fuzzy
 msgid "Enter workspace name"
 msgstr "Entrez le nom de l'espace de travail"
@@ -1794,10 +1780,6 @@ msgstr "Rapide"
 msgid "Fastest"
 msgstr "Le plus rapide"
 
-#: Utility/Gtk/DonationWindow.vala:106
-msgid "Feature Requests"
-msgstr "Requêtes de fonctionnalitée"
-
 #: Gtk/ProgressPanelVideoDownloadTask.vala:64
 #: Gtk/ProgressPanelVideoDownloadTask.vala:92
 msgid "Fetching info..."
@@ -1840,7 +1822,7 @@ msgid "File Properties"
 msgstr "Propriétés du fichier"
 
 #: Gtk/FileViewList.vala:4636 Gtk/FileViewList.vala:4676
-#: Gtk/MainWindow.vala:1482
+#: Gtk/MainWindow.vala:1463
 msgid "File exists"
 msgstr "Le fichier existe"
 
@@ -2055,7 +2037,7 @@ msgstr "Formater le périphérique?"
 msgid "Formatting Failed"
 msgstr "Échec du formatage"
 
-#: Gtk/FileViewToolbar.vala:180 Gtk/MainMenubar.vala:1302 Gtk/Pathbar.vala:850
+#: Gtk/FileViewToolbar.vala:176 Gtk/MainMenubar.vala:1302 Gtk/Pathbar.vala:850
 #: Gtk/Settings.vala:412 Gtk/Settings.vala:840
 msgid "Forward"
 msgstr "Suivant"
@@ -2112,11 +2094,6 @@ msgstr "Générer des sommes de contrôle..."
 #: Gtk/FileViewList.vala:3474
 msgid "Generating thumbnails..."
 msgstr "Génération des miniatures..."
-
-#: Utility/Gtk/DonationWindow.vala:129
-#, fuzzy
-msgid "Get Plugins ($10)"
-msgstr "Obtenez des plugins de don (10 $)"
 
 #: Gtk/Settings.vala:680 Gtk/Settings.vala:1092
 msgid "Global"
@@ -2215,12 +2192,12 @@ msgstr "Cacher les éléments sélectionnés"
 msgid "History"
 msgstr "Historique"
 
-#: Gtk/FileViewToolbar.vala:221 Gtk/Pathbar.vala:910 Gtk/PlacesPopover.vala:647
+#: Gtk/FileViewToolbar.vala:217 Gtk/Pathbar.vala:910 Gtk/PlacesPopover.vala:647
 #: Gtk/Settings.vala:463 Gtk/Settings.vala:880 Gtk/Sidebar.vala:340
 msgid "Home"
 msgstr "Accueil"
 
-#: Gtk/MainMenubar.vala:2057
+#: Gtk/MainMenubar.vala:2055
 msgid "Homepage"
 msgstr "Page d'accueil"
 
@@ -2231,22 +2208,6 @@ msgstr "Horizontal"
 #: Gtk/ConnectServerWindow.vala:658
 msgid "Host IP (Eg: 192.0.10.1)"
 msgstr "IP hôte (ex : 192.0.10.1)"
-
-#: Utility/Gtk/DonationWindow.vala:120
-msgid ""
-"I sometimes create exclusive plugins to encourage people to contribute. You "
-"can make a contribution by translating the application to other languages, "
-"by submitting code changes, or by making a donation for $10 with PayPal. "
-"Contributors are added to an email distribution list, and plugins are sent "
-"by email. These plugins are open-source. You can request the source code "
-"after receiving the plugins."
-msgstr ""
-"Je crée parfois des plugins exclusifs pour encourager les gens à contribuer. "
-"Vous pouvez faire une contribution en traduisant l'application dans d'autres "
-"langues, en soumettant des changements de code, ou en faisant un don de 10 $ "
-"avec PayPal. Les contributeurs sont ajoutés à une liste de diffusion par "
-"courriel et les plugins sont envoyés par courriel. Ces plugins sont open-"
-"source. Vous pouvez demander le code source après avoir reçu les plugins."
 
 #: Utility/Gtk/AboutWindow.vala:466
 msgid "Icon Themes & Utilities"
@@ -2260,7 +2221,7 @@ msgstr "Vue icônes"
 msgid "Icon size"
 msgstr "Taille des icônes"
 
-#: Gtk/FileViewToolbar.vala:398 Gtk/Settings.vala:1330 Gtk/ViewPopover.vala:134
+#: Gtk/FileViewToolbar.vala:394 Gtk/Settings.vala:1330 Gtk/ViewPopover.vala:134
 msgid "Icons"
 msgstr "Icônes"
 
@@ -2280,15 +2241,6 @@ msgid ""
 msgstr ""
 "Si sélectionné, l'action remplacera le fichier d'origine en cas de succès, "
 "au lieu de créer un nouveau fichier."
-
-#: Utility/Gtk/DonationWindow.vala:71
-#, fuzzy
-msgid ""
-"If you find this application useful, consider making a donation to support "
-"the development."
-msgstr ""
-"Si vous trouvez cette application utile, et souhaitez soutenir son "
-"développement, utilisez le bouton ci-dessous pour faire un don avec PayPal."
 
 #: Gtk/MediaBar.vala:187
 msgid ""
@@ -2360,9 +2312,9 @@ msgstr "Chemin invalide"
 msgid "Invalid Server Name"
 msgstr "Nom de serveur invalide"
 
-#: Gtk/MainMenubar.vala:2067 Utility/Gtk/DonationWindow.vala:95
+#: Gtk/MainMenubar.vala:2065
 msgid "Issue Tracker"
-msgstr "Traqueur de problèmes"
+msgstr ""
 
 #: Gtk/FileConflictDialog.vala:349 Utility/FileTask.vala:1100
 msgid "Item"
@@ -2384,7 +2336,7 @@ msgstr "KVM"
 msgid "Key"
 msgstr "Clé"
 
-#: Gtk/MainMenubar.vala:2087
+#: Gtk/MainMenubar.vala:2085
 msgid "Keyboard Shortcuts"
 msgstr "Raccourcis clavier"
 
@@ -2444,7 +2396,7 @@ msgstr ""
 msgid "Link to"
 msgstr "Lien vers"
 
-#: Gtk/FileViewToolbar.vala:391 Gtk/Settings.vala:1328 Gtk/ViewPopover.vala:127
+#: Gtk/FileViewToolbar.vala:387 Gtk/Settings.vala:1328 Gtk/ViewPopover.vala:127
 msgid "List"
 msgstr "Liste"
 
@@ -2465,7 +2417,7 @@ msgstr "Liste des fichiers..."
 msgid "Listing source items..."
 msgstr "Liste des éléments sources..."
 
-#: Gtk/MainWindow.vala:1266
+#: Gtk/MainWindow.vala:1247
 msgid "Loading workspace..."
 msgstr "Chargement de l'espace de travail..."
 
@@ -2518,10 +2470,6 @@ msgstr "MANQUANT"
 msgid "Major"
 msgstr "Majeur"
 
-#: Gtk/FileViewToolbar.vala:499
-msgid "Make a donation"
-msgstr "Faire un don"
-
 #: Gtk/DevicePopover.vala:687
 msgid "Manage"
 msgstr "Gérer"
@@ -2564,7 +2512,7 @@ msgstr "Maximiser le terminal pour remplir l'onglet"
 msgid "Maximum"
 msgstr "Maximum"
 
-#: Gtk/FileViewToolbar.vala:412 Gtk/Settings.vala:1334 Gtk/ViewPopover.vala:148
+#: Gtk/FileViewToolbar.vala:408 Gtk/Settings.vala:1334 Gtk/ViewPopover.vala:148
 msgid "Media"
 msgstr "Média"
 
@@ -2615,7 +2563,7 @@ msgstr "Mineur"
 msgid "Missing"
 msgstr "Manquant"
 
-#: Common/Main.vala:1345 Gtk/MainWindow.vala:606
+#: Common/Main.vala:1345 Gtk/MainWindow.vala:595
 msgid "Missing Dependencies"
 msgstr "Dépendances manquantes"
 
@@ -2809,7 +2757,7 @@ msgstr "Nouvel onglet"
 msgid "New Window"
 msgstr "Nouvelle fenêtre"
 
-#: Gtk/MainWindow.vala:1469
+#: Gtk/MainWindow.vala:1450
 msgid "New Workspace"
 msgstr "Nouvel espace de travail"
 
@@ -3001,7 +2949,7 @@ msgstr "Ouvrir un nouvel onglet"
 msgid "Open new window"
 msgstr "Ouvrir une nouvelle fenêtre"
 
-#: Gtk/FileViewToolbar.vala:222
+#: Gtk/FileViewToolbar.vala:218
 msgid "Open personal folder"
 msgstr "Ouvrir le dossier personnel"
 
@@ -3022,7 +2970,7 @@ msgid "Open the actual location of trashed item in a new tab"
 msgstr ""
 "Ouvrir l'emplacement actuel des éléments supprimés dans un nouvel onglet"
 
-#: Gtk/FileViewToolbar.vala:181 Gtk/MainHeaderBar.vala:141
+#: Gtk/FileViewToolbar.vala:177 Gtk/MainHeaderBar.vala:141
 msgid "Open the next visited location"
 msgstr "Ouvrir l'emplacement visité suivant"
 
@@ -3031,11 +2979,11 @@ msgid "Open the original location of trashed item in a new tab"
 msgstr ""
 "Ouvrir l'emplacement d'origine des éléments supprimés dans un nouveau onglet"
 
-#: Gtk/FileViewToolbar.vala:202 Gtk/MainHeaderBar.vala:157
+#: Gtk/FileViewToolbar.vala:198 Gtk/MainHeaderBar.vala:157
 msgid "Open the parent location"
 msgstr "Ouvrir l'emplacement parent"
 
-#: Gtk/FileViewToolbar.vala:160 Gtk/MainHeaderBar.vala:125
+#: Gtk/FileViewToolbar.vala:156 Gtk/MainHeaderBar.vala:125
 msgid "Open the previous visited location"
 msgstr "Ouvrir l'emplacement visité précédemment"
 
@@ -3349,7 +3297,7 @@ msgstr "Compressé:"
 
 #: Gtk/DeviceContextMenu.vala:293 Gtk/DevicePopover.vala:641
 #: Gtk/FileContextMenu.vala:2852 Gtk/FilePropertiesWindow.vala:87
-#: Gtk/FileViewToolbar.vala:448 Gtk/MiddleToolbar.vala:309
+#: Gtk/FileViewToolbar.vala:444 Gtk/MiddleToolbar.vala:309
 #: Gtk/Settings.vala:497
 msgid "Properties"
 msgstr "Propriétés"
@@ -3384,7 +3332,7 @@ msgstr "Public"
 msgid "Quad"
 msgstr "Quadruple"
 
-#: Gtk/FileViewToolbar.vala:370
+#: Gtk/FileViewToolbar.vala:366
 msgid "Quad Pane"
 msgstr "Quadruple panneaux"
 
@@ -3501,7 +3449,7 @@ msgstr "Lecture"
 msgid "Rebuild font cache"
 msgstr "Reconstruire le cache des polices"
 
-#: Gtk/MainWindow.vala:1015
+#: Gtk/MainWindow.vala:996
 msgid "Rebuilding Font Cache..."
 msgstr "Reconstruction du cache des polices..."
 
@@ -3563,11 +3511,11 @@ msgstr ""
 msgid "Reformat"
 msgstr "Reformater"
 
-#: Gtk/FileViewToolbar.vala:241 Gtk/MainMenubar.vala:916 Gtk/Settings.vala:446
+#: Gtk/FileViewToolbar.vala:237 Gtk/MainMenubar.vala:916 Gtk/Settings.vala:446
 msgid "Reload"
 msgstr "Recharger"
 
-#: Gtk/FileViewToolbar.vala:242
+#: Gtk/FileViewToolbar.vala:238
 msgid "Reload current location"
 msgstr "Recharger l'emplacement actuel"
 
@@ -3768,7 +3716,7 @@ msgstr "Restauré"
 msgid "Restoring device from disk image..."
 msgstr "Restauration d'un périphérique à partir d'une image disque..."
 
-#: Gtk/MainWindow.vala:1269
+#: Gtk/MainWindow.vala:1250
 msgid "Restoring session..."
 msgstr "Restauration de la session..."
 
@@ -3808,11 +3756,11 @@ msgstr ""
 msgid "Run the selected script in a terminal window"
 msgstr "Exécuter le script sélectionné dans une fenêtre de terminal"
 
-#: Gtk/MainWindow.vala:1035 Gtk/MainWindow.vala:1053
+#: Gtk/MainWindow.vala:1016 Gtk/MainWindow.vala:1034
 msgid "Running Rclone Installation Script"
 msgstr "Exécution du script d'installation de Rclone"
 
-#: Gtk/MainWindow.vala:1043
+#: Gtk/MainWindow.vala:1024
 msgid "Running p7zip Installation Script"
 msgstr "Exécution du script d'installation de p7zip"
 
@@ -3839,7 +3787,7 @@ msgstr "Enregistrer sous"
 msgid "Save As..."
 msgstr "Enregistrer sous..."
 
-#: Gtk/MainWindow.vala:1474
+#: Gtk/MainWindow.vala:1455
 msgid "Save Workspace"
 msgstr "Enregistrer l'espace de travail"
 
@@ -4048,7 +3996,7 @@ msgstr "Définir l'image comme fond d'écran"
 msgid "Sets the default application for opening folders"
 msgstr "Définit l'application par défaut pour l'ouverture de dossiers"
 
-#: Gtk/FileViewToolbar.vala:478 Gtk/SettingsWindow.vala:49
+#: Gtk/FileViewToolbar.vala:474 Gtk/SettingsWindow.vala:49
 #: Gtk/TermContextMenu.vala:222
 msgid "Settings"
 msgstr "Paramètres"
@@ -4234,7 +4182,7 @@ msgstr "Signature"
 msgid "Single"
 msgstr "Unique"
 
-#: Gtk/FileViewToolbar.vala:340
+#: Gtk/FileViewToolbar.vala:336
 msgid "Single Pane"
 msgstr "Panneau unique"
 
@@ -4342,10 +4290,6 @@ msgstr "Assistant de style"
 msgid "Style wizard"
 msgstr "Assistant de style"
 
-#: Utility/Gtk/DonationWindow.vala:85
-msgid "Support"
-msgstr "Support"
-
 #: Gtk/Settings.vala:920
 msgid "Swap"
 msgstr "Echanger"
@@ -4406,7 +4350,7 @@ msgstr "Onglets en bas"
 msgid "Target"
 msgstr "Cible du lien"
 
-#: Gtk/FileContextMenu.vala:678 Gtk/FileViewToolbar.vala:428
+#: Gtk/FileContextMenu.vala:678 Gtk/FileViewToolbar.vala:424
 #: Gtk/Settings.vala:480 Gtk/Settings.vala:1367
 msgid "Terminal"
 msgstr "Terminal"
@@ -4439,23 +4383,6 @@ msgstr ""
 "Cette application est conçue pour le thème Arc GTK. Ça ne sera peut-être pas "
 "aussi joli avec d'autres thèmes."
 
-#: Utility/Gtk/DonationWindow.vala:110
-msgid ""
-"This application was created for my own use in my spare time. It's not "
-"practical for me to work for free, on every change that is requested. If you "
-"need new features or changes to the application, consider making a donation "
-"to sponsor the work. If you are a developer, consider contributing to the "
-"project, by picking up items from the issue tracker and submitting code "
-"changes."
-msgstr ""
-
-#: Utility/Gtk/DonationWindow.vala:67
-msgid ""
-"This software is free for personal and commercial use. It is distributed in "
-"the hope that it is useful but without any warranty. See the GNU General "
-"Public License v2 or later for more information"
-msgstr ""
-
 #: Gtk/Settings.vala:1853 Gtk/Settings.vala:2039 Gtk/Settings.vala:2240
 msgid "Thumbnails"
 msgstr "Miniatures"
@@ -4464,7 +4391,7 @@ msgstr "Miniatures"
 msgid "Tile View"
 msgstr "Vue en tuiles"
 
-#: Gtk/FileViewToolbar.vala:405 Gtk/Settings.vala:1332 Gtk/ViewPopover.vala:141
+#: Gtk/FileViewToolbar.vala:401 Gtk/Settings.vala:1332 Gtk/ViewPopover.vala:141
 msgid "Tiles"
 msgstr "Tuiles"
 
@@ -4489,12 +4416,12 @@ msgstr "Afficher la barre latérale"
 msgid "Toggle Terminal Pane"
 msgstr "Afficher le panneau du terminal"
 
-#: Gtk/FileViewToolbar.vala:449 Gtk/Statusbar.vala:473
+#: Gtk/FileViewToolbar.vala:445 Gtk/Statusbar.vala:473
 #, fuzzy
 msgid "Toggle file properties panel"
 msgstr "Afficher le panneau des propriétés de fichier"
 
-#: Gtk/FileViewToolbar.vala:429 Gtk/MiddleToolbar.vala:366
+#: Gtk/FileViewToolbar.vala:425 Gtk/MiddleToolbar.vala:366
 #: Gtk/Statusbar.vala:451
 msgid "Toggle terminal panel"
 msgstr "Afficher le panneau du terminal"
@@ -4666,7 +4593,7 @@ msgstr "Dépaqueté"
 msgid "Unprotect the PDF document by removing password"
 msgstr "Désactiver la protection du document PDF en supprimant le mot de passe"
 
-#: Gtk/FileViewToolbar.vala:201 Gtk/MainMenubar.vala:1347 Gtk/Settings.vala:429
+#: Gtk/FileViewToolbar.vala:197 Gtk/MainMenubar.vala:1347 Gtk/Settings.vala:429
 #: Gtk/Settings.vala:860
 msgid "Up"
 msgstr "Haut"
@@ -4696,12 +4623,6 @@ msgstr "Téléchargement de fichiers vers le stockage cloud:"
 #: Utility/FileTask.vala:467
 msgid "Uploading items..."
 msgstr "Téléversement d'articles..."
-
-#: Utility/Gtk/DonationWindow.vala:89
-msgid ""
-"Use the issue tracker for reporting issues, asking questions, and requesting "
-"features. Please avoid reporting issues by email."
-msgstr ""
 
 #: Gtk/FilePropertiesWindow.vala:225 Gtk/Sidebar.vala:1292
 #: Gtk/Statusbar.vala:361 Utility/Device.vala:2562
@@ -4762,7 +4683,7 @@ msgstr "Résolution vidéo"
 msgid "Videos"
 msgstr "Vidéos"
 
-#: Gtk/FileViewToolbar.vala:266 Gtk/MainMenubar.vala:887
+#: Gtk/FileViewToolbar.vala:262 Gtk/MainMenubar.vala:887
 #: Gtk/MainMenubar.vala:1048 Gtk/Settings.vala:548 Gtk/Settings.vala:1621
 #: Gtk/ViewPopover.vala:116
 msgid "View"
@@ -4788,7 +4709,7 @@ msgstr "Page Web"
 msgid "Width"
 msgstr "Largeur"
 
-#: Gtk/MainMenubar.vala:2077 Utility/Gtk/DonationWindow.vala:100
+#: Gtk/MainMenubar.vala:2075
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -4904,6 +4825,9 @@ msgstr "transféré"
 msgid "trashed"
 msgstr "mis à la poubelle"
 
+#~ msgid "Make a donation"
+#~ msgstr "Faire un don"
+
 #~ msgid "Create copies of selected items?"
 #~ msgstr "Créer des copies des éléments sélectionnés?"
 
@@ -4915,10 +4839,6 @@ msgstr "mis à la poubelle"
 
 #~ msgid "Close Window"
 #~ msgstr "Fermer la fenêtre"
-
-#, fuzzy
-#~ msgid "Donate (5$)"
-#~ msgstr "Faire un don (5$)"
 
 #~ msgid "Get Support ($10)"
 #~ msgstr "Obtenir de l'aide (10 $)"

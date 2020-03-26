@@ -71,7 +71,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 	private Gtk.ToolButton btn_settings;
 	//private Gtk.ToolButton btn_wizard;
 	private Gtk.ToolButton btn_about;
-	private Gtk.ToolButton btn_donate;
 
 	private Gtk.Image img_back;
 	private Gtk.Image img_up;
@@ -90,7 +89,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 	private Gtk.Image img_settings;
 	//private Gtk.Image img_wizard;
 	private Gtk.Image img_about;
-	private Gtk.Image img_donate;
 
 	// contruct
 
@@ -144,8 +142,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 		add_toolbar_button_for_settings();
 
 		//add_toolbar_button_for_wizard();
-
-		add_toolbar_button_for_donate();
 
 		add_toolbar_button_for_about();
 
@@ -457,7 +453,7 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 		gtk_apply_css({ button }, "padding-left: 2px; padding-right: 2px;");
 
 		button.clicked.connect(() => {
-			
+
 			window.toggle_properties_panel();
 		});
 	}
@@ -490,25 +486,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 		});
 	}
 
-	private void add_toolbar_button_for_donate(){
-
-		// btn_donate
-		var button = new Gtk.ToolButton(null, null);
-		button.is_important = true;
-		button.label = _("Donate");
-		button.set_tooltip_text (_("Make a donation"));
-		add(button);
-		btn_donate = button;
-
-		img_donate = new Gtk.Image();
-		button.set_icon_widget(img_donate);
-
-		gtk_apply_css({ button }, "padding-left: 2px; padding-right: 2px;");
-
-		button.clicked.connect(() => {
-			window.open_donate_window();
-		});
-	}
 
 	private void add_toolbar_button_for_about(){
 
@@ -612,7 +589,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 		if (is_global){
 			this.add(separator_spacer);
 			this.add(btn_settings);
-			this.add(btn_donate);
 			this.add(btn_about);
 		}
 
@@ -644,7 +620,6 @@ public class FileViewToolbar : Gtk.Toolbar, IPaneActive {
 		img_properties.pixbuf = IconManager.lookup("document-properties", icon_size_actual);
 
 		img_settings.pixbuf = IconManager.lookup("preferences-system-symbolic", icon_size_actual);
-		img_donate.pixbuf = IconManager.lookup("donate", icon_size_actual);
 		img_about.pixbuf = IconManager.lookup("help-about-symbolic", icon_size_actual);
 	}
 

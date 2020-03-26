@@ -57,11 +57,11 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	public signal void delayed_init();
 
 	public signal void active_pane_changed();
-	
+
 	public MainMenuBar(bool _menu_mode){
-		
+
 		this.menu_mode = _menu_mode;
-		
+
 		if (menu_mode){
 			this.menu = new Gtk.Menu();
 		}
@@ -82,10 +82,10 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		//add_menu_cloud(menu_session);
 		add_menu_tools(menu_shell);
 		add_menu_help(menu_shell);
-		
+
 		menu_shell.show_all();
 	}
-	
+
 	public Gtk.Menu? get_menu(){
 		return menu;
 	}
@@ -93,7 +93,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	public void add_action_accel(Gtk.MenuItem item, string keycode){
 
 		string data_key = "has_accel_%s".printf(keycode);
-		
+
 		uint accel_key;
 		Gdk.ModifierType accel_mods;
 		var accel_flags = Gtk.AccelFlags.VISIBLE;
@@ -106,18 +106,18 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	public void remove_action_accel(Gtk.MenuItem item, string keycode){
 
 		string data_key = "has_accel_%s".printf(keycode);
-		
+
 		if (item.get_data<int>(data_key) != 1) { return; }
-		
+
 		uint accel_key;
 		Gdk.ModifierType accel_mods;
 		//var accel_flags = Gtk.AccelFlags.VISIBLE;
 		Gtk.accelerator_parse(keycode, out accel_key, out accel_mods);
 		item.remove_accelerator (Hotkeys.accel_group, accel_key, accel_mods);
-		
+
 		item.set_data<int>(data_key, -1);
 	}
-	
+
 	private void add_menu_file(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_file()");
@@ -129,7 +129,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		item.set_submenu(submenu);
 
 		add_new_tab(submenu);
-		
+
 		add_new_window(submenu);
 
 		add_admin_window(submenu);
@@ -151,12 +151,12 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		gtk_menu_add_separator(submenu);
 
 		add_exit(submenu);
-		
+
 		log_debug("MainMenuBar: add_menu_file(): exit");
 	}
 
 	private void add_new_tab(Gtk.Menu submenu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("New Tab"));
 		submenu.add(item);
 
@@ -187,7 +187,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -203,7 +203,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void add_new_window(Gtk.Menu submenu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("New Window"));
 		submenu.add(item);
 
@@ -236,7 +236,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -281,7 +281,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -293,7 +293,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void add_new_folder(Gtk.Menu submenu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("Create New Folder"));
 		submenu.add(item);
 
@@ -323,7 +323,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -365,7 +365,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -419,7 +419,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.sensitive = true;
 			add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -464,7 +464,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -475,41 +475,41 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		});
 	}
 
-	
+
 	private void add_menu_edit(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_edit()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Edit"));
 		menu_shell.add(menu_item);
-	
+
 		var submenu = new Gtk.Menu();
 		menu_item.set_submenu(submenu);
-		
+
 		add_cut(submenu);
-		
+
 		add_copy(submenu);
-		
+
 		add_paste(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_trash(submenu);
-		
+
 		add_delete(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_rename(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_select_all(submenu);
-		
+
 		add_select_none(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_settings(submenu);
 	}
 
@@ -544,7 +544,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -588,7 +588,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -631,7 +631,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -676,7 +676,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -724,7 +724,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -768,7 +768,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -813,7 +813,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -858,7 +858,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -879,11 +879,11 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		});
 	}
 
-	
+
 	private void add_menu_view(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_view()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("View"));
 		menu_shell.add(menu_item);
 
@@ -891,7 +891,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		menu_item.set_submenu(submenu);
 
 		add_reload(submenu);
-		
+
 		gtk_menu_add_separator(submenu);
 
 		add_hidden(submenu);
@@ -899,7 +899,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_dual_mode(submenu);
 
 		add_fullscreen_mode(submenu);
-		
+
 		gtk_menu_add_separator(submenu);
 
 		add_layout(submenu);
@@ -907,7 +907,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_view(submenu);
 
 		add_sort_column(submenu);
-		
+
 		log_debug("MainMenuBar: add_menu_view(): exit");
 	}
 
@@ -944,7 +944,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -971,7 +971,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_hidden);
 			item.active = (view == null) ? false : view.show_hidden_files;
 			item.activate.connect(view_toggle_hidden);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -981,7 +981,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_hidden);
 			item.active = (view == null) ? false : view.show_hidden_files;
 			item.activate.connect(view_toggle_hidden);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -991,7 +991,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_hidden);
 			item.active = (view == null) ? false : view.show_hidden_files;
 			item.activate.connect(view_toggle_hidden);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -1001,14 +1001,14 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_hidden);
 			item.active = (view == null) ? false : view.show_hidden_files;
 			item.activate.connect(view_toggle_hidden);
-			
+
 			add_action_accel(item, key);
 		});
 
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1020,9 +1020,9 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void view_toggle_hidden(){
-		
+
 		if (view == null) { return; }
-			
+
 		if (chk_hidden.active){
 			view.show_hidden();
 		}
@@ -1054,7 +1054,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.set_submenu(window.toolbar.build_view_menu());
 		});
 	}
-	
+
 	private void add_dual_mode(Gtk.Menu submenu){
 
 		var item = new Gtk.CheckMenuItem.with_label (_("Dual Pane Mode"));
@@ -1070,7 +1070,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_dual);
 			item.active = (window.layout_box != null) && (window.layout_box.get_panel_layout() == PanelLayout.DUAL_VERTICAL);
 			item.activate.connect(view_toggle_dual);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -1080,7 +1080,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_dual);
 			item.active = (window.layout_box != null) && (window.layout_box.get_panel_layout() == PanelLayout.DUAL_VERTICAL);
 			item.activate.connect(view_toggle_dual);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -1090,7 +1090,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_dual);
 			item.active = (window.layout_box != null) && (window.layout_box.get_panel_layout() == PanelLayout.DUAL_VERTICAL);
 			item.activate.connect(view_toggle_dual);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -1100,7 +1100,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_dual);
 			item.active = (window.layout_box != null) && (window.layout_box.get_panel_layout() == PanelLayout.DUAL_VERTICAL);
 			item.activate.connect(view_toggle_dual);
-			
+
 			add_action_accel(item, key);
 		});
 
@@ -1110,10 +1110,10 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.disconnect(view_toggle_dual);
 			item.active = (window.layout_box != null) && (window.layout_box.get_panel_layout() == PanelLayout.DUAL_VERTICAL);
 			item.activate.connect(view_toggle_dual);
-			
+
 			add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1125,24 +1125,24 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void view_toggle_dual(){
-		
+
 		if (view == null) { return; }
-			
+
 		view.toggle_dual_pane();
 	}
 
 	private void add_fullscreen_mode(Gtk.Menu submenu){
-		
+
 		var item = new Gtk.CheckMenuItem.with_label (_("Fullscreen Mode"));
 		submenu.add(item);
 
 		item.activate.connect(window.toggle_fullscreen);
-		
+
 		string key = "F11";
 
 		context_normal.connect(()=>{
 			item.sensitive = true;
-			
+
 			item.activate.disconnect(window.toggle_fullscreen);
 			item.active = window.is_maximized;
 			item.activate.connect(window.toggle_fullscreen);
@@ -1152,7 +1152,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		context_cloud.connect(()=>{
 			item.sensitive = true;
-			
+
 			item.activate.disconnect(window.toggle_fullscreen);
 			item.active = window.is_maximized;
 			item.activate.connect(window.toggle_fullscreen);
@@ -1162,28 +1162,28 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		context_trash.connect(()=>{
 			item.sensitive = true;
-			
+
 			item.activate.disconnect(window.toggle_fullscreen);
 			item.active = window.is_maximized;
 			item.activate.connect(window.toggle_fullscreen);
-			
+
 			add_action_accel(item, key);
 		});
 
 		context_archive.connect(()=>{
 			item.sensitive = true;
-			
+
 			item.activate.disconnect(window.toggle_fullscreen);
 			item.active = window.is_maximized;
 			item.activate.connect(window.toggle_fullscreen);
-			
+
 			add_action_accel(item, key);
 		});
 
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1216,7 +1216,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	private void add_menu_go(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_go()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Go"));
 		menu_shell.add(menu_item);
 
@@ -1226,15 +1226,15 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_open(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_back(submenu);
-		
+
 		add_forward(submenu);
-		
+
 		add_up(submenu);
 
 		gtk_menu_add_separator(submenu);
-		
+
 		add_open_location(submenu);
 	}
 
@@ -1286,7 +1286,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1331,7 +1331,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1376,7 +1376,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1426,7 +1426,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1441,23 +1441,23 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	// workspace --------------------------------------------------------------------------------------------
 
 	private Gtk.Menu workspace_submenu;
-	
+
 	private void add_menu_workspace(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_workspace()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Workspace"));
 		menu_shell.add(menu_item);
 
 		var submenu = new Gtk.Menu();
 		menu_item.set_submenu(submenu);
 		workspace_submenu = submenu;
-		
+
 		add_workspace_refresh(submenu);
 	}
 
 	private void add_workspace_refresh(Gtk.Menu menu){
-		
+
 		log_debug("mainmenu: cloud: refresh()");
 
 		gtk_container_remove_children(menu);
@@ -1467,9 +1467,9 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_workspace_save_as(menu);
 
 		add_workspace_remove(menu);
-		
+
 		gtk_menu_add_separator(menu);
-		
+
 		add_workspace_select(menu);
 
 		menu.show_all();
@@ -1509,16 +1509,16 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		var workspaces = dir_list_names(App.app_conf_dir_workspaces);
-		
+
 		foreach(var fname in workspaces){
 
 			var subitem = new Gtk.MenuItem.with_label(file_get_title(fname));
 			submenu.add(subitem);
-			
+
 			subitem.activate.connect (() => {
-				
+
 				bool ok = window.remove_workspace(fname);
-				
+
 				if (ok){
 					gtk_messagebox(_("Workspace Removed"), "%s".printf(file_get_title(fname)), window, false);
 					submenu.remove(subitem);
@@ -1530,7 +1530,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 				add_workspace_refresh(workspace_submenu);
 			});
 		}
-		
+
 		submenu.show_all();
 	}
 
@@ -1547,27 +1547,27 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		var workspaces = dir_list_names(App.app_conf_dir_workspaces);
-		
+
 		foreach(var fname in workspaces){
 
 			var item = new Gtk.MenuItem.with_label(file_get_title(fname));
 			submenu.add(item);
-			
+
 			item.activate.connect (() => {
 
 				log_debug("menu_item_clicked: %s".printf(fname), true);
-				
+
 				window.load_workspace(fname);
 			});
 		}
 	}
 
 	// cloud --------------------------------------------------------------------------------
-	
+
 	private void add_menu_cloud(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_cloud()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Cloud"));
 		menu_shell.add(menu_item);
 
@@ -1583,11 +1583,11 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void add_cloud_account_refresh(Gtk.Menu menu){
-		
+
 		log_debug("mainmenu: cloud: refresh()");
 
 		gtk_container_remove_children(menu);
-		
+
 		add_cloud_account_add(menu);
 
 		add_cloud_account_remove(menu);
@@ -1602,25 +1602,25 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		menu.show_all();
 	}
-	
+
 	private void add_cloud_account_add(Gtk.Menu menu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("Add Account"));
 		item.set_tooltip_text(_("Login to cloud storage account"));
 		menu.add(item);
 
 		item.activate.connect (() => {
-			
+
 			if (!App.tool_exists("rclone", true)){
-				
+
 				string txt = _("Rclone Not Found");
 				string msg = _("Rclone is needed for cloud storage support.\n\nDownload and install Rclone?");
 				var res = gtk_messagebox_yes_no(txt, msg, window, true);
-				
+
 				if (res == Gtk.ResponseType.YES){
 					window.install_rclone();
 				}
-				
+
 				return; // always return
 			}
 
@@ -1629,7 +1629,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	}
 
 	private void add_cloud_account_remove(Gtk.Menu menu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("Remove Account"));
 		item.set_tooltip_text(_("Logout from cloud storage account"));
 		menu.add(item);
@@ -1639,7 +1639,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		var sg_icon = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		foreach(var acc in App.rclone.accounts){
 
 			Gtk.Image? image = null;
@@ -1684,12 +1684,12 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 				App.rclone.query_accounts();
 			});
 		}
-		
+
 		submenu.show_all();
 	}
 
 	/*private void add_cloud_account_unmount(Gtk.Menu menu){
-		
+
 		var item = new Gtk.MenuItem.with_label (_("Unmount"));
 		item.set_tooltip_text(_("Unmount cloud storage account"));
 		menu.add(item);
@@ -1699,7 +1699,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		var sg_icon = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		foreach(var acc in App.rclone.accounts){
 
 			Gtk.Image? image = null;
@@ -1743,7 +1743,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		var sg_icon = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		foreach(var acc in App.rclone.accounts){
 
 			Gtk.Image? image = null;
@@ -1771,15 +1771,15 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			item.activate.connect (() => {
 
 				App.rclone.query_mounted_remotes();
-				
+
 				log_debug("menu_item_clicked: %s".printf(acc.name), true);
 
 				bool delayed_load = false;
 
 				string mpath = App.rclone.get_mounted_path(acc.name);
-				
+
 				if (mpath.length == 0){
-					
+
 					log_debug("not_mounted: %s".printf(acc.name));
 					acc.mount();
 					delayed_load = true;
@@ -1816,7 +1816,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	private void add_menu_tools(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_tools()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Tools"));
 		menu_shell.add(menu_item);
 
@@ -1824,7 +1824,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		menu_item.set_submenu(submenu);
 
 		add_install_rclone(submenu);
-		
+
 		add_install_p7zip(submenu);
 
 		add_clear_thumbnail_cache(submenu);
@@ -1844,7 +1844,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_test_action(submenu);
 
 		add_test_action2(submenu);
-		
+
 		add_test_action3(submenu);
 	}
 
@@ -1927,7 +1927,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		context_term.connect(()=>{
 			//add_action_accel(item, key);
 		});
-		
+
 		context_edit.connect(()=>{
 			//add_action_accel(item, key);
 		});
@@ -1937,7 +1937,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			remove_action_accel(item, key);
 		});
 	}
-	
+
 	private void add_wizard(Gtk.Menu menu){
 
 		var item = new Gtk.MenuItem.with_label (_("Style wizard"));
@@ -1970,7 +1970,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		menu.add(item);
 
 		item.activate.connect (() => {
-			
+
 			var tab = panel.add_tab();
 			tab.select_tab();
 			tab.pane.show_clamav_view("list");
@@ -2032,7 +2032,7 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 	private void add_menu_help(Gtk.MenuShell menu_shell){
 
 		log_debug("MainMenuBar: add_menu_help()");
-		
+
 		var menu_item = new Gtk.MenuItem.with_label(_("Help"));
 		menu_shell.add(menu_item);
 
@@ -2046,8 +2046,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		add_wiki(submenu);
 
 		add_shortcuts(submenu);
-		
-		add_donate(submenu);
 
 		add_about(submenu);
 	}
@@ -2091,16 +2089,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 			//window.open_shortcuts_window();
 		});
 	}
-	
-	private void add_donate(Gtk.Menu menu){
-
-		var item = new Gtk.MenuItem.with_label (_("Donate"));
-		menu.add(item);
-
-		item.activate.connect (() => {
-			window.open_donate_window();
-		});
-	}
 
 	private void add_about(Gtk.Menu menu){
 
@@ -2112,7 +2100,3 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		});
 	}
 }
-
-
-
-

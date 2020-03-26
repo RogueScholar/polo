@@ -287,10 +287,6 @@ msgstr "Säkerhetskopiering slutförd"
 msgid "Base"
 msgstr "Bas"
 
-#: Utility/Gtk/DonationWindow.vala:75
-msgid "Become a Patron"
-msgstr "Bli en beskyddare"
-
 #: Gtk/ProgressPanelVideoDownloadTask.vala:162
 msgid "Best (audio + video)"
 msgstr "Bäst (ljud + film)"
@@ -622,10 +618,6 @@ msgstr "Klicka för att redigera sökväg"
 #: Gtk/WizardWindow.vala:143 Utility/Gtk/AboutWindow.vala:400
 msgid "Close"
 msgstr "Stäng"
-
-#: Utility/Gtk/DonationWindow.vala:144
-msgid "Close Window"
-msgstr "Stäng fönstret"
 
 #: Gtk/Settings.vala:1131
 msgid "Close button (R)"
@@ -1268,19 +1260,6 @@ msgstr "Dokument"
 msgid "Domain"
 msgstr "Domän"
 
-#: Gtk/FileViewToolbar.vala:498 Gtk/MainMenubar.vala:2097
-#: Utility/Gtk/DonationWindow.vala:44
-msgid "Donate"
-msgstr "Donera"
-
-#: Utility/Gtk/DonationWindow.vala:72
-msgid "Donate (5$)"
-msgstr "Donera (5$)"
-
-#: Utility/Gtk/DonationWindow.vala:125 Utility/Gtk/DonationWindow.vala:133
-msgid "Donation Features"
-msgstr "Donationsfunktioner"
-
 #: Utility/Gtk/AboutWindow.vala:474
 msgid "Donations"
 msgstr "Donationer"
@@ -1759,10 +1738,6 @@ msgstr "Snabb"
 msgid "Fastest"
 msgstr "Snabbast"
 
-#: Utility/Gtk/DonationWindow.vala:85
-msgid "Feature Requests"
-msgstr "Funktionsönskemål"
-
 #: Gtk/ProgressPanelVideoDownloadTask.vala:64
 #: Gtk/ProgressPanelVideoDownloadTask.vala:92
 msgid "Fetching info..."
@@ -2060,14 +2035,6 @@ msgstr "Beräknar kontrollsummor..."
 msgid "Generating thumbnails..."
 msgstr "Genererar miniatyrer..."
 
-#: Utility/Gtk/DonationWindow.vala:136
-msgid "Get Donation Plugins ($10)"
-msgstr "Hämta donationsinstick ($10)"
-
-#: Utility/Gtk/DonationWindow.vala:109
-msgid "Get Support ($10)"
-msgstr "Få support ($10)"
-
 #: Gtk/Settings.vala:680 Gtk/Settings.vala:1092
 msgid "Global"
 msgstr "Övergripande"
@@ -2178,22 +2145,6 @@ msgstr "Horisontell"
 msgid "Host IP (Eg: 192.0.10.1)"
 msgstr "Värd-IP (Exempel: 192.0.10.1)"
 
-#: Utility/Gtk/DonationWindow.vala:127
-msgid ""
-"I sometimes create exclusive plugins to encourage people to contribute. You "
-"can make a contribution by translating the application to other languages, "
-"by submitting code changes, or by making a donation for $10 with PayPal. "
-"Contributors are added to an email distribution list, and plugins are sent "
-"by email. These plugins are open-source. You can request the source code "
-"after receiving the plugins."
-msgstr ""
-"Ibland skapar jag exklusiva insticksmoduler för att uppmuntra folk att "
-"bidra. Du kan bidra genom att översätta programmet till andra språk, genom "
-"att skicka in kodbidrag, eller genom att donera $10 via PayPal. "
-"Bidragsgivare läggs till i en e-postlista och insticken skickas med e-post. "
-"Insticken är öppen källkod. Du kan be om källkoden efter att du mottagit "
-"insticken."
-
 #: Utility/Gtk/AboutWindow.vala:466
 msgid "Icon Themes & Utilities"
 msgstr "Ikonteman & Verktyg"
@@ -2225,34 +2176,6 @@ msgid ""
 msgstr ""
 "Vid aktivering, kommer originalfilen att att ersättas, istället för att ny "
 "fil skapas."
-
-#: Utility/Gtk/DonationWindow.vala:66
-msgid ""
-"If you find this application useful, and wish to support its development, "
-"use the button below to make a donation with PayPal."
-msgstr ""
-"Om du finner det här programmet användbart och vill stödja dess utveckling, "
-"kan du använda nedanstående knapp och donera via payPal."
-
-#: Utility/Gtk/DonationWindow.vala:87
-msgid ""
-"If you need changes to this application, please add your requirements to the "
-"issue tracker. You can sponsor your own request, or sponsor an existing "
-"request by making a donation with PayPal. Items available for sponsorship "
-"are labelled as <i>\"OpenForSponsorship\"</i>, along with an amount for the "
-"work involved. You can make a donation for that amount with PayPal, and "
-"leave a comment on the thread, or email me with the issue number. I will "
-"work on it the next time I update the application, and changes will be "
-"included in the next release."
-msgstr ""
-"Om du behöver några förändringar i det här programmet, kan du lägga till "
-"dina önskemål i ärendehanteraren. Du kan sponsra ditt eget eller ett "
-"befintligt önskemål genom att donera via PayPal. Objekt tillgängliga för "
-"sponsring är märkta som <i>\"OpenForSponsorship\"</i>, tillsammans med en "
-"summa för det aktuella arbetet. Du kan donera den summan via PayPal och "
-"lämna en kommentar i tråden, eller skicka mig ett e-postmeddelande med "
-"ärendenumret. Jag kommer att arbeta med önskemålet nästa gång jag uppdaterar "
-"programmet och ändringarna inkluderas i nästa version."
 
 #: Gtk/MediaBar.vala:187
 msgid ""
@@ -2324,7 +2247,7 @@ msgstr "Ogiltig sökväg"
 msgid "Invalid Server Name"
 msgstr "Ogiltigt servernamn"
 
-#: Gtk/MainMenubar.vala:2067 Utility/Gtk/DonationWindow.vala:112
+#: Gtk/MainMenubar.vala:2067
 msgid "Issue Tracker"
 msgstr "Ärendehanterare"
 
@@ -2339,10 +2262,6 @@ msgstr "Objektet är ingen symbolisk länk"
 #: Gtk/Settings.vala:218 Gtk/Settings.vala:249
 msgid "Items"
 msgstr "Objekt"
-
-#: Utility/Gtk/DonationWindow.vala:93
-msgid "Items for Sponsorship"
-msgstr "Objekt för sponsring"
 
 #: Gtk/FileContextMenu.vala:2044 Gtk/Settings.vala:2661
 msgid "KVM"
@@ -4232,10 +4151,6 @@ msgstr "Delningsstorlek (MB)"
 msgid "Split archive into volumes of specified size (in MB)"
 msgstr "Dela upp arkiv i volymer av specificerad storlek (i MB)"
 
-#: Utility/Gtk/DonationWindow.vala:96
-msgid "Sponsor a Feature"
-msgstr "Sponsra en funktion"
-
 #: Gtk/TermContextMenu.vala:202
 msgid "Start chroot session in current directory"
 msgstr "Starta chroot-session i aktuell mapp"
@@ -4271,10 +4186,6 @@ msgstr "Stilguide"
 #: Gtk/MainMenubar.vala:1943
 msgid "Style wizard"
 msgstr "Stilguide"
-
-#: Utility/Gtk/DonationWindow.vala:101
-msgid "Support"
-msgstr "Support"
 
 #: Gtk/Settings.vala:920
 msgid "Swap"
@@ -4359,20 +4270,6 @@ msgid ""
 msgstr ""
 "Detta program är designat för Arc GTK-temat. Det kanske inte ser riktigt ut "
 "med andra teman."
-
-#: Utility/Gtk/DonationWindow.vala:79
-msgid ""
-"This application was created for my own use. It is being distributed as a "
-"free, open-source project in the hope that it may be useful to people. This "
-"does not mean that I provide free support and free work, for changes and "
-"features that you may require. Please see sections below for more "
-"information."
-msgstr ""
-"Det här programmet har skapats för min egen användning. Det distribueras som "
-"ett fritt, öppen källkodsprojekt med hopp om att det skall vara användbart "
-"för folk. Detta innebär inte att jag tillhandahåller gratis support och "
-"arbete, med ändringar och funktioner som du kanske önskar. Se nedanstående "
-"sektioner för mer information."
 
 #: Gtk/Settings.vala:1853 Gtk/Settings.vala:2039 Gtk/Settings.vala:2240
 msgid "Thumbnails"
@@ -4613,24 +4510,6 @@ msgstr "Laddar upp filer till molnlagring:"
 msgid "Uploading items..."
 msgstr "Laddar upp objekt..."
 
-#: Utility/Gtk/DonationWindow.vala:103
-msgid ""
-"Use the issue tracker for reporting issues, asking questions, and requesting "
-"features. I check the tracker once a month. If you need an immediate "
-"response, use the button below to make a donation for $10 with PayPal. Add "
-"your questions to the tracker and send me an email with the issue number "
-"(teejeetech@gmail.com). This option is for queries you may have about the "
-"application, and for help with issues you are facing. This does not cover "
-"development work for bug fixes and features."
-msgstr ""
-"Använd ärendehanteraren för att rapportera fel, ställa frågor och be om "
-"funktioner. Jag kollar hanteraren en gång per månad. Om du behöver "
-"omedelbart svar, kan du använda nedanstående knapp och donera $10 via "
-"PayPal. Lägg till dina ärenden i hanteraren och sänd mig ett e-"
-"postmeddelande med ärendenummer (teejeetech@gmail.com). Detta alternativ är "
-"till för frågor du kan ha om programmet och för hjälp med eventuella "
-"problem. Det täcker inte utvecklingsarbete med feljustering och funktioner."
-
 #: Gtk/FilePropertiesWindow.vala:225 Gtk/Sidebar.vala:1292
 #: Gtk/Statusbar.vala:361 Utility/Device.vala:2562
 #, c-format
@@ -4718,10 +4597,6 @@ msgstr "Bredd"
 #: Gtk/MainMenubar.vala:2077
 msgid "Wiki"
 msgstr "Wiki"
-
-#: Utility/Gtk/DonationWindow.vala:117
-msgid "Wiki (Documentation)"
-msgstr "Wiki (Dokumentation)"
 
 #: Gtk/FileContextMenu.vala:716
 msgid "Window"
@@ -4904,9 +4779,6 @@ msgstr "kastat"
 #~ "\n"
 #~ "Tack!\n"
 #~ "Tony George"
-
-#~ msgid "Donate with PayPal"
-#~ msgstr "Donera via PayPal"
 
 #~ msgid "Failed to get partition list"
 #~ msgstr "Kunde inte hämta partitionslista"

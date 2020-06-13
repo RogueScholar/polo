@@ -294,7 +294,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		treeview.get_selection().changed.connect(on_selection_changed);
 		
-		// mouse foward & backward connect
+		// mouse forward & backward connect
 		treeview.button_press_event.connect(on_mbutton_press_event);
 		iconview.button_press_event.connect(on_mbutton_press_event);
 
@@ -1946,12 +1946,16 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	// mouse buttons forward & backward -------
 	
 	private bool on_mbutton_press_event(Gdk.EventButton event){
+	
+		if (event.button == 2) {
+			go_up();
+			return false;
+		}
 
 		if (event.button == 8) {
 			go_back();
 			return false;
 		}
-		
 
 		if (event.button == 9) {
 			go_forward();

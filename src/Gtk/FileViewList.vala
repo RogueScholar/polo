@@ -293,6 +293,11 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.row_collapsed.connect(treeview_row_collapsed);
 
 		treeview.get_selection().changed.connect(on_selection_changed);
+		
+		// mouse foward & backward connect
+		treeview.button_press_event.connect(on_mbutton_press_event);
+		iconview.button_press_event.connect(on_mbutton_press_event);
+
 
 		// context menu will be connected in connect_file_context_menu()
 		
@@ -1936,6 +1941,25 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 		
 		return false;
+	}
+	
+	// mouse buttons forward & backward -------
+	
+	private bool on_mbutton_press_event(Gdk.EventButton event){
+
+		if (event.button == 8) {
+			go_back();
+			return false;
+		}
+		
+
+		if (event.button == 9) {
+			go_forward();
+			return false;
+		}
+		
+		return false;
+
 	}
 
 	// DND ------------------------------------

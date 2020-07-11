@@ -37,13 +37,13 @@ public class ProgressPanelPdfTask : ProgressPanel {
 
 	private PdfTask task;
 
-	// ui 
+	// ui
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_stats;
 	public Gtk.ProgressBar progressbar;
 
 	public ProgressPanelPdfTask(FileViewPane _pane, PdfTask _task){
-		base(_pane, null, FileActionType.ISO_WRITE);
+		init(_pane, null, FileActionType.ISO_WRITE);
 
 		task = _task;
 	}
@@ -59,7 +59,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 		label.xalign = 0.0f;
 		label.margin_bottom = 12;
 		contents.add(label);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -120,7 +120,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 
 		pane.refresh_file_action_panel();
 		pane.clear_messages();
-		
+
 		start_task();
 	}
 
@@ -132,7 +132,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelPdfTask: start_task()");
@@ -142,24 +142,24 @@ public class ProgressPanelPdfTask : ProgressPanel {
 		task.execute();
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add (500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelPdfTask: update_status()");
-			
+
 			if (task.current_file.length > 0){
 				lbl_status.label = "%s: %s".printf(_("File"), task.current_file);
 			}
-			
+
 			lbl_stats.label = task.stat_status_line;
-				
+
 			progressbar.fraction = task.progress;
-			
+
 			gtk_do_events();
 		}
 		else{
@@ -173,11 +173,11 @@ public class ProgressPanelPdfTask : ProgressPanel {
 	public override void cancel(){
 
 		log_debug("ProgressPanelPdfTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -190,7 +190,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 		task_complete();
 
 		stop_status_timer();
-		
+
 		log_debug("ProgressPanelPdfTask: finish()");
 
 		if (!aborted){
@@ -201,7 +201,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 			else{
 				string msg = "";
 				//var list = new Gee.ArrayList<string>();
-				
+
 				foreach(string outline in task.output_files){
 					if (msg.length > 0) { msg += "\n"; }
 
@@ -214,7 +214,7 @@ public class ProgressPanelPdfTask : ProgressPanel {
 						msg += outline;
 					}
 				}
-				
+
 				pane.add_message(msg, Gtk.MessageType.INFO);
 				//view.select_items_by_file_path(list);
 
@@ -231,7 +231,3 @@ public class ProgressPanelPdfTask : ProgressPanel {
 		}
 	}
 }
-
-
-
-

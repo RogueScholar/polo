@@ -1,4 +1,5 @@
-### this a fork from https://github.com/teejee2008/polo
+### This a fork from https://github.com/teejee2008/polo All thanks should be expressed to the author, the project was officially frozen ...
+### Also thanks for the ideas https://github.com/zlita/polo and https://github.com/ave4/polo .
 
 ## Polo File Manager
 

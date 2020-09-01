@@ -1286,7 +1286,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			}
 
 			// modified
-			this.modified = (new DateTime.from_timeval_utc(info.get_modification_time())).to_local();
+			this.modified = (new DateTime.from_unix_utc(info.get_modification_date_time().get_second())).to_local();
 
 			if (info.has_attribute(FileAttribute.TIME_ACCESS)){
 				var time = (int64) info.get_attribute_uint64(FileAttribute.TIME_ACCESS); // convert uint64 to int64
@@ -1497,7 +1497,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 		try {
 			//start thread
-			Thread.create<void> (query_children_async_thread, true);
+			new Thread<void>.try ("FileItem::query_children_async_thread", query_children_async_thread);
 		}
 		catch (Error e) {
 			log_error ("FileItem: query_children_async(): error");

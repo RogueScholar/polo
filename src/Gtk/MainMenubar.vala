@@ -1505,9 +1505,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		var submenu = new Gtk.Menu();
 		item.set_submenu(submenu);
 
-		var sg_icon = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-
 		var workspaces = dir_list_names(App.app_conf_dir_workspaces);
 
 		foreach(var fname in workspaces){
@@ -1542,9 +1539,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 		item.activate.connect (() => {
 			window.remove_workspace();
 		});*/
-
-		var sg_icon = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
 		var workspaces = dir_list_names(App.app_conf_dir_workspaces);
 

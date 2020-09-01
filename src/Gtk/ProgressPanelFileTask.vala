@@ -406,14 +406,12 @@ public class ProgressPanelFileTask : ProgressPanel {
 	}
 
 	/*private bool check_if_stalled(){
-
 		switch (action_type){
 		case FileActionType.DELETE:
 		case FileActionType.DELETE_TRASHED:
 		case FileActionType.TRASH:
 			return false;
 		}
-
 		if (task.bytes_batch == copied_bytes){
 			// no bytes were copied in last 200 ms
 			stalled_counter--;
@@ -423,7 +421,6 @@ public class ProgressPanelFileTask : ProgressPanel {
 			stalled_counter = stalled_counter_limit;
 			copied_bytes = task.bytes_batch;
 		}
-
 		switch (action_type){
 		case FileActionType.CUT:
 		case FileActionType.COPY:
@@ -438,7 +435,6 @@ public class ProgressPanelFileTask : ProgressPanel {
 			}
 			break;
 		}
-
 		return false;
 	}*/
 

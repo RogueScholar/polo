@@ -34,13 +34,13 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class ConnectServerWindow : Gtk.Window, IPaneActive {
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Box vbox_content;
 	private Gtk.Box hbox_status;
 	private Gtk.Label lbl_status;
 	private Gtk.Menu menu_config;
-	
+
 	private Gtk.Entry entry_server;
 	private Gtk.SpinButton spin_port;
 	private Gtk.ComboBox cmb_type;
@@ -49,7 +49,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private Gtk.Entry entry_username;
 	private Gtk.Entry entry_password;
 	private Gtk.Entry entry_uri;
-	
+
 	private Gtk.SizeGroup sg_label;
 	private Gtk.SizeGroup sg_option;
 
@@ -57,7 +57,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private Gtk.Button btn_cancel;
 
 	private GvfsTask task;
-	
+
 	protected bool aborted = false;
 	protected uint tmr_status = 0;
 
@@ -66,12 +66,12 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private string uri_temp = "";
 
 	public ConnectServerWindow(Window parent, string uri_text) {
-		
+
 		set_transient_for(parent);
 		window_position = WindowPosition.CENTER_ON_PARENT;
 
 		this.delete_event.connect(on_delete_event);
-		
+
 		uri_temp = uri_text;
 
 		init_ui();
@@ -84,13 +84,13 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	}
 
 	private bool on_delete_event(Gdk.EventAny event){
-		
+
 		btn_cancel_clicked();
 		return false; // close window
-	}	
+	}
 
 	private bool init_delayed(){
-		
+
 		if (tmr_init > 0){
 			Source.remove(tmr_init);
 			tmr_init = 0;
@@ -102,14 +102,14 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		else{
 			cmb_type.active = 1;
 		}
-		
+
 		return false;
 	}
-	
+
 	private void init_ui () {
 
 		log_debug("ConnectServerWindow: init_window()");
-		
+
 		title = _("Connect to Server");
 
 		set_modal(true);
@@ -122,7 +122,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox_main.margin = 12;
 		this.add(vbox_main);
-		
+
 		vbox_content = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox_main.add(vbox_content);
 
@@ -147,20 +147,20 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_server_and_port() {
 
 		log_debug("ConnectServerWindow: ui_add_server_and_port()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Server") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -172,7 +172,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		//entry.key_press_event.connect(server_key_press_event);
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_server.select_region(0, 0);
@@ -180,16 +180,16 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		});
 
 		// label ----------------
-		
+
 		label = new Gtk.Label (_("Port") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
 		var lbl_port = label;
-		
+
 		//sg_label.add_widget(label);
 
 		// spin ---------------------
-		
+
 		var adj = new Gtk.Adjustment(1, 1, 65535, 1, 1, 0); //value, lower, upper, step, page_step, size
 		var spin = new Gtk.SpinButton (adj, 1, 0);
 		spin.xalign = 0.5f;
@@ -210,26 +210,26 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_server_type() {
 
 		log_debug("ConnectServerWindow: ui_add_server_type()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
-		
+
 		// label --------------------------------------
-		
+
 		var label = new Gtk.Label(_("Type") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		sg_label.add_widget(label);
-		
+
 		// combo ---------------------------------
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_type = combo;
 
 		//sg_option.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -239,7 +239,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			string txt, val;
 			model.get (iter, 0, out txt, 1, out val, -1);
 
-			(cell as Gtk.CellRendererText).text = txt;
+			((Gtk.CellRendererText)cell).text = txt;
 		});
 
 		combo.notify["sensitive"].connect(()=>{
@@ -250,17 +250,17 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		ui_server_type_populate();
 
 		ui_add_history_icon(hbox);
 	}
 
 	private void ui_server_type_populate() {
-		
+
 		TreeIter iter;
 		var model = new Gtk.ListStore (3, typeof (string), typeof (string), typeof(bool));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "SSH", 1, "ssh");
 
@@ -272,7 +272,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 
 		model.append (out iter);
 		model.set (iter, 0, "Samba / Windows Share", 1, "smb");
-		
+
 		cmb_type.model = model;
 		cmb_type.active = -1; // unset, will be set by init_delayed()
 	}
@@ -280,20 +280,20 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_server_share() {
 
 		log_debug("ConnectServerWindow: ui_add_server_share()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Share") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -303,7 +303,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		entry.placeholder_text = _("Optional");
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_share.select_region(0, 0);
@@ -323,12 +323,12 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_domain() {
 
 		log_debug("ConnectServerWindow: ui_add_domain()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Domain") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
@@ -336,7 +336,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -346,7 +346,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		entry.placeholder_text = _("Optional");
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_domain.select_region(0, 0);
@@ -362,24 +362,24 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			hbox.visible = entry.visible;
 		});
 	}
-	
+
 	private void ui_add_username() {
 
 		log_debug("ConnectServerWindow: ui_add_username()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Username") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -389,7 +389,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		entry.placeholder_text = _("Optional");
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_username.select_region(0, 0);
@@ -409,20 +409,20 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_password() {
 
 		log_debug("ConnectServerWindow: ui_add_password()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Password") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -433,7 +433,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		entry.placeholder_text = _("Optional");
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_password.select_region(0, 0);
@@ -453,7 +453,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void ui_add_uri() {
 
 		log_debug("ConnectServerWindow: ui_add_uri()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_content.add(hbox);
 
@@ -462,15 +462,15 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		}
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("URI") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -480,7 +480,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		entry.sensitive = false;
 
 		sg_option.add_widget(entry);
-		
+
 		//remove text highlight
 		entry.focus_out_event.connect((entry, event) => {
 			entry_uri.select_region(0, 0);
@@ -501,24 +501,24 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		gtk_hide(hbox_status);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label(_("Connecting to Server..."));
 		label.xalign = 0.0f;
 		//label.hexpand = true;
 		label.margin = 6;
-		label.margin_left = 12;
+		label.margin_start = 12;
 		hbox.add(label);
 
 		css = " color: #ffffff; ";
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		// label ----------------
-		
+
 		label = new Gtk.Label("");
 		label.xalign = 0.0f;
 		label.hexpand = true;
 		label.margin = 6;
-		label.margin_left = 0;
+		label.margin_start = 0;
 		hbox.add(label);
 		lbl_status = label;
 
@@ -526,7 +526,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		// button -------------
-		
+
 		add_cancel_button(hbox);
 	}
 
@@ -539,7 +539,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		//link.ellipsize = Pango.EllipsizeMode.MIDDLE;
 		label.set_use_markup(true);
 		label.margin = 6;
-		label.margin_right = 12;
+		label.margin_end = 12;
 		ebox.add(label);
 
 		var css = " color: #ffffff; ";
@@ -565,7 +565,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			return false;
 		});
 	}
-	
+
 	private void ui_add_action_area() {
 
 		log_debug("ConnectServerWindow: ui_add_action_area()");
@@ -573,17 +573,17 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		var label = new Gtk.Label("");
 		label.vexpand = true;
 		vbox_main.add(label);
-		
+
 		var box = new Gtk.ButtonBox(Orientation.HORIZONTAL);
 		box.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		box.set_spacing(6);
 		vbox_main.add(box);
-		
+
 		var button = new Gtk.Button.with_label(_("Cancel"));
 		button.clicked.connect(btn_cancel_clicked);
 		box.add(button);
 		btn_cancel = button;
-		
+
 		button = new Gtk.Button.with_label(_("Connect"));
 		button.clicked.connect(btn_connect_clicked);
 		box.add(button);
@@ -597,9 +597,9 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		var list = dir_list_names(App.app_conf_dir_remotes);
 
 		if (list.size == 0) { return; }
-		
+
 		var ebox = gtk_add_event_box(box);
-		ebox.margin_left = 6;
+		ebox.margin_start = 6;
 
 		var img = IconManager.lookup_image("preferences-system-symbolic", 16);
 		ebox.add(img);
@@ -611,7 +611,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		ebox.button_press_event.connect((event)=>{
 
 			log_debug("remote_history:button_press_event()");
-			
+
 			menu_config = new Gtk.Menu();
 			menu_config.reserve_toggle_size = false;
 
@@ -621,10 +621,10 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 				menu_config.append(item);
 
 				string file_path = path_combine(App.app_conf_dir_remotes, file_name);
-				
+
 				var lbl = new Gtk.Label(file_get_title(file_name));
 				lbl.xalign = 0.0f;
-				lbl.margin_right = 6;
+				lbl.margin_end = 6;
 				item.add(lbl);
 
 				item.activate.connect (() => {
@@ -634,27 +634,27 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			}
 
 			menu_config.show_all();
-		
+
 			if (event != null) {
-				menu_config.popup (null, null, null, event.button, event.time);
+				menu_config.popup_at_pointer(event);
 			}
 			else {
-				menu_config.popup (null, null, null, 0, Gtk.get_current_event_time());
+				menu_config.popup_at_pointer(null);
 			}
-			
+
 			return true;
 		});
 	}
-	
+
 	private void connect_signals(){
 
 		cmb_type.changed.connect(() => {
-			
+
 			switch(scheme){
 			case "ftp":
 			case "sftp":
 			case "ssh":
-			
+
 				entry_server.placeholder_text = _("Host IP (Eg: 192.0.10.1)");
 
 				spin_port.visible = true;
@@ -662,7 +662,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 
 				entry_domain.visible = false;
 				domain = "";
-				
+
 				username = "";
 				entry_username.placeholder_text = _("Optional: anonymous (default)");
 
@@ -671,9 +671,9 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 				entry_share.visible = false;
 				share = "";
 				break;
-				
+
 			case "smb":
-			
+
 				entry_server.placeholder_text = _("NETBIOS Name");
 
 				spin_port.visible = false;
@@ -681,12 +681,12 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 
 				entry_domain.visible = true;
 				entry_domain.placeholder_text = _("Optional: WORKGROUP (default)");
-				
+
 				domain = "";
-				
+
 				username = "";
 				entry_username.placeholder_text = _("Optional: guest (default)");
-				
+
 				password = "";
 
 				entry_share.visible = true;
@@ -694,10 +694,10 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 
 				break;
 			}
-			
+
 			entry_uri.text = build_uri(true);
 		});
-		
+
 		entry_server.changed.connect(() => {
 
 			if (scheme == "smb"){
@@ -715,7 +715,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 				}
 				return;
 			}
-			
+
 			log_debug(text);
 
 			for (int i = 0; i < text.length; i++){
@@ -797,7 +797,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			entry_domain.text = value;
 		}
 	}
-	
+
 	public string username {
 		owned get {
 			return entry_username.text;
@@ -826,13 +826,13 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	}
 
 	private string build_uri(bool mask){
-		
+
 		string txt = "";
 		string login = "";
 		string param = "";
-		
+
 		// scheme://domain;username:password@server:port/share
-		
+
 		if (scheme.length > 0){
 			param = "%s://".printf(scheme);
 			txt += param;
@@ -879,7 +879,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		}
 
 		txt += "/";
-		
+
 		return txt;
 	}
 
@@ -888,7 +888,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		log_debug("parse_uri: %s".printf(text));
 
 		// scheme --------------------------------
-		
+
 		var match = regex_match("""^(ftp|sftp|ssh|smb):""", text);
 		if (match != null){
 			scheme = match.fetch(1);
@@ -896,7 +896,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		}
 
 		// ftp --------------------------------
-		
+
 		match = regex_match("""^(ftp|sftp|ssh):\/\/([0-9.]+)""", text);
 		if (match != null){
 			server = match.fetch(2);
@@ -910,7 +910,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 				log_debug("parsed: port: %s".printf(match.fetch(3)));
 			}
 		}
-		
+
 		// samba --------------------------------
 
 		match = regex_match("""^(smb):\/\/([^\/]+)\/*""", text);
@@ -927,7 +927,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	}
 
 	// actions ----------------------------------
-	 
+
 	private void btn_connect_clicked(){
 
 		log_debug("ConnectServerWindow: btn_connect_clicked()");
@@ -950,18 +950,18 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 			if (match == null){
 				gtk_messagebox(_("Invalid Server Name"),_("Enter IP address in correct format (Eg: 192.0.10.1)"), window, false);
 				return;
-			}	
+			}
 
 			break;
-			
+
 		case "smb":
-		
+
 			var match = regex_match("^[a-zA-Z0-9]{1,15}$", server);
 			if (match == null){
 				gtk_messagebox(_("Invalid Server Name"),_("Enter NETBIOS name in correct format (1-15 alpha-numeric characters)"), window, false);
 				return;
 			}
-			
+
 			if (share.length == 0){
 				gtk_messagebox(_("Share Name Not Specified"),_("Enter share name to connect (Required)"), window, false);
 				return;
@@ -978,7 +978,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		log_debug("ConnectServerWindow: connect_begin(): %s".printf(uri));
 
 		aborted = false;
-		
+
 		vbox_content.sensitive = false;
 		btn_connect.sensitive = false;
 		gtk_show(hbox_status);
@@ -1000,7 +1000,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	public bool update_status() {
 
 		log_debug("update_status(): %s".printf(task.status.to_string()));
-		
+
 		if (task.is_running){
 			lbl_status.label = "(%s)".printf(task.stat_time_elapsed_simple);
 			gtk_do_events();
@@ -1023,7 +1023,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	private void connect_end(){
 
 		log_debug("ConnectServerWindow: connect_end()");
-		
+
 		gtk_set_busy(false, this);
 		vbox_content.sensitive = true;
 		btn_connect.sensitive = true;
@@ -1058,7 +1058,7 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 	// settings
 
 	private void save_settings(){
-		
+
 		var config = new Json.Object();
 
 		set_numeric_locale("C"); // switch numeric locale
@@ -1126,11 +1126,11 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 
 	private string conf_path {
 		owned get {
-			
+
 			string text = "";
 			text += "%s".printf(scheme);
 			text += "-%s".printf(server);
-			
+
 			if (scheme == "smb"){
 				if (domain.length > 0){
 					text += "-%s".printf(domain);
@@ -1160,5 +1160,3 @@ public class ConnectServerWindow : Gtk.Window, IPaneActive {
 		}
 	}
 }
-
-

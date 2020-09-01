@@ -235,7 +235,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.rubber_banding = true;
 		treeview.has_tooltip = true;
 		treeview.enable_search = true;
-		treeview.set_rules_hint(true);
+		//treeview.set_rules_hint(true);
 		//treeview.activate_on_single_click = true;
 
 		// scrolled
@@ -293,6 +293,11 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.row_collapsed.connect(treeview_row_collapsed);
 
 		treeview.get_selection().changed.connect(on_selection_changed);
+
+		// mouse forward & backward connect
+		treeview.button_press_event.connect(on_mbutton_press_event);
+		iconview.button_press_event.connect(on_mbutton_press_event);
+
 
 		// context menu will be connected in connect_file_context_menu()
 
@@ -1938,6 +1943,29 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		return false;
 	}
 
+	// mouse buttons forward & backward -------
+
+	private bool on_mbutton_press_event(Gdk.EventButton event){
+
+		if (event.button == 2) {
+			go_up();
+			return false;
+		}
+
+		if (event.button == 8) {
+			go_back();
+			return false;
+		}
+
+		if (event.button == 9) {
+			go_forward();
+			return false;
+		}
+
+		return false;
+
+	}
+
 	// DND ------------------------------------
 
 	//private bool on_drag_data_get (TreePath path, SelectionData selection_data){
@@ -2612,7 +2640,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		try {
 			//log_debug("FileViewList: query_items(): create thread");
 			query_items_thread_running = true;
-			Thread.create<void> (query_items_thread, true);
+			new Thread<void>.try ("FileViewList::query_items_thread", query_items_thread);
 		}
 		catch (Error e) {
 			log_error("FileViewList: query_items_thread()");
@@ -2728,7 +2756,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			//log_debug("FileViewList: query_items(): create thread");
 			query_subfolders_thread_running = true;
 			query_subfolders_thread_cancelled = false;
-			Thread.create<void> (query_subfolders_thread, true);
+			new Thread<void>.try ("FileViewList::query_subfolders_thread", query_subfolders_thread);
 		}
 		catch (Error e) {
 			log_error("FileViewList: query_subfolders_thread()");
@@ -3324,7 +3352,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox.margin_left = 24;
+		hbox.margin_start = 24;
 		hbox.margin_top = 48;
 		box_overlay = hbox;
 
@@ -3447,7 +3475,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		try {
 			//start thread for thumbnail updation
-			Thread.create<void> (thumbnail_updater_thread, true);
+			new Thread<void>.try ("FileViewList::thumbnail_updater_thread", thumbnail_updater_thread);
 		} catch (Error e) {
 			log_error ("FileViewList: run_thumbnail_updater()");
 			log_error (e.message);
@@ -3592,7 +3620,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!video_thumb_cycling_in_progress){
 			try {
 				//start thread for thumbnail updation
-				Thread.create<void> (cycle_thumbnail_images_thread, true);
+				new Thread<void> ("FileViewList::cycle_thumbnail_images_thread", cycle_thumbnail_images_thread);
 			}
 			catch (Error e) {
 				log_error ("FileViewList: cycle_thumbnail_images()");

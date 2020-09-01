@@ -34,7 +34,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class CreateArchiveWindow : Gtk.Dialog {
-	
+
 	private Gtk.Box vbox_main;
 
 	//options tab - archive
@@ -53,18 +53,18 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private Gtk.ComboBox cmb_block_size;
 	private Gtk.SpinButton spin_passes;
 	private Gtk.Button btn_level_advanced;
-	
+
 	private Gtk.Entry txt_password;
 	//private Gtk.Entry txt_password_confirm;
 	private Gtk.ComboBox cmb_encrypt_method;
 	private Gtk.CheckButton chk_encrypt_header;
 	private Gtk.SpinButton spin_split;
-	
+
 	private bool show_comp_advanced = false;
 	private bool show_enc_advanced = false;
 	private bool add_files_thread_is_running = false;
 	private bool add_files_thread_cancelled = false;
-	
+
 	//option tab actions
 	private Gtk.Button btn_commands;
 	private Gtk.Button btn_compress;
@@ -77,14 +77,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private FileItem archive;
 	private Gee.ArrayList<FileItem> items = new Gee.ArrayList<FileItem>();
 	private FileItem dest_directory = null;
-	
+
 	public CreateArchiveWindow(Window parent, Gee.ArrayList<FileItem> _items, FileItem _dest_directory) {
-		
+
 		set_transient_for(parent);
 		window_position = WindowPosition.CENTER_ON_PARENT;
 
 		this.delete_event.connect(on_delete_event);
-		
+
 		items = _items;
 		dest_directory = _dest_directory;
 
@@ -93,7 +93,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		archive = new FileItem();
 		//task.archive = archive;
-		
+
 		init_window();
 
 		add_files();
@@ -102,14 +102,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private bool on_delete_event(Gdk.EventAny event){
 		btn_cancel_clicked();
 		return false; // close window
-	}	
-	
+	}
+
 	private void init_window () {
 
 		log_debug("CreateArchiveWindow: init_window()");
-		
+
 		//archive = new FileItem();
-		
+
 		//add_files();
 
 		title = _("Compress");
@@ -120,11 +120,11 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		icon = get_app_icon(16);
 		deletable = true;
 		resizable = false;
-		
+
 		// vbox_main
 		var vbox_content = get_content_area();
 		vbox_content.margin = 12;
-		vbox_content.margin_right = 24;
+		vbox_content.margin_end = 24;
 		vbox_content.spacing = 6;
 		//vbox_content.set_size_request(250,-1);
 
@@ -150,11 +150,11 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		if (!LOG_DEBUG){
 			btn_commands.visible = false;
 		}
-		
+
 		load_selections();
 
 		set_default_archive_title_and_location();
-		
+
 		//init_command_area_update();
 
 		window_is_ready = true;
@@ -165,7 +165,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_options() {
 
 		log_debug("CreateArchiveWindow: init_options()");
-		
+
 		size_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		size_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
@@ -185,7 +185,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		init_split();
 
 		//init_command_area();
-		
+
 		init_action_area();
 
 		//init_tooltip_messages();
@@ -194,34 +194,34 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	}
 
 	// add files ----------------------
-	
+
 	private void add_files(){
 
 		log_debug("CreateArchiveWindow: add_files()");
-		
+
 		add_files_thread_cancelled = false;
 
 		try {
 			add_files_thread_is_running = true;
-			Thread.create<void> (add_files_thread, true);
-		} catch (ThreadError e) {
+			new Thread<void>.try ("CreateArchiveWindow::add_files_thread", add_files_thread);
+		} catch (Error e) {
 			add_files_thread_is_running = false;
 			log_error (e.message);
 		}
 
 		/*dlg.pulse_start();
 		dlg.update_status_line(true);
-		
+
 		while (task_is_running) {
 			App.status_line = _("Building file list...") + " %'ld files (%s)".printf(
 								archive.file_count_total,
 								format_file_size(archive.size));
-								
+
 			dlg.update_message(App.status_line);
 			dlg.sleep(100);
 			gtk_do_events();
 		}
-		
+
 		dlg.destroy();
 		gtk_do_events();*/
 	}
@@ -239,9 +239,9 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		//archive.update_size_from_children();
 
 		log_debug("archive.size=%s".printf(archive.file_size_formatted));
-		
+
 		add_files_thread_is_running = false;
-		
+
 		log_debug("CreateArchiveWindow: add_files(): finished");
 	}
 
@@ -251,7 +251,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_archive_name() {
 
 		log_debug("CreateArchiveWindow: init_archive_name()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
 
@@ -259,7 +259,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		var label = new Gtk.Label (_("Name"));
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		size_label.add_widget(label);
 
 		//txt_archive_title
@@ -270,7 +270,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		txt_archive_title = txt;
 
 		size_combo.add_widget(txt);
-		
+
 		//remove text highlight
 		txt.focus_out_event.connect((entry, event) => {
 			txt_archive_title.select_region(0, 0);
@@ -281,7 +281,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_archive_ext = combo;
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -290,7 +290,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void archive_extension_populate() {
 
 		log_debug("CreateArchiveWindow: archive_extension_populate()");
-		
+
 		TreeIter iter;
 		var model = new Gtk.ListStore (2, typeof (string), typeof (string));
 
@@ -301,7 +301,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			model.append (out iter);
 			model.set (iter, 0, ".7z", 1, ".7z");
 			break;
-			
+
 		case "tar_7z":
 			model.append (out iter);
 			model.set (iter, 0, ".tar.7z", 1, ".tar.7z");
@@ -311,7 +311,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			model.append (out iter);
 			model.set (iter, 0, ".bz2", 1, ".bz2");
 			break;
-			
+
 		case "tar_bz2":
 			model.append (out iter);
 			model.set (iter, 0, ".tbz", 1, ".tbz");
@@ -327,7 +327,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 			active = 3;
 			break;
-			
+
 		case "gz":
 			model.append (out iter);
 			model.set (iter, 0, ".gz", 1, ".gz");
@@ -357,12 +357,12 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 			active = 1;
 			break;
-			
+
 		case "xz":
 			model.append (out iter);
 			model.set (iter, 0, ".xz", 1, ".xz");
 			break;
-			
+
 		case "tar_xz":
 			model.append (out iter);
 			model.set (iter, 0, ".txz", 1, ".txz");
@@ -372,7 +372,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 			active = 1;
 			break;
-			
+
 		case "zip":
 			model.append (out iter);
 			model.set (iter, 0, ".zip", 1, ".zip");
@@ -396,26 +396,26 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_archive_location() {
 
 		log_debug("CreateArchiveWindow: init_archive_location()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		//lbl_location
 		var label = new Gtk.Label (_("Location"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		//txt_archive_location
 		var txt = new Gtk.Entry();
 		txt.hexpand = true;
-		txt.secondary_icon_stock = "folder-open";
+		//txt.secondary_icon_stock = "folder-open";
 		hbox.add(txt);
 		txt_archive_location = txt;
 
 		size_combo.add_widget(txt);
-		
+
 		//remove text highlight
 		txt.focus_out_event.connect((entry, event) => {
 			txt_archive_location.select_region(0, 0);
@@ -455,7 +455,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		else{
 			txt_archive_title.text = "archive";
 		}
-		
+
 		if (dest_directory.can_write) {
 			txt_archive_location.text = dest_directory.file_path;
 		}
@@ -479,25 +479,25 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_format() {
 
 		log_debug("CreateArchiveWindow: init_format()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Format"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_format
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_format = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -508,8 +508,8 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			bool sensitive;
 			model.get (iter, 0, out txt, 1, out fmt, 2, out sensitive, -1);
 
-			(cell as Gtk.CellRendererText).text = txt;
-			(cell as Gtk.CellRendererText).sensitive = sensitive;
+			((Gtk.CellRendererText)cell).text = txt;
+			((Gtk.CellRendererText)cell).sensitive = sensitive;
 		});
 
 		combo.changed.connect(format_changed);
@@ -522,14 +522,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		format_populate();
 	}
 
 	private void format_populate() {
 		TreeIter iter;
 		var model = new Gtk.ListStore (3, typeof (string), typeof (string), typeof(bool));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "7-Zip", 1, "7z", 2, allow_format("7z"));
 
@@ -541,7 +541,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		model.append (out iter);
 		model.set (iter, 0, "LZO", 1, "lzo", 2, allow_format("lzo"));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "XZ", 1, "xz", 2, allow_format("xz"));
 
@@ -550,10 +550,10 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		//model.append (out iter);
 		//model.set (iter, 0, "ZPAQ", 1, "zpaq", 2, allow_format("zpaq"));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "TAR", 1, "tar", 2, allow_format("tar"));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "TAR + 7-Zip", 1, "tar_7z", 2, allow_format("tar_7z"));
 
@@ -565,7 +565,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		model.append (out iter);
 		model.set (iter, 0, "TAR + LZOP", 1, "tar_lzo", 2, allow_format("tar_lzo"));
-		
+
 		model.append (out iter);
 		model.set (iter, 0, "TAR + XZ", 1, "tar_xz", 2, allow_format("tar_xz"));
 
@@ -594,7 +594,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 				break;
 			}
 		}
-		
+
 		bool is_single_file = (archive.file_count_total == 1);
 
 		if (is_single_file_format){
@@ -609,14 +609,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_method() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Method"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_method
 
 		var combo = new Gtk.ComboBox();
@@ -624,7 +624,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		cmb_method = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -639,7 +639,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		//method_populate();
 	}
 
@@ -766,22 +766,22 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_level() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Level"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_level
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_level = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -795,7 +795,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		button.set_tooltip_text (_("Advanced options"));
 		hbox.add(button);
 		btn_level_advanced = button;
-		
+
 		button.clicked.connect(comp_advanced_toggle);
 
 		combo.notify["sensitive"].connect(()=>{
@@ -808,7 +808,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			button.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		//level_populate();
 	}
 
@@ -820,7 +820,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		block_size_changed();
 		passes_changed();
 	}
-	
+
 	private void level_populate() {
 		TreeIter iter;
 		var model = new Gtk.ListStore (2, typeof (string), typeof (string));
@@ -860,7 +860,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		case "zpaq":
 			model.append (out iter);
 			model.set (iter, 0, _("Store"), 1, "0");
-			
+
 			model.append (out iter);
 			model.set (iter, 0, _("Fastest"), 1, "1");
 
@@ -1102,22 +1102,22 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_dict_size() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Dictionary"));
 		label.xalign = 1.0f;
 		hbox.add(label);
-	
+
 		size_label.add_widget(label);
-		
+
 		// cmb_dict_size
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_dict_size = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -1132,7 +1132,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		//dict_size_populate();
 	}
 
@@ -1273,26 +1273,26 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_word_size() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Word Size"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_word_size
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_word_size = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
-		
+
 		combo.changed.connect(word_size_changed);
 
 		combo.notify["sensitive"].connect(()=>{
@@ -1303,7 +1303,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		//word_size_populate();
 	}
 
@@ -1439,22 +1439,22 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_block_size() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Block Size"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_block_size
-		
+
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_block_size = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -1469,7 +1469,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = combo.visible;
 			hbox.visible = combo.visible;
 		});
-		
+
 		//block_size_populate();
 	}
 
@@ -1561,14 +1561,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_passes() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Passes"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_block_size
 
 		var adj = new Gtk.Adjustment(1, 1, 10, 1, 1, 0); //value, lower, upper, step, page_step, size
@@ -1578,7 +1578,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		spin_passes = spin;
 
 		size_combo.add_widget(spin);
-		
+
 		spin.changed.connect(passes_changed);
 
 		spin.notify["sensitive"].connect(()=>{
@@ -1589,7 +1589,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = spin.visible;
 			hbox.visible = spin.visible;
 		});
-		
+
 		//init_passes_populate();
 	}
 
@@ -1667,49 +1667,49 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_encryption() {
 
 		log_debug("CreateArchiveWindow: init_encryption()");
-		
+
 		//init_encrypt(ref row);
 		init_password();
 		//init_encrypt_keyfile();
 		init_encrypt_method();
 		init_encrypt_header();
-		
+
 		//cmb_encrypt.active = 0;
 	}
 
 	private void init_password() {
 
 		log_debug("CreateArchiveWindow: init_password()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		//lbl_passes
 		var label = new Gtk.Label(_("Encrypt"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		//txt_password
 		var txt = new Gtk.Entry();
 		txt.placeholder_text = _("Enter Password");
-		//txt.hexpand = true;		
+		//txt.hexpand = true;
 		txt.set_visibility(false);
 		hbox.add(txt);
 		txt_password = txt;
-		
+
 		size_combo.add_widget(txt);
 
 		/*
 		//txt_password_confirm
 		txt_password_confirm = new Gtk.Entry();
 		txt_password_confirm.placeholder_text = _("Confirm Password");
-		txt_password_confirm.hexpand = true;		
+		txt_password_confirm.hexpand = true;
 		txt_password_confirm.set_visibility(false);
 		//grid.attach(txt_password_confirm, 0, ++row, 2, 1);
 		*/
-		
+
 		// icon left
 		var img = IconManager.lookup_image("config",16);
 		if (img != null){
@@ -1723,7 +1723,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			txt_password.secondary_icon_pixbuf = img.pixbuf;
 		}
 		txt.set_icon_tooltip_text(EntryIconPosition.SECONDARY, _("Show"));
-		
+
 		// icon click
 		txt.icon_press.connect((pos, event) => {
 			if (pos == Gtk.EntryIconPosition.PRIMARY) {
@@ -1759,7 +1759,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			hbox.visible = txt.visible;
 		});
 
-		
+
 		/*
 		//hbox_password_actions
 		hbox_password_actions = new Gtk.Box(Orientation.HORIZONTAL, 6);
@@ -1785,7 +1785,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		btn_password_copy = new Gtk.Button.with_label(_("Copy"));
 		btn_password_copy.set_tooltip_text (_("Copy to clipboard"));
 		hbox_password_actions.add(btn_password_copy);
-		
+
 		btn_password_copy.clicked.connect(() => {
 			Gdk.Display display = this.get_display ();
 			Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
@@ -1801,7 +1801,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		if (txt_password.get_visibility()){
 			txt_password.set_icon_tooltip_text(EntryIconPosition.SECONDARY, _("Hide"));
 		}
-		else{	
+		else{
 			txt_password.set_icon_tooltip_text(EntryIconPosition.SECONDARY, _("Show"));
 		}
 	}
@@ -1809,21 +1809,21 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_encrypt_method() {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Cipher"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_encrypt_method
 		var combo = new Gtk.ComboBox();
 		hbox.add(combo);
 		cmb_encrypt_method = combo;
 
 		size_combo.add_widget(combo);
-		
+
 		var cell = new CellRendererText();
 		combo.pack_start(cell, false);
 		combo.set_attributes(cell, "text", 0);
@@ -1843,7 +1843,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	}
 
 	private void init_encrypt_header() {
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
 
@@ -1852,7 +1852,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		//chk_encrypt_header
 		chk_encrypt_header = new Gtk.CheckButton.with_label(_("Encrypt file names"));
 		chk_encrypt_header.set_tooltip_text(_("Encrypt file names"));
@@ -1872,14 +1872,14 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void encrypt_header_changed() {
 		chk_encrypt_header.visible = show_enc_advanced;
 	}
-	
+
 	private void enc_advanced_toggle(){
 		show_enc_advanced = !show_enc_advanced;
 
 		encrypt_method_changed();
 		encrypt_header_changed();
 	}
-	
+
 	private void encryption_populate() {
 		encrypt_method_populate();
 
@@ -1902,7 +1902,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			break;
 		}
 	}
-	
+
 	private void encrypt_method_populate() {
 		TreeIter iter;
 		var model = new Gtk.ListStore (2, typeof (string), typeof (string));
@@ -1942,27 +1942,27 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 	private void encrypt_method_changed(){
 		cmb_encrypt_method.sensitive = (((TreeModel) cmb_encrypt_method.model).iter_n_children(null) > 1);
-		
+
 		cmb_encrypt_method.visible = show_enc_advanced
 			&& (((TreeModel) cmb_encrypt_method.model).iter_n_children(null) > 0);
 	}
 
 	// split -------------------------------
-	
+
 	private void init_split() {
 
 		log_debug("CreateArchiveWindow: init_split()");
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		vbox_main.add(hbox);
-		
+
 		// label
 		var label = new Gtk.Label(_("Split Size (MB)"));
 		label.xalign = 1.0f;
 		hbox.add(label);
 
 		size_label.add_widget(label);
-		
+
 		// cmb_block_size
 
 		var adj = new Gtk.Adjustment(0, 0, 100000, 1, 1, 0); //value, lower, upper, step, page_step, size
@@ -1970,13 +1970,13 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		spin.xalign = 0.5f;
 		hbox.add(spin);
 		spin_split = spin;
-		
+
 		size_combo.add_widget(spin);
 
 		var tt = _("Split archive into volumes of specified size (in MB)");
 		label.set_tooltip_text(tt);
 		spin.set_tooltip_text(tt);
-		
+
 		//spin.changed.connect(passes_changed);
 
 		spin.notify["sensitive"].connect(()=>{
@@ -1987,7 +1987,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			label.visible = spin.visible;
 			hbox.visible = spin.visible;
 		});
-		
+
 		//init_passes_populate();
 	}
 
@@ -2009,13 +2009,13 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void init_action_area() {
 
 		log_debug("CreateArchiveWindow: init_action_area()");
-		
+
 		// btn_commands // TODO: Remove before release
 
 		/*if (LOG_DEBUG){
 			btn_commands = (Gtk.Button) add_button(_("Commands"), Gtk.ResponseType.NONE);
 			//btn_commands.set_tooltip_text (_("Commands"));
-			
+
 			btn_commands.enter_notify_event.connect((event) => {
 				btn_commands.set_tooltip_text (get_commands());
 				return false;
@@ -2028,24 +2028,24 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		btn_cancel = (Gtk.Button) add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
 		//btn_cancel.set_tooltip_text (_("Cancel"));
-		
+
 		btn_cancel.clicked.connect(btn_cancel_clicked);
-		
+
 		// btn_compress
 
 		btn_compress = (Gtk.Button) add_button(_("Compress"), Gtk.ResponseType.ACCEPT);
 		//btn_compress.set_tooltip_text (_("Compress"));
-		
+
 		btn_compress.clicked.connect(btn_compress_clicked);
 	}
 
 	/*private void show_commands_toggle(){
 		show_commands = !show_commands;
-			
+
 		sw_commands.visible = show_commands;
 		txtview_commands.visible = show_commands;
 		update_txtview_commands();
-		
+
 		if (show_commands){
 			//vbox_main.set_size_request(vbox_main.get_allocated_width(),
 			//vbox_main.get_allocated_height() + 100);
@@ -2055,11 +2055,11 @@ public class CreateArchiveWindow : Gtk.Dialog {
 			//vbox_main.get_allocated_height() - 100);
 		}
 	}
-	
+
 	private void init_command_area() {
 
 		log_debug("CreateArchiveWindow: init_command_area()");
-		
+
 		//txtview_commands
 		txtview_commands = new Gtk.TextView();
 		TextBuffer buff = new TextBuffer(null);
@@ -2297,7 +2297,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void save_selections() {
 
 		log_debug("CreateArchiveWindow: save_selections()");
-		
+
 		task.format = format;
 		task.method = method;
 		task.level = level;
@@ -2311,7 +2311,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		task.password = password;
 
 		task.split_mb = split_mb;
-		
+
 		archive.file_path = archive_path;
 
 		App.save_archive_selections(task);
@@ -2324,7 +2324,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		log_debug("CreateArchiveWindow: load_selections()");
 
 		App.load_archive_selections(task);
-		
+
 		format = task.format;
 		method = task.method;
 		level = task.level;
@@ -2335,28 +2335,28 @@ public class CreateArchiveWindow : Gtk.Dialog {
 
 		encrypt_method = task.encrypt_method;
 		encrypt_header = task.encrypt_header;
-		
+
 		split_mb = task.split_mb;
 
 		log_debug("CreateArchiveWindow: load_selections(): exit");
 	}
-	
+
 	private void btn_compress_clicked(){
 
 		log_debug("btn_compress_clicked()");
-		
+
 		btn_compress.sensitive = false;
-		
+
 		save_selections();
 
 		if (add_files_thread_is_running){
-			
+
 			log_msg("waiting for thread to exit: query_children()");
-			
+
 			try {
-				Thread.create<void> (wait_for_add_files_thread, true);
+				new Thread<void>.try ("CreateArchiveWindow::wait_for_add_files_thread", wait_for_add_files_thread);
 			}
-			catch (ThreadError e) {
+			catch (Error e) {
 				log_error (e.message);
 			}
 		}
@@ -2366,7 +2366,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	}
 
 	private void wait_for_add_files_thread(){
-		
+
 		gtk_set_busy(true, this);
 
 		while (add_files_thread_is_running){
@@ -2381,7 +2381,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 	private void btn_cancel_clicked(){
 
 		log_debug("btn_cancel_clicked()");
-	
+
 		if (add_files_thread_is_running){
 			log_msg("cancelling thread: query_children()");
 			foreach(var item in items){
@@ -2390,7 +2390,7 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		}
 
 		log_msg("thread was cancelled");
-		
+
 		this.close();
 	}
 
@@ -2409,5 +2409,3 @@ public class CreateArchiveWindow : Gtk.Dialog {
 		}
 	}*/
 }
-
-

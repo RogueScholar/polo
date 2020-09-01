@@ -36,7 +36,7 @@ public class ChecksumBox : Gtk.Box {
 
 	public Gtk.TreeView treeview;
 	private Gtk.ScrolledWindow scrolled_treeview;
-	
+
 	private Gtk.ListStore store;
 	private Gtk.TreeModelFilter filter;
 
@@ -45,18 +45,18 @@ public class ChecksumBox : Gtk.Box {
 	public Gtk.TreeViewColumn col_status;
 	public Gtk.TreeViewColumn col_checksum_compare;
 	public Gtk.TreeViewColumn col_checksum;
-	
+
 	public Gee.ArrayList<FileItem> items;
 	public Gee.ArrayList<FileItem> source_items;
 	public string basepath = "";
-	
+
 	public ChecksumType checksum_type;
 
 	private Gtk.ComboBox cmb_filter;
 	private bool filter_active = false;
 
 	public FileItem? hash_file;
-	
+
 	public bool verify_mode {
 		get { return (hash_file != null); }
 	}
@@ -103,7 +103,7 @@ public class ChecksumBox : Gtk.Box {
 	private Gdk.Pixbuf icon_symlink;
 	private Gdk.Pixbuf icon_error;
 	private Gdk.Pixbuf icon_unknown;
-	
+
 	// contructor ------------------
 
 	public ChecksumBox(FileViewTab parent_tab){
@@ -146,18 +146,18 @@ public class ChecksumBox : Gtk.Box {
 	}
 
 	// progress panel ------------------------------
-	
+
 	private void init_progress_panel(){
 
 		var frame = new Gtk.Frame(null);
 		frame.margin = 3;
 		add(frame);
 		frame_progress = frame;
-		
+
 		var contents = new Gtk.Box(Orientation.VERTICAL, 6);
 		contents.margin = 6;
 		frame.add(contents);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -223,11 +223,11 @@ public class ChecksumBox : Gtk.Box {
 		var frame = new Gtk.Frame(null);
 		add(frame);
 		frame_results = frame;
-		
+
 		var contents = new Gtk.Box(Orientation.VERTICAL, 6);
 		contents.margin = 6;
 		frame.add(contents);
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
 
@@ -246,7 +246,7 @@ public class ChecksumBox : Gtk.Box {
 		label = new Gtk.Label("");
 		label.hexpand = true;
 		hbox.add(label);
-		
+
 		// actions -------------------
 
 		var button = new Gtk.Button.with_label(_("Save"));
@@ -263,11 +263,11 @@ public class ChecksumBox : Gtk.Box {
 		var frame = new Gtk.Frame(null);
 		add(frame);
 		frame_verify = frame;
-		
+
 		var contents = new Gtk.Box(Orientation.VERTICAL, 6);
 		contents.margin = 6;
 		frame.add(contents);
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
 
@@ -290,7 +290,7 @@ public class ChecksumBox : Gtk.Box {
 		// filter -------------------------------
 
 		add_combo_filter(hbox);
-		
+
 		// actions -------------------
 
 		var button = new Gtk.Button.with_label(_("Export CSV"));
@@ -325,7 +325,7 @@ public class ChecksumBox : Gtk.Box {
 		});
 
 		combo.set_cell_data_func (cell_text, (cell_text, cell, model, iter) => {
-			
+
 			string text;
 			model.get (iter, 2, out text, -1);
 
@@ -334,12 +334,12 @@ public class ChecksumBox : Gtk.Box {
 		});
 
 		refresh_cmb_filter();
-		
+
 		combo.changed.connect(refilter_list);
 	}
 
 	private void refresh_cmb_filter(){
-		
+
 		var cmb_store = new Gtk.ListStore(3, typeof(ChecksumCompareResult), typeof(Gdk.Pixbuf), typeof(string));
 
 		TreeIter iter;
@@ -347,7 +347,7 @@ public class ChecksumBox : Gtk.Box {
 		cmb_store.set (iter, 0, ChecksumCompareResult.OK, -1);
 		cmb_store.set (iter, 1, icon_ok, -1);
 		cmb_store.set (iter, 2, "%s (%'lld)".printf(_("OK"), count_ok), -1);
-		
+
 		cmb_store.append(out iter);
 		cmb_store.set (iter, 0, ChecksumCompareResult.CHANGED, -1);
 		cmb_store.set (iter, 1, icon_changed, -1);
@@ -377,9 +377,9 @@ public class ChecksumBox : Gtk.Box {
 
 		cmb_filter.active = 0;
 	}
-	
+
 	// treeview -----------------------------------
-	
+
 	private void init_treeview() {
 
 		// treeview
@@ -389,7 +389,7 @@ public class ChecksumBox : Gtk.Box {
 		treeview.rubber_banding = true;
 		treeview.has_tooltip = true;
 		treeview.enable_search = true;
-		treeview.set_rules_hint(true);
+		//treeview.set_rules_hint(true);
 		//treeview.activate_on_single_click = true;
 
 		// scrolled
@@ -421,17 +421,17 @@ public class ChecksumBox : Gtk.Box {
 
 		Gdk.Display display = window.get_display();
 		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD);
-		
+
 		string txt = "";
 
 		var selected = get_selected_items();
 
 		bool append_paths = (selected.size > 1);
-		
+
 		foreach(var item in get_selected_items()){
 
 			string checksum = "";
-			
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -456,7 +456,7 @@ public class ChecksumBox : Gtk.Box {
 				txt += "%s".printf(checksum);
 			}
 		}
-		
+
 		clipboard.set_text(txt, -1);
 	}
 
@@ -516,7 +516,7 @@ public class ChecksumBox : Gtk.Box {
 			model.get(iter, 1, out pixbuf, -1);
 
 			pixcell.pixbuf = pixbuf;
-			
+
 			pixcell.ypad = App.listview_row_spacing;
 		});
 
@@ -534,7 +534,7 @@ public class ChecksumBox : Gtk.Box {
 			else {
 				crt.text = item.display_name;
 			}
-			
+
 			crt.scale = App.listview_font_scale;
 		});
 	}
@@ -560,7 +560,7 @@ public class ChecksumBox : Gtk.Box {
 		//var cell_text = new Gtk.CellRendererText ();
 		//cell_text.ellipsize = Pango.EllipsizeMode.END;
 		//col.pack_start (cell_text, true);
-		
+
 		// render icon
 		col.set_cell_data_func (cell_pix, (cell_layout, cell, model, iter) => {
 
@@ -583,7 +583,7 @@ public class ChecksumBox : Gtk.Box {
 			model.get (iter, 0, out item, -1);
 
 			string checksum = "";
-			
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -617,7 +617,7 @@ public class ChecksumBox : Gtk.Box {
 			//crt.scale = App.listview_font_scale;
 		});*/
 	}
-	
+
 	private void add_col_checksum() {
 
 		// column
@@ -643,7 +643,7 @@ public class ChecksumBox : Gtk.Box {
 			model.get (iter, 0, out item, -1);
 
 			string checksum = "";
-			
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -692,7 +692,7 @@ public class ChecksumBox : Gtk.Box {
 			model.get (iter, 0, out item, -1);
 
 			string checksum = item.checksum_compare;
-			
+
 			if ((checksum == "SYMLINK") || (checksum == "MISSING")){
 				checksum = "";
 			}
@@ -718,7 +718,7 @@ public class ChecksumBox : Gtk.Box {
 
 		//render text
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 			crt.text = "";
 		});
@@ -729,26 +729,26 @@ public class ChecksumBox : Gtk.Box {
 	}
 
 	private bool item_filter(Gtk.TreeModel model, Gtk.TreeIter iter) {
-		
+
 		FileItem item;
 		model.get (iter, 0, out item, -1);
 
 		TreeIter iter2;
 		cmb_filter.get_active_iter(out iter2);
-		
+
 		var combo_model = (TreeModel) cmb_filter.model;
 		ChecksumCompareResult val;
 		combo_model.get(iter2, 0, out val);
 
 		return (item.checksum_compare_result == val);
 	}
-	
+
 	public void refresh(){
 
 		log_debug("ChecksumBox: refresh()");
 
 		treeview.model = null;
-		
+
 		store = new Gtk.ListStore(3,
 			typeof(FileItem),
 			typeof(Gdk.Pixbuf),
@@ -756,7 +756,7 @@ public class ChecksumBox : Gtk.Box {
 		);
 
 		filter = new TreeModelFilter(store, null);
-		
+
 		//ChecksumCompareResult filter = get_cmb_filter_selected();
 
 		foreach(var item in items){
@@ -766,25 +766,25 @@ public class ChecksumBox : Gtk.Box {
 					continue;
 				}
 			}*/
-			
+
 			treeview_append(item);
 		}
 
 		//treeview.model = store;
 
 		filter.set_visible_func(item_filter);
-		
+
 		treeview.set_model(filter);
 		treeview.columns_autosize();
-		
+
 		log_debug("ChecksumBox: refresh(): end");
 	}
 
 	public ChecksumCompareResult get_cmb_filter_selected(){
-		
+
 		TreeIter iter2;
 		cmb_filter.get_active_iter(out iter2);
-		
+
 		var combo_model = (Gtk.ListStore) cmb_filter.model;
 		ChecksumCompareResult val;
 		combo_model.get(iter2, 0, out val);
@@ -804,7 +804,7 @@ public class ChecksumBox : Gtk.Box {
 	}
 
 	// actions ----------------------------------------------------
-	
+
 	public void generate(Gee.ArrayList<FileItem> _source_items, ChecksumType type){
 
 		log_debug("ChecksumBox: generate()");
@@ -812,7 +812,7 @@ public class ChecksumBox : Gtk.Box {
 		source_items = _source_items;
 
 		basepath = source_items[0].file_location + "/";
-		
+
 		items = new Gee.ArrayList<FileItem>();
 
 		checksum_type = type;
@@ -826,14 +826,14 @@ public class ChecksumBox : Gtk.Box {
 		lbl_status.label = "";
 		progressbar.fraction = 0.0;
 		lbl_stats.label = "";
-		
+
 		gtk_show(frame_progress);
 		gtk_hide(frame_results);
-		
+
 		refresh(); // create empty store
 
 		try {
-			Thread.create<void> (enumerate_source_items_thread, true);
+			new Thread<void>.try("ChecksumBox::enumerate_source_items_thread", enumerate_source_items_thread);
 		}
 		catch (Error e) {
 			log_error("ChecksumBox: enumerate_source_items_thread()");
@@ -846,11 +846,11 @@ public class ChecksumBox : Gtk.Box {
 	private void enumerate_source_items_thread(){
 
 		log_debug("ChecksumBox: enumerate_source_items_thread()");
-		
+
 		lbl_status.label = _("Listing files...");
 		progressbar.fraction = 0.0;
 		lbl_stats.label = "";
-		
+
 		enumerate_running = true;
 		enumerate_cancelled = false;
 
@@ -862,7 +862,7 @@ public class ChecksumBox : Gtk.Box {
 			string msg = "%s: %'d".printf(_("Found"), items.size);
 			lbl_stats.label = msg;
 			log_debug(msg);
-			
+
 			if ((progressbar.fraction + 0.01) < 1.0){
 				progressbar.fraction += 0.01;
 			}
@@ -876,7 +876,7 @@ public class ChecksumBox : Gtk.Box {
 			}
 
 			gtk_do_events();
-			
+
 			return enumerate_running;
 		});
 
@@ -889,21 +889,21 @@ public class ChecksumBox : Gtk.Box {
 		if (enumerate_cancelled){ return; }
 
 		log_debug("ChecksumBox: enumerate_source_items_thread(): end");
-		
+
 		generate_thread();
 	}
 
 	private void generate_thread(){
 
 		log_debug("ChecksumBox: generate_thread()");
-		
+
 		generate_running = true;
 		generate_cancelled = false;
-		
+
 		Timeout.add(1000, () => {
 
 			log_debug("ChecksumBox: generate_thread(): timeout_start");
-			
+
 			treeview.model = null;
 			treeview.model = filter;
 
@@ -915,24 +915,24 @@ public class ChecksumBox : Gtk.Box {
 			}
 
 			log_debug("ChecksumBox: generate_thread(): timeout_end");
-			
+
 			return generate_running;
 		});
 
 		lbl_status.label = _("Generating checksums...");
 
 		completed_count = 0;
-		
+
 		foreach(var item in items){
-			
+
 			if (generate_cancelled) { break; }
-			
+
 			completed_count++;
 			current_file_name = item.file_name;
-			
+
 			item.generate_checksum(checksum_type);
 		}
-		
+
 		generate_running = false;
 
 		log_debug("ChecksumBox: generate_thread(): end");
@@ -940,13 +940,13 @@ public class ChecksumBox : Gtk.Box {
 		if (verify_mode){
 
 			verify_thread();
-			
+
 			Timeout.add(100, () => {
-				
+
 				refresh();
 
 				show_verification_summary();
-				
+
 				gtk_hide(frame_progress);
 				gtk_show(frame_verify);
 
@@ -955,27 +955,27 @@ public class ChecksumBox : Gtk.Box {
 					if (count_missing == items.size){
 
 						string ttl = _("Files Missing");
-						
+
 						string msg = "%s - %lld / %d".printf(
 							_("Files referenced in checksum file are missing on disk"),
 							count_missing, items.size);
-							
+
 						gtk_messagebox(ttl, msg, window, true);
 					}
 					else{
 
 						string ttl = _("Verified Successfully");
-						
+
 						string msg = "%s - %lld / %d".printf(
 							_("Files verified"), count_ok, items.size);
 
 						if (count_missing > 0){
-							
+
 							msg += "\n\n%s - %lld / %d".printf(
 								_("Files missing on disk"),
 								count_missing, items.size);
 						}
-						
+
 						gtk_messagebox(ttl, msg, window, false);
 					}
 				}
@@ -984,23 +984,23 @@ public class ChecksumBox : Gtk.Box {
 					string ttl = _("Verification Failed");
 
 					string msg = "";
-					
+
 					if (count_ok > 0){
 
 						msg += "%s - %lld / %d".printf(
 							_("Files verified"), count_ok, items.size);
 					}
-					
+
 					msg += "\n\n<b>%s - %lld / %d</b>".printf(
 						_("Files changed"), count_changed, items.size);
 
 					if (count_missing > 0){
-						
+
 						msg += "\n\n%s - %lld / %d".printf(
 							_("Files missing on disk"),
 							count_missing, items.size);
 					}
-					
+
 					gtk_messagebox(ttl, msg, window, true);
 				}
 
@@ -1011,7 +1011,7 @@ public class ChecksumBox : Gtk.Box {
 			Timeout.add(100, () => {
 
 				refresh();
-				
+
 				gtk_hide(frame_progress);
 				gtk_show(frame_results);
 				return false;
@@ -1022,7 +1022,7 @@ public class ChecksumBox : Gtk.Box {
 	public void add_item(FileItem item){
 
 		if (!item.is_directory){
-			
+
 			items.add(item);
 
 			if (items.size < 100){
@@ -1034,7 +1034,7 @@ public class ChecksumBox : Gtk.Box {
 		}
 		else {
 			item.query_children(-1, false);
-			
+
 			foreach(var child in item.children.values){
 				add_item(child);
 			}
@@ -1042,9 +1042,9 @@ public class ChecksumBox : Gtk.Box {
 	}
 
 	public string get_checksum_type_name(){
-		
+
 		string txt = "";
-		
+
 		switch(checksum_type){
 		case ChecksumType.MD5:
 			txt = "MD5";
@@ -1059,14 +1059,14 @@ public class ChecksumBox : Gtk.Box {
 			txt = "SHA2-512";
 			break;
 		}
-		
+
 		return txt;
 	}
 
 	public string get_checksum_extension(){
-		
+
 		string txt = "";
-		
+
 		switch(checksum_type){
 		case ChecksumType.MD5:
 			txt = ".md5";
@@ -1084,7 +1084,7 @@ public class ChecksumBox : Gtk.Box {
 			txt = ".hash";
 			break;
 		}
-		
+
 		return txt;
 	}
 
@@ -1112,7 +1112,7 @@ public class ChecksumBox : Gtk.Box {
 
 		var filter = create_file_filter("%s %s (*%s)".printf(typename, _("Checksum File"), ext), { "*%s".printf(ext) });
 		chooser.add_filter(filter);
-		
+
 		if (chooser.run() != Gtk.ResponseType.ACCEPT) {
 			chooser.destroy();
 			return;
@@ -1135,25 +1135,25 @@ public class ChecksumBox : Gtk.Box {
 	private void save_generate_results(string file_path){
 
 		log_debug("save_generate_results: %s".printf(file_path));
-		
+
 		save_running = true;
 		save_cancelled = false;
-		
+
 		lbl_status.label = _("Saving checksums...");
 		progressbar.fraction = 0;
 		lbl_stats.label = "";
 		completed_count = 0;
-		
+
 		gtk_hide(frame_results);
 		gtk_show(frame_progress);
 		gtk_do_events();
-				
+
 		Timeout.add(1000, () => {
 
 			lbl_stats.label = "%'.0f of %'d: %s".printf(completed_count, items.size, current_file_name);
 			progressbar.fraction = completed_count / items.size;
 			gtk_do_events();
-			
+
 			if (save_cancelled || !save_running){
 				gtk_hide(frame_progress);
 				gtk_show(frame_results);
@@ -1165,9 +1165,9 @@ public class ChecksumBox : Gtk.Box {
 		var builder = new StringBuilder ();
 
 		foreach(var item in items){
-				
+
 			string checksum = "";
-		
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -1190,12 +1190,12 @@ public class ChecksumBox : Gtk.Box {
 			builder.append("%s\t%s\n".printf(checksum, item.file_path[basepath.length : item.file_path.length]));
 
 			completed_count++;
-			
+
 			if ((completed_count % 2000) == 0){
 				gtk_do_events();
 			}
 		}
-			
+
 		string msg = "%s: %s".printf(_("Saved"), file_path);
 		log_msg(msg, true);
 		lbl_results.label = msg;
@@ -1204,17 +1204,17 @@ public class ChecksumBox : Gtk.Box {
 
 		save_running = false;
 	}
-	
+
 	// verify -------------------------------
 
 	public void verify(FileItem _hash_file){
 
 		hash_file = _hash_file;
-		
+
 		log_debug("ChecksumBox: verify()");
 
 		basepath = hash_file.file_location + "/";
-		
+
 		items = new Gee.ArrayList<FileItem>();
 
 		if (!check_hash_file_type(hash_file.file_path)){
@@ -1234,11 +1234,11 @@ public class ChecksumBox : Gtk.Box {
 
 		gtk_show(frame_progress);
 		gtk_hide(frame_results);
-		
+
 		refresh(); // create empty store
-		
+
 		try {
-			Thread.create<void> (enumerate_from_hash_file_thread, true);
+			new Thread<void>.try("ChecksumBox::enumerate_from_hash_file_thread", enumerate_from_hash_file_thread);
 		}
 		catch (Error e) {
 			log_error("ChecksumBox: enumerate_source_items_thread()");
@@ -1279,13 +1279,13 @@ public class ChecksumBox : Gtk.Box {
 			checksum_type = ChecksumType.SHA256;
 			return true;
 		}
-		
+
 		match = regex_match("""[a-f0-9]{40}""", hash);
 		if (match != null){
 			checksum_type = ChecksumType.SHA1;
 			return true;
 		}
-		
+
 		match = regex_match("""[a-f0-9]{32}""", hash);
 		if (match != null){
 			checksum_type = ChecksumType.MD5;
@@ -1298,7 +1298,7 @@ public class ChecksumBox : Gtk.Box {
 	private void enumerate_from_hash_file_thread(){
 
 		log_debug("ChecksumBox: enumerate_from_hash_file_thread()");
-		
+
 		enumerate_running = true;
 		enumerate_cancelled = false;
 
@@ -1320,7 +1320,7 @@ public class ChecksumBox : Gtk.Box {
 			if (enumerate_cancelled){
 				gtk_hide(frame_progress);
 			}
-			
+
 			return enumerate_running;
 		});
 
@@ -1329,13 +1329,13 @@ public class ChecksumBox : Gtk.Box {
 		string txt = file_read(hash_file.file_path);
 
 		string[] lines = txt.split("\n");
-		
+
 		foreach(string line in lines){
 
 			string hash = "";
 			string file_path = "";
 			string[] arr;
-			
+
 			if (line.contains("\t")){
 				arr = line.split("\t", 2);
 				hash = arr[0];
@@ -1354,14 +1354,14 @@ public class ChecksumBox : Gtk.Box {
 			else{
 				continue;
 			}
-		
+
 			file_path = basepath + file_path;
 
 			var item = new FileItem.from_path(file_path);
 			items.add(item);
 
 			item.checksum_compare = hash;
-			
+
 			if (items.size < 100){
 				Timeout.add(100, () => {
 					//treeview_append(item);
@@ -1377,7 +1377,7 @@ public class ChecksumBox : Gtk.Box {
 		if (enumerate_cancelled){ return; }
 
 		log_debug("ChecksumBox: enumerate_from_hash_file_thread(): end");
-		
+
 		generate_thread();
 	}
 
@@ -1389,11 +1389,11 @@ public class ChecksumBox : Gtk.Box {
 		count_symlink = 0;
 		count_error = 0;
 		count_unknown = 0;
-		
+
 		foreach(var item in items){
-			
+
 			string checksum = "";
-				
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -1413,7 +1413,7 @@ public class ChecksumBox : Gtk.Box {
 				// error message will be < 10 chars
 
 				if (checksum == item.checksum_compare){
-					
+
 					item.checksum_compare_result = ChecksumCompareResult.OK;
 					item.checksum_compare_message = _("OK");
 					item.checksum_compare_icon = icon_ok;
@@ -1428,7 +1428,7 @@ public class ChecksumBox : Gtk.Box {
 			}
 			else{
 				if ((checksum == null) || (checksum.length == 0)){
-					
+
 					item.checksum_compare_result = ChecksumCompareResult.ERROR;
 					item.checksum_compare_message = "ERROR";
 					item.checksum_compare_icon = icon_error;
@@ -1462,7 +1462,7 @@ public class ChecksumBox : Gtk.Box {
 			return false;
 		});
 	}
-	
+
 	private void show_verification_summary(){
 
 		string txt = "";
@@ -1490,11 +1490,11 @@ public class ChecksumBox : Gtk.Box {
 				txt += ", <b>%lld</b> %s".printf(count_error, _("ERROR"));
 			}
 		}
-		
+
 		lbl_verify.label = txt;
 		lbl_verify.set_use_markup(true);
 	}
-	
+
 	private void btn_export_verified_results(){
 
 		var chooser = new Gtk.FileChooserDialog(
@@ -1516,7 +1516,7 @@ public class ChecksumBox : Gtk.Box {
 
 		var filter = create_file_filter(_("Comma-Separated File (CSV)"), { "*.csv" });
 		chooser.add_filter(filter);
-		
+
 		if (chooser.run() != Gtk.ResponseType.ACCEPT) {
 			chooser.destroy();
 			return;
@@ -1539,25 +1539,25 @@ public class ChecksumBox : Gtk.Box {
 	private void save_verified_results(string file_path){
 
 		log_debug("save_verify_results: %s".printf(file_path));
-		
+
 		save_running = true;
 		save_cancelled = false;
-		
+
 		lbl_status.label = _("Saving results...");
 		progressbar.fraction = 0;
 		lbl_stats.label = "";
 		completed_count = 0;
-		
+
 		gtk_hide(frame_verify);
 		gtk_show(frame_progress);
 		gtk_do_events();
-				
+
 		Timeout.add(1000, () => {
 
 			lbl_stats.label = "%'.0f of %'d: %s".printf(completed_count, items.size, current_file_name);
 			progressbar.fraction = completed_count / items.size;
 			gtk_do_events();
-			
+
 			if (save_cancelled || !save_running){
 				gtk_hide(frame_progress);
 				gtk_show(frame_verify);
@@ -1574,11 +1574,11 @@ public class ChecksumBox : Gtk.Box {
 			_("Checksum (Provided)"),
 			_("Status")
 		));
-			
+
 		foreach(var item in items){
-				
+
 			string checksum = "";
-		
+
 			switch(checksum_type){
 			case ChecksumType.MD5:
 				checksum = item.checksum_md5;
@@ -1606,12 +1606,12 @@ public class ChecksumBox : Gtk.Box {
 			));
 
 			completed_count++;
-			
+
 			if ((completed_count % 2000) == 0){
 				gtk_do_events();
 			}
 		}
-			
+
 		string msg = "%s: %s".printf(_("Saved"), file_path);
 		log_msg(msg, true);
 		lbl_verify.label = msg;
@@ -1620,7 +1620,5 @@ public class ChecksumBox : Gtk.Box {
 
 		save_running = false;
 	}
-	
+
 }
-
-

@@ -21,7 +21,7 @@
  *
  *
  */
- 
+
 namespace TeeJee.Misc {
 
 	/* Various utility functions */
@@ -32,7 +32,7 @@ namespace TeeJee.Misc {
 	using TeeJee.ProcessHelper;
 
 	// color format -------------------
-	
+
 	public static Gdk.RGBA hex_to_rgba (string hex_color){
 
 		/* Converts the color in hex to RGBA */
@@ -79,7 +79,7 @@ namespace TeeJee.Misc {
 	}
 
 	// timestamp ----------------
-	
+
 	public string timestamp (bool show_millis = false){
 
 		/* Returns a formatted timestamp string */
@@ -87,7 +87,7 @@ namespace TeeJee.Misc {
 		// NOTE: format() does not support milliseconds
 
 		DateTime now = new GLib.DateTime.now_local();
-		
+
 		if (show_millis){
 			var msec = now.get_microsecond () / 1000;
 			return "%s.%03d".printf(now.format("%H:%M:%S"), msec);
@@ -117,11 +117,11 @@ namespace TeeJee.Misc {
 	public string format_date(DateTime date){
 		return date.format ("%Y-%m-%d %H:%M");
 	}
-	
+
 	public string format_date_12_hour(DateTime date){
 		return date.format ("%Y-%m-%d %I:%M %p");
 	}
-	
+
 	public string format_duration (long millis){
 
 		/* Converts time in milliseconds to format '00:00:00.0' */
@@ -170,7 +170,7 @@ namespace TeeJee.Misc {
 		txt += "%.0fs".printf(secs);
 		return txt;
 	}
-	
+
 	public double parse_time (string time){
 
 		/* Converts time in format '00:00:00.0' to milliseconds */
@@ -184,85 +184,85 @@ namespace TeeJee.Misc {
 		}
 		return millis;
 	}
-	
+
 	public DateTime date_now(){
 		return new GLib.DateTime.now_local();
 	}
-	
+
 	public bool dates_are_equal(DateTime? dt1, DateTime? dt2){
 		if ((dt1 == null) || (dt2 == null)){
 			return false;
 		}
 		return Math.fabs(dt2.difference(dt1)) < (1 * TimeSpan.SECOND);
 	}
-	
-	public static DateTime? parse_date_time (string date_string, bool local_time) {	
-		
+
+	public static DateTime? parse_date_time (string date_string, bool local_time) {
+
 		DateTime? dt = null;
 		int year, month, day, hr, min, tz_hr, tz_min;
 		double sec;
-		
+
 		// 2016-01-15T14:23:52.964Z
 		// 2017-07-23T05:14:51.867Z
 		MatchInfo match = regex_match("""([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([.0-9]+)Z""", date_string);
-		
+
 		if (match != null){
-			
+
 			year = int.parse(match.fetch(1));
 			month = int.parse(match.fetch(2));
 			day = int.parse(match.fetch(3));
 			hr = int.parse(match.fetch(4));
 			min = int.parse(match.fetch(5));
 			sec = double.parse(match.fetch(6));
-			
+
 			dt = new DateTime.utc(year, month, day, hr, min, sec);
-			
+
 			if (local_time){
 				dt = dt.to_local();
 			}
-			
+
 			return dt;
 		}
-		
+
 		// 2016-01-15T14:23:52.964+05:30
 		match = regex_match("""([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([.0-9]+)([0-9+-]+):([0-9+-]+)""", date_string);
-		
+
 		if (match != null){
-			
+
 			year = int.parse(match.fetch(1));
 			month = int.parse(match.fetch(2));
 			day = int.parse(match.fetch(3));
 			hr = int.parse(match.fetch(4));
 			min = int.parse(match.fetch(5));
 			sec = double.parse(match.fetch(6));
-			
+
 			tz_hr = int.parse(match.fetch(7));
 			tz_min = int.parse(match.fetch(8));
 
 			dt = new DateTime.utc(year, month, day, hr, min, sec);
-			
+
 			dt = dt.add_hours(tz_hr).add_minutes(tz_min);
 
 			if (local_time){
 				dt = dt.to_local();
 			}
-			
+
 			return dt;
 		}
-		
+
 		return dt;
 	}
-	
+
 	// string handling ------------------------
-	
+
 	public string string_replace(string str, string search, string replacement, int count = -1){
-		
+
 		string[] arr = str.split(search);
-		
+
 		string new_txt = "";
-		
+
 		bool first = true;
-		
+
 		foreach(string part in arr){
 			if (first){
 				new_txt += part;
@@ -283,7 +283,7 @@ namespace TeeJee.Misc {
 
 		return new_txt;
 	}
-	
+
 	public string escape_html(string html, bool pango_markup = true){
 		//string txt = html;
 
@@ -292,13 +292,13 @@ namespace TeeJee.Misc {
 		if (pango_markup){
 			txt = txt
 				.replace("\\u00", "")
-				.replace("\\x"  , ""); 
+				.replace("\\x"  , "");
 		}
 		else{
 			txt = txt
 				.replace(" ", "&nbsp;");  //pango markup throws an error with &nbsp;
 		}
-		
+
 		txt = txt
 				.replace("&" , "&amp;")
 				.replace("\"", "&quot;")
@@ -321,26 +321,26 @@ namespace TeeJee.Misc {
 	}
 
 	public string uri_encode(string path, bool encode_forward_slash){
-		
+
 		string uri = Uri.escape_string(path);
-		
+
 		if (!encode_forward_slash){
-			
+
 			uri = uri.replace("%2F","/");
 		}
-		
+
 		return uri;
 	}
 
 	public string uri_decode(string path){
-		
+
 		return Uri.unescape_string(path);
 	}
 
 	public string ellipsize(string txt, int maxchars){
-		
+
 		if (txt.length > maxchars){
-			
+
 			return txt[0:maxchars-1] + "...";
 		}
 		else{
@@ -351,7 +351,7 @@ namespace TeeJee.Misc {
 	public DateTime datetime_from_string (string date_time_string){
 
 		/* Converts date time string to DateTime
-		 * 
+		 *
 		 * Supported inputs:
 		 * 'yyyy-MM-dd'
 		 * 'yyyy-MM-dd HH'
@@ -410,7 +410,7 @@ namespace TeeJee.Misc {
 		for (int i=0; i < haystack.length; i++) {
 			if(needle == haystack[i]) return true;
 		}
-		
+
 		return false;
 	}
 
@@ -421,7 +421,7 @@ namespace TeeJee.Misc {
 		}
 		return result;
 	}
-	
+
 	public string random_string(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"){
 		string random = "";
 
@@ -434,8 +434,9 @@ namespace TeeJee.Misc {
 		return random;
 	}
 
+	/*
 	private string pad_numbers_in_string(string input, int max_length = 3, char pad_char = '0'){
-			
+
 		string sequence = "";
 		string output = "";
 		bool seq_started = false;
@@ -471,9 +472,9 @@ namespace TeeJee.Misc {
 			output += sequence;
 			sequence = "";
 		}
-					
+
 		return output;
-	}
+	}*/
 
 	public bool is_numeric(string text){
 		for (int i = 0; i < text.length; i++){

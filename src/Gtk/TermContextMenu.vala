@@ -40,7 +40,7 @@ public class TermContextMenu : Gtk.Menu {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	protected FileViewPane pane;
 
 	protected FileViewList view {
@@ -52,14 +52,14 @@ public class TermContextMenu : Gtk.Menu {
 	}
 
 	// -------------------------------
-	
+
 	private Gee.ArrayList<FileItem> selected_items;
 	private FileItem? selected_item = null;
 	//private bool is_trash = false;
 	//private bool is_archive = false;
 
 	public TermContextMenu(FileViewPane parent_pane){
-		
+
 		log_debug("TermContextMenu()");
 
 		margin = 0;
@@ -92,7 +92,7 @@ public class TermContextMenu : Gtk.Menu {
 		gtk_menu_add_separator(this); //---------------------------
 
 		add_change_directory(this, sg_icon, sg_label);
-		
+
 		add_clear_output(this, sg_icon, sg_label);
 
 		add_chroot(this, sg_icon, sg_label);
@@ -106,7 +106,7 @@ public class TermContextMenu : Gtk.Menu {
 		gtk_menu_add_separator(this); //---------------------------
 
 		add_settings(this, sg_icon, sg_label);
-				
+
 		show_all();
 	}
 
@@ -134,7 +134,7 @@ public class TermContextMenu : Gtk.Menu {
 		log_debug("TermContextMenu: add_change_directory()");
 
 		if (!view.is_normal_directory || (view.current_item == null)) { return; }
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Paste"),
@@ -149,13 +149,13 @@ public class TermContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = true;
 	}
-	
+
 	private void add_change_directory(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("TermContextMenu: add_change_directory()");
 
 		if (!view.is_normal_directory || (view.current_item == null)) { return; }
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Change Directory"),
@@ -170,7 +170,7 @@ public class TermContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = view.is_normal_directory;
 	}
-	
+
 	private void add_clear_output(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("TermContextMenu: add_clear_output()");
@@ -193,9 +193,9 @@ public class TermContextMenu : Gtk.Menu {
 	private void add_chroot(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!view.is_normal_directory || (view.current_item == null)) { return; }
-		
+
 		log_debug("TermContextMenu: add_chroot()");
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Chroot"),
@@ -212,7 +212,7 @@ public class TermContextMenu : Gtk.Menu {
 	}
 
 	//-------------
-	
+
 	private void add_settings(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("TermContextMenu: add_settings()");
@@ -234,18 +234,18 @@ public class TermContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		add_font(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_foreground_color(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_background_color(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //---------------------------
-		
+
 		add_set_defaults(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_fish_config(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_font(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("TermContextMenu: add_font()");
@@ -257,7 +257,7 @@ public class TermContextMenu : Gtk.Menu {
 			IconManager.lookup_image("font-x-generic",16),
 			sg_icon,
 			sg_label);
-			
+
 		menu_item.activate.connect(()=>{
 
 			var dlg = new Gtk.FontChooserDialog(_("Select Font"), window);
@@ -269,9 +269,9 @@ public class TermContextMenu : Gtk.Menu {
 			});
 
 			dlg.set_font_desc(App.term_font);
-			
+
 			if (dlg.run() == Gtk.ResponseType.OK){
-				
+
 				App.term_font = dlg.get_font_desc();
 				foreach(var term in window.terminals){
 					term.set_font_desc(App.term_font);
@@ -299,7 +299,7 @@ public class TermContextMenu : Gtk.Menu {
 			var color = choose_color(App.term_fg_color);
 
 			if (color.length == 0){ return; }
-			
+
 			App.term_fg_color = color;
 
 			foreach(var term in window.terminals){
@@ -325,18 +325,18 @@ public class TermContextMenu : Gtk.Menu {
 			var color = choose_color(App.term_bg_color);
 
 			if (color.length == 0){ return; }
-			
+
 			App.term_bg_color = color;
 
 			foreach(var term in window.terminals){
 				term.set_color_background(App.term_bg_color);
 			}
-			
+
 		});
 	}
 
 	private string choose_color(string default_color){
-		
+
 		var dlg = new Gtk.ColorChooserDialog ("Select Color", window);
 
 		var default_rgba = Gdk.RGBA();
@@ -344,17 +344,17 @@ public class TermContextMenu : Gtk.Menu {
 		dlg.set_rgba(default_rgba);
 
 		string color_hex = "";
-		
+
 		if (dlg.run() == Gtk.ResponseType.OK) {
-			
+
 			//string alpha = dlg.use_alpha.to_string();
 			//string col = dlg.rgba.to_string();
-			
+
 			color_hex = rgba_to_hex(dlg.rgba, false, true);
 
 			log_debug("selected: %s".printf(color_hex));
 		}
-		
+
 		dlg.close();
 
 		return color_hex;
@@ -402,7 +402,7 @@ public class TermContextMenu : Gtk.Menu {
 	}
 
 	// ---------------
-	
+
 	private void add_maximize(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("TermContextMenu: add_maximize()");
@@ -440,14 +440,14 @@ public class TermContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = true;
 	}
-	
+
 	public bool show_menu(Gdk.EventButton? event) {
 
 		if (event != null) {
-			this.popup (null, null, null, event.button, event.time);
+			this.popup_at_pointer(event);
 		}
 		else {
-			this.popup (null, null, null, 0, Gtk.get_current_event_time());
+			this.popup_at_pointer(null);
 		}
 
 		return true;

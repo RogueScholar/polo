@@ -84,7 +84,7 @@ public class Thumbnailer : GLib.Object {
 
 		//log_debug("Thumbnailer: lookup(%d): %s".printf(icon_size, file_item.file_uri));
 		//log_debug("Thumbnailer: hash: %s".printf(file_item.thumb_key));
-		
+
 		Gdk.Pixbuf? pixbuf = null;
 
 		string hash = file_item.thumb_key;
@@ -95,7 +95,7 @@ public class Thumbnailer : GLib.Object {
 			Gdk.Pixbuf.get_file_info(file_item.file_path, out width, out height);
 
 			// use images directly, if image size is smaller than requested size
-			
+
 			if ((width <= icon_size) || (height <= icon_size)){
 				pixbuf = IconManager.load_pixbuf_from_file_at_scale(file_item.file_path, icon_size);
 				if (pixbuf != null){ return pixbuf; }
@@ -173,7 +173,7 @@ public class Thumbnailer : GLib.Object {
 
 		return null;
 	}
-	
+
 	public static Gee.ArrayList<Gdk.Pixbuf> lookup_animation(FileItem file_item, int icon_size){
 
 		log_debug("Thumbnailer: lookup_animation(): %s".printf(file_item.file_path));
@@ -227,14 +227,14 @@ public class Thumbnailer : GLib.Object {
 
 			log_msg("found thumb: %s".printf(thumb_path));
 
-			try {
+			//try {
 				var pixbuf = IconManager.load_pixbuf_from_file_at_scale(thumb_path, icon_size);
 				//log_debug("MTime: %s, URI: %s".printf(pixbuf.get_option("tEXt::Thumb::MTime"),pixbuf.get_option("tEXt::Thumb::URI")));
 				if (pixbuf != null){ return pixbuf; }
-			}
-			catch (Error e){
+			//}
+			//catch (Error e){
 				// ignore
-			}
+			//}
 		}
 
 		return null;
@@ -306,7 +306,7 @@ public class Thumbnailer : GLib.Object {
 
 		try {
 			//start thread for thumbnail generation
-			Thread.create<void> (thumbnail_generator_thread, true);
+			new Thread<void>.try ("Thumbnailer::thumbnail_generator_thread", thumbnail_generator_thread);
 		}
 		catch (Error e) {
 			log_error ("Thumbnailer: start_thumbnail_generator()");

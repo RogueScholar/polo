@@ -72,7 +72,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		contents.add(label);
 
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
-		hbox_outer.margin_right = 6;
+		hbox_outer.margin_end = 6;
 		contents.add(hbox_outer);
 
 		var vbox_outer = new Gtk.Box(Orientation.VERTICAL, 6);

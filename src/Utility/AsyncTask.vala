@@ -87,7 +87,7 @@ public abstract class AsyncTask : GLib.Object{
 	public signal void stderr_line_read(string line);
 	public signal void task_complete();
 
-	/*public AsyncTask(){
+	protected AsyncTask(){
 		init_temp_directories();
 	}*/
 
@@ -160,7 +160,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading output stream
-				Thread.create<void> (read_stdout, true);
+				new Thread<void>.try ("AsyncTask::read_stdout", read_stdout);
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
@@ -168,7 +168,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading error stream
-				Thread.create<void> (read_stderr, true);
+				new Thread<void>.try ("AsyncTask::read_stderr", read_stderr);
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
 				log_error (e.message);
@@ -536,10 +536,8 @@ public enum AppStatus {
 
 /* Sample Subclass:
 public class RsyncTask : AsyncTask{
-
 	// parameters
 	public bool delete_extra = true;
-
 	public RsyncTask(){
 
 		init_regular_expressions();
@@ -562,36 +560,26 @@ public class RsyncTask : AsyncTask{
 
 		string script_text = build_script();
 		save_bash_script_temp(script_text, script_file);
-
 		count_completed = 0;
 		count_total = 100;
 	}
-
 	private string build_script() {
 
 		var script = new StringBuilder();
-
 		var cmd = "rsync -ai";
-
 		cmd += " --numeric-ids --stats --relative --delete-excluded";
-
 		return script.str;
 	}
 
 	// execution ----------------------------
-
 	public void execute() {
-
 		prepare();
-
 		begin();
-
 		if (status == AppStatus.RUNNING){
 
 
 		}
 	}
-
 	public override void parse_stdout_line(string out_line){
 
 		if (is_terminated) { return; }
@@ -606,27 +594,21 @@ public class RsyncTask : AsyncTask{
 
 		update_progress_parse_console_output(err_line);
 	}
-
 	public bool update_progress_parse_console_output (string line) {
-
 		if ((line == null) || (line.length == 0)) { return true; }
-
 		MatchInfo match;
 		if (regex_list["qemu-convert"].match(line, 0, out match)) {
 			string txt = match.fetch(1);
 			count_completed = int.parse(txt);
 			status_line = "%lld%%".printf(count_completed);
 		}
-
 		return true;
 	}
-
 	protected override void finish_task(){
 		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
 			status = AppStatus.FINISHED;
 		}
 	}
-
 	public int read_status(){
 		var status_file = working_dir + "/status";
 		var f = File.new_for_path(status_file);

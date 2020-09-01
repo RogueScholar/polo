@@ -40,7 +40,7 @@ public class Sidebar : Gtk.Box {
 	private MainWindow window{
 		get { return App.main_window; }
 	}
-	
+
 	FileViewPane _pane;
 	private FileViewPane? pane {
 		get{
@@ -58,7 +58,7 @@ public class Sidebar : Gtk.Box {
 	}
 
 	// -------------------------------
-	
+
 	private Gtk.ListBox listbox;
 	private Gtk.ScrolledWindow scrolled;
 	//private Gtk.ListBoxRow current_row;
@@ -75,7 +75,7 @@ public class Sidebar : Gtk.Box {
 	public signal void row_activated(TreeView treeview, TreeIter iter, SidebarItem item);
 
 	public Gee.ArrayList<string> collapsed_sections = new Gee.ArrayList<string>();
-	
+
 	private Gtk.Popover? popover;
 	private string popup_mode;
 
@@ -135,7 +135,7 @@ public class Sidebar : Gtk.Box {
 			scrolled.set_shadow_type(ShadowType.ETCHED_IN);
 			scrolled.hscrollbar_policy = popup ? PolicyType.NEVER : PolicyType.AUTOMATIC;
 			scrolled.vscrollbar_policy = PolicyType.AUTOMATIC;
-			//scrolled.margin_right = 3;
+			//scrolled.margin_end = 3;
 			add(scrolled);
 
 			scrolled.add(listbox);
@@ -166,10 +166,10 @@ public class Sidebar : Gtk.Box {
 		var item = (SidebarItem) row.get_data<SidebarItem>("item");
 
 		if (item.node_key.length > 0){
-			
+
 			log_debug("sidebar: header_activated");
 			node_expanded[item.node_key] = !node_expanded[item.node_key];
-			
+
 			if (node_expanded[item.node_key]){
 				if (collapsed_sections.contains(item.node_key)){
 					collapsed_sections.remove(item.node_key);
@@ -184,7 +184,7 @@ public class Sidebar : Gtk.Box {
 			add_refresh_delayed();
 			return;
 		}
-		
+
 		switch(item.type){
 		case SidebarItemType.BOOKMARK:
 
@@ -197,14 +197,14 @@ public class Sidebar : Gtk.Box {
 			else{
 				//refresh(); // not needed
 			}
-			
+
 			if (item.bookmark.path.length > 0){
 				pane.view.set_view_path(item.bookmark.path);
 			}
 			else{
 				pane.view.set_view_path(item.bookmark.uri);
 			}
-			
+
 			break;
 
 		case SidebarItemType.BOOKMARK_ACTION_ADD:
@@ -265,9 +265,9 @@ public class Sidebar : Gtk.Box {
 	}
 
 	private uint tmr_refresh_delayed = 0;
-	
+
 	private void add_refresh_delayed(){
-		
+
 		clear_refresh_delayed();
 
 		tmr_refresh_delayed = Timeout.add(100, refresh_delayed);
@@ -280,15 +280,15 @@ public class Sidebar : Gtk.Box {
 		}
 		gtk_set_busy(false, window);
 	}
-	
+
 	private bool refresh_delayed(){
-	
+
 		clear_refresh_delayed();
 
 		log_debug("refresh_delayed()");
 
 		refresh();
-		
+
 		return false;
 	}
 
@@ -334,7 +334,7 @@ public class Sidebar : Gtk.Box {
 				item = add_header_locations(_("Places"));
 
 				log_debug("sidebar: add_places()");
-				
+
 				if (node_expanded[item.node_key]){
 					add_bookmark(new GtkBookmark("file:///", _("Filesystem")));
 					add_bookmark(new GtkBookmark("file://" + App.user_dirs.user_home, _("Home")));
@@ -346,7 +346,7 @@ public class Sidebar : Gtk.Box {
 					add_bookmark(new GtkBookmark("file://" + App.user_dirs.user_desktop, _("Desktop")));
 					add_bookmark(new GtkBookmark("file://" + App.user_dirs.user_public, _("Public")));
 					add_bookmark(new GtkBookmark("trash:///", _("Trash") + " (%s)".printf(format_file_size(App.trashcan.trash_can_size))));
-				
+
 					foreach(var mount in GvfsMounts.get_mounts(App.user_id)){
 						var bm = new GtkBookmark(mount.file_uri, mount.display_name);
 						add_bookmark(bm);
@@ -362,7 +362,7 @@ public class Sidebar : Gtk.Box {
 				item = add_header_bookmarks(_("Bookmarks"));
 
 				log_debug("sidebar: add_bookmarks()");
-				
+
 				if (node_expanded[item.node_key]){
 					foreach(var bm in GtkBookmark.bookmarks){
 						add_bookmark(bm, true);
@@ -372,7 +372,7 @@ public class Sidebar : Gtk.Box {
 		}
 
 		log_debug("sidebar: add_devices()");
-		
+
 		if (!popup || (popup_mode == "device")){
 
 			if (popup || App.sidebar_devices){
@@ -382,17 +382,17 @@ public class Sidebar : Gtk.Box {
 				}
 
 				if (popup || node_expanded[item.node_key]){
-					
+
 					var list = Main.get_devices();
-					
+
 					foreach(var dev in list){
-						
+
 						if (dev.pkname.length == 0){ // type = disk, loop
-							
+
 							item = add_device(dev);
 
 							if (!node_expanded.has_key(item.node_key) || node_expanded[item.node_key]){
-								
+
 								foreach(var child1 in dev.children){
 									if (child1.has_children){
 										foreach(var child2 in child1.children){
@@ -419,7 +419,7 @@ public class Sidebar : Gtk.Box {
 		}
 
 		log_debug("sidebar: add_buffer()");
-		
+
 		// buffer
 		var row = new Gtk.ListBoxRow();
 		row.activatable = false;
@@ -479,7 +479,7 @@ public class Sidebar : Gtk.Box {
 	public void toggle(){
 
 		log_debug("Sidebar: toggle()");
-		
+
 		if (this.visible){
 			hide_panel();
 		}
@@ -487,7 +487,7 @@ public class Sidebar : Gtk.Box {
 			show_panel();
 		}
 	}
-	
+
 	private SidebarItem add_header_locations(string name){
 		var item = new SidebarItem.for_header(name, SidebarItemType.HEADER_LOCATIONS);
 		add_missing_node_key(item);
@@ -527,13 +527,13 @@ public class Sidebar : Gtk.Box {
 		SidebarItemType sbtype = SidebarItemType.BOOKMARK_ACTION_ADD;
 		string sbname = "";
 		string tt = "";
-		
+
 		if (pane.view.current_item != null){
-			
+
 			var path = pane.view.current_item.file_path;
-			
+
 			if (GtkBookmark.is_bookmarked(path)){
-				
+
 				sbtype = SidebarItemType.BOOKMARK_ACTION_REMOVE;
 				sbname = _("Remove bookmark");
 				tt = _("Remove bookmark for this location");
@@ -559,7 +559,7 @@ public class Sidebar : Gtk.Box {
 		if (dev.size_bytes < 100 * KB){
 			return null;
 		}
-		
+
 		var item = new SidebarItem.from_device(dev, popup);
 
 		if (popup){
@@ -595,7 +595,7 @@ public class Sidebar : Gtk.Box {
 	private void apply_css_listbox(){
 
 		if (scrolled == null) { return; }
-		
+
 		if (App.sidebar_dark && !popup){
 			gtk_apply_css({ listbox }, "background-color: @wm_bg;"); //#353945
 			scrolled.set_shadow_type(ShadowType.NONE);
@@ -604,7 +604,7 @@ public class Sidebar : Gtk.Box {
 			gtk_apply_css({ listbox }, "background-color: @content_view_bg;"); //#FFFFFF
 			scrolled.set_shadow_type(ShadowType.NONE);
 		}
-		
+
 		listbox.get_style_context().add_class("sidebar");
 	}
 
@@ -616,21 +616,21 @@ public class Sidebar : Gtk.Box {
 		case SidebarItemType.HEADER_LOCATIONS:
 		case SidebarItemType.HEADER_BOOKMARKS:
 		case SidebarItemType.HEADER_DEVICES:
-			
+
 			add_item_header(item, allow_edit);
 			break;
 
 		case SidebarItemType.BOOKMARK:
-			
+
 			add_item_bookmark(item, allow_edit);
 			break;
 
 		case SidebarItemType.BOOKMARK_ACTION_ADD:
 		case SidebarItemType.BOOKMARK_ACTION_REMOVE:
-		
+
 			add_item_bookmark_action(item, allow_edit);
 			break;
-		
+
 		case SidebarItemType.HEADER_DISK:
 
 			add_item_device_header(item, allow_edit);
@@ -642,7 +642,7 @@ public class Sidebar : Gtk.Box {
 			break;
 		}
 	}
-	
+
 	private void add_item_header(SidebarItem item, bool allow_edit = false){
 
 		var row = new Gtk.ListBoxRow();
@@ -660,14 +660,14 @@ public class Sidebar : Gtk.Box {
 		box.add(image);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
-		vbox.margin_right = 12;
+		vbox.margin_end = 12;
 		box.add(vbox);
 		//var label_box = vbox;
 
 		// name
 		var label = new Gtk.Label("");
 		label.xalign = 0.0f;
-		//label.margin_right = 3;
+		//label.margin_end = 3;
 		label.ellipsize = Pango.EllipsizeMode.END;
 		vbox.add(label);
 
@@ -681,24 +681,24 @@ public class Sidebar : Gtk.Box {
 		}
 
 		// -----------------------------------
-		
-		row.margin_left = 0;
+
+		row.margin_start = 0;
 		row.activatable = true;
 
 		label.label = "<b>%s</b>".printf(item.name);
 		label.set_use_markup(true);
 		label.margin_top = 6;
-		
+
 		// -----------------------------------
 
 		apply_css_row(row, label);
 
 		// label for right margin
 		var lbl = new Gtk.Label("");
-		lbl.margin_right = 12;
+		lbl.margin_end = 12;
 		box.add(lbl);
 	}
-	
+
 	private void add_item_device(SidebarItem item, bool allow_edit = false){
 
 		var row = new Gtk.ListBoxRow();
@@ -711,36 +711,36 @@ public class Sidebar : Gtk.Box {
 		var dev = item.device;
 
 		// create tooltip -----------------------------------------
-		
+
 		string tt = "";
-		
+
 		tt += "%s: %s\n".printf(_("Device"), dev.device);
-		
+
 		if (dev.mapped_name.length > 0){
 			tt += "%s: %s\n".printf(_("Mapped"), "/dev/mapper/%s".printf(dev.mapped_name));
 		}
-		
+
 		tt += "%s: %s\n".printf(_("UUID"), dev.uuid);
-		
+
 		tt += "%s: %s\n".printf(_("Label"), ((dev.label.length > 0) ? dev.label : _("(empty)")));
 
 		tt += "%s: %s\n".printf(_("PartLabel"), ((dev.partlabel.length > 0) ? dev.partlabel : _("(empty)")));
-		
+
 		tt += "%s: %s\n".printf(_("Filesystem"), dev.fstype);
 
 		if (dev.is_mounted){
 			tt += "%s: %s\n".printf(_("Mount"), dev.mount_points[0].mount_point);
 		}
-		
+
 		tt += "%s: %s".printf(_("ReadOnly"), (dev.read_only ? "Yes" : "No"));
 
 		row.set_tooltip_markup(tt);
 
 		// create widgets ------------------------------------
-		
+
 		var ebox = new Gtk.EventBox();
 		row.add(ebox);
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		ebox.add(box);
 
@@ -749,7 +749,7 @@ public class Sidebar : Gtk.Box {
 		box.add(image);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
-		vbox.margin_right = 12;
+		vbox.margin_end = 12;
 		box.add(vbox);
 		//var label_box = vbox;
 
@@ -761,9 +761,9 @@ public class Sidebar : Gtk.Box {
 		vbox.add(label);
 
 		// -----------------------------------
-		
+
 		image.pixbuf = dev.get_icon();
-		image.margin_left = 12;
+		image.margin_start = 12;
 
 		label.label = item.name;
 		label.set_use_markup(true);
@@ -787,7 +787,7 @@ public class Sidebar : Gtk.Box {
 			lbl2.xalign = 1.0f;
 			lbl2.yalign = 1.0f;
 			lbl2.valign = Gtk.Align.END;
-			lbl2.margin_right = 6;
+			lbl2.margin_end = 6;
 			lbl2.sensitive = dev.is_mounted;
 			box.add(lbl2);
 			sg_size.add_widget(lbl2);
@@ -824,10 +824,10 @@ public class Sidebar : Gtk.Box {
 
 		// label for right margin
 		var lbl = new Gtk.Label("");
-		lbl.margin_right = 12;
+		lbl.margin_end = 12;
 		box.add(lbl);
 	}
-	
+
 	private void add_item_device_header(SidebarItem item, bool allow_edit = false){
 
 		var row = new Gtk.ListBoxRow();
@@ -839,7 +839,7 @@ public class Sidebar : Gtk.Box {
 
 		var ebox = new Gtk.EventBox();
 		row.add(ebox);
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		ebox.add(box);
 
@@ -848,14 +848,14 @@ public class Sidebar : Gtk.Box {
 		box.add(image);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
-		vbox.margin_right = 12;
+		vbox.margin_end = 12;
 		box.add(vbox);
 		//var label_box = vbox;
 
 		// name
 		var label = new Gtk.Label("");
 		label.xalign = 0.0f;
-		//label.margin_right = 3;
+		//label.margin_end = 3;
 		label.ellipsize = Pango.EllipsizeMode.END;
 		vbox.add(label);
 
@@ -869,16 +869,16 @@ public class Sidebar : Gtk.Box {
 		}
 
 		// -----------------------------------
-		
+
 		var dev = item.device;
-			
-		row.margin_left = 0;
+
+		row.margin_start = 0;
 		row.activatable = true;
 
 		label.label = "<i>%s</i>".printf(item.name);
 		label.set_use_markup(true);
 
-		label.margin_left = 0;
+		label.margin_start = 0;
 		label.margin_top = 6;
 		label.margin_bottom = 6;
 
@@ -900,17 +900,17 @@ public class Sidebar : Gtk.Box {
 		// connect signal for right-click menu
 		row.button_press_event.connect((w,e) => { return row_device_button_press_event(e, dev); });
 
-		
+
 		// -----------------------------------
 
 		apply_css_row(row, label);
 
 		// label for right margin
 		var lbl = new Gtk.Label("");
-		lbl.margin_right = 12;
+		lbl.margin_end = 12;
 		box.add(lbl);
 	}
-	
+
 	private void add_item_bookmark(SidebarItem item, bool allow_edit = false){
 
 		var row = new Gtk.ListBoxRow();
@@ -922,7 +922,7 @@ public class Sidebar : Gtk.Box {
 
 		var ebox = new Gtk.EventBox();
 		row.add(ebox);
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		ebox.add(box);
 
@@ -931,14 +931,14 @@ public class Sidebar : Gtk.Box {
 		box.add(image);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
-		vbox.margin_right = 12;
+		vbox.margin_end = 12;
 		box.add(vbox);
 		var label_box = vbox;
 
 		// name
 		var label = new Gtk.Label("");
 		label.xalign = 0.0f;
-		//label.margin_right = 3;
+		//label.margin_end = 3;
 		label.ellipsize = Pango.EllipsizeMode.END;
 		vbox.add(label);
 
@@ -952,7 +952,7 @@ public class Sidebar : Gtk.Box {
 		}
 
 		// -----------------------------------
-		
+
 		row.activatable = true;
 
 		var bm = item.bookmark;
@@ -960,7 +960,7 @@ public class Sidebar : Gtk.Box {
 		row.set_tooltip_text(item.tooltip);
 
 		image.pixbuf = bm.get_icon();
-		image.margin_left = 12;
+		image.margin_start = 12;
 
 		bool exists = bm.exists();
 		if (!exists){
@@ -1009,7 +1009,7 @@ public class Sidebar : Gtk.Box {
 
 			// connect signal for right-click menu
 			row.button_press_event.connect((w,e) => { return row_bookmark_button_press_event(e, bm, label_box, entry, row); });
-		
+
 			//const Gtk.TargetEntry[] targets = {
 			//	{"item", Gtk.TargetFlags.SAME_APP, 1}
 			//};
@@ -1038,10 +1038,10 @@ public class Sidebar : Gtk.Box {
 
 		// label for right margin
 		var lbl = new Gtk.Label("");
-		lbl.margin_right = 12;
+		lbl.margin_end = 12;
 		box.add(lbl);
 	}
-	
+
 	private void add_item_bookmark_action(SidebarItem item, bool allow_edit = false){
 
 		var row = new Gtk.ListBoxRow();
@@ -1053,7 +1053,7 @@ public class Sidebar : Gtk.Box {
 
 		var ebox = new Gtk.EventBox();
 		row.add(ebox);
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		ebox.add(box);
 
@@ -1062,14 +1062,14 @@ public class Sidebar : Gtk.Box {
 		box.add(image);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
-		vbox.margin_right = 12;
+		vbox.margin_end = 12;
 		box.add(vbox);
 		//var label_box = vbox;
 
 		// name
 		var label = new Gtk.Label("");
 		label.xalign = 0.0f;
-		//label.margin_right = 3;
+		//label.margin_end = 3;
 		label.ellipsize = Pango.EllipsizeMode.END;
 		vbox.add(label);
 
@@ -1083,7 +1083,7 @@ public class Sidebar : Gtk.Box {
 		}
 
 		// -----------------------------------
-		
+
 		switch(item.type){
 		case SidebarItemType.BOOKMARK_ACTION_ADD:
 
@@ -1092,7 +1092,7 @@ public class Sidebar : Gtk.Box {
 			//row.selected = false;
 
 			image.pixbuf = IconManager.lookup("list-add-symbolic", 16, false);
-			image.margin_left = 12;
+			image.margin_start = 12;
 
 			label.label = item.name;
 			label.set_use_markup(false);
@@ -1124,28 +1124,28 @@ public class Sidebar : Gtk.Box {
 			//label.yalign = 0.5f;
 			break;
 		}
-		
+
 		// -----------------------------------
 
 		apply_css_row(row, label);
 
 		// label for right margin
 		var lbl = new Gtk.Label("");
-		lbl.margin_right = 12;
+		lbl.margin_end = 12;
 		box.add(lbl);
 	}
-	
-	
+
+
 	private bool row_device_button_press_event(Gdk.EventButton? event, Device? dev){
 
 		log_debug("Sidebar: row_device_button_press_event()");
-		
+
 		if (dev == null) { return false; }
-		
+
 		if ((event != null) && (event.button != 3)){
 			return false;
 		}
-			
+
 		menu_device = new DeviceContextMenu(dev, popover);
 		return menu_device.show_menu(event);
 	}
@@ -1153,13 +1153,13 @@ public class Sidebar : Gtk.Box {
 	private bool row_bookmark_button_press_event(Gdk.EventButton? event, GtkBookmark? bm, Gtk.Box label_box, Gtk.Entry entry, Gtk.ListBoxRow row){
 
 		log_debug("Sidebar: row_bookmark_button_press_event()");
-		
+
 		if (bm == null) { return false; }
-		
+
 		if ((event != null) && (event.button != 3)){
 			return false;
 		}
-			
+
 		menu_bookmark = new BookmarkContextMenu(bm, entry, label_box, row, listbox);
 		return menu_bookmark.show_menu(event);
 	}
@@ -1170,7 +1170,7 @@ public class Sidebar : Gtk.Box {
 
 		var ebox = new Gtk.EventBox();
 		ebox.add(img);
-		ebox.margin_left = popup ? 24 : 0;
+		ebox.margin_start = popup ? 24 : 0;
 		box.add(ebox);
 
 		if (!popup){
@@ -1194,7 +1194,7 @@ public class Sidebar : Gtk.Box {
 	}
 
 	private void add_device_actions_button(Gtk.Box box, Device dev){
-		
+
 		var img = new Gtk.Image.from_pixbuf(IconManager.lookup("preferences-desktop", 12, false, true));
 
 		var ebox = new Gtk.EventBox();
@@ -1212,7 +1212,7 @@ public class Sidebar : Gtk.Box {
 	}
 
 	/*private void add_disk_eject_button(Gtk.Box box, Device dev){
-		
+
 		var icon_size = popup ? 16 : 16;
 		var img = new Gtk.Image.from_pixbuf(IconManager.lookup("media-eject", icon_size, true));
 
@@ -1239,7 +1239,7 @@ public class Sidebar : Gtk.Box {
 		fs_bar.set_size_request(100, 4);
 		//fs_bar.hexpand = true;
 		hbox.add(fs_bar);
-		
+
 		if (!dev.is_mounted || (dev.size_bytes == 0)){
 			return;
 		}
@@ -1414,7 +1414,3 @@ public class Sidebar : Gtk.Box {
 
 */
 }
-
-
-
-

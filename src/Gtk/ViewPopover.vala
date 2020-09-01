@@ -55,12 +55,12 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 	private ColumnSelectionBox box_columns;
 	private Gtk.Box box_view_options;
 	private Gtk.Button btn_columns;
-	
+
 	private Gtk.SizeGroup sg_label;
 	private Gtk.SizeGroup sg_button_box;
 	private Gtk.SizeGroup sg_switch_label;
 	private Gtk.SizeGroup sg_switch;
-	
+
 	// contructors
 
 	public ViewPopover(Gtk.Widget? _relative_to){
@@ -75,7 +75,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		sg_switch_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		sg_button_box = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		sg_switch = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		init_ui();
 	}
 
@@ -89,7 +89,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		box.margin = 6;
 		hbox_main.add(box);
 		box_view_options = box;
-		
+
 		add_view_mode(box);
 
 		add_layout_mode(box);
@@ -103,7 +103,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		add_sort_order_toggle(box);
 
 		add_column_selection_box();
-		
+
 		add_column_selection_button(box);
 		//this.show_all();
 	}
@@ -112,24 +112,24 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		box.add(hbox);
-		
+
 		var label = new Gtk.Label(_("View"));
 		label.xalign = 0.0f;
 		hbox.add(label);
 		sg_label.add_widget(label);
-		
+
 		var bbox = new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND);
 		hbox.add(bbox);
 		sg_button_box.add_widget(bbox);
-		
+
 		var button = new Gtk.ToggleButton();
 		button.set_tooltip_text(_("List"));
 		button.image = IconManager.lookup_image("view-list-details-symbolic", 16);
 		button.always_show_image = true;
 		bbox.add(button);
 		btn_list = button;
-		
+
 		button = new Gtk.ToggleButton();
 		button.set_tooltip_text(_("Icons"));
 		button.image = IconManager.lookup_image("view-list-icons-symbolic", 16);
@@ -174,7 +174,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		btn_tile.active = (button == btn_tile);
 		btn_media.active = (button == btn_media);
 		connect_view_mode_handlers();
-			
+
 		if (btn_list.active){
 			pane.view.set_view_mode(ViewMode.LIST);
 		}
@@ -196,17 +196,17 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		box.add(hbox);
-		
+
 		var label = new Gtk.Label(_("Panes"));
 		label.xalign = 0.0f;
 		hbox.add(label);
 		sg_label.add_widget(label);
-		
+
 		var bbox = new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND);
 		hbox.add(bbox);
 		sg_button_box.add_widget(bbox);
-		
+
 		var button = new Gtk.ToggleButton.with_label(_("1"));
 		button.set_tooltip_text(_("Single"));
 		bbox.add(button);
@@ -250,7 +250,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		btn_horiz.active = (button == btn_horiz);
 		btn_quad.active = (button == btn_quad);
 		connect_layout_mode_handlers();
-			
+
 		if (btn_single.active){
 			window.layout_box.set_panel_layout(PanelLayout.SINGLE);
 		}
@@ -265,29 +265,29 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		}
 	}
 
-	
+
 	private void add_hidden_toggle(Gtk.Box box){
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 12);
 		box.add(hbox);
-		
+
 		hbox.margin_top = 12;
 		//var label = new Gtk.Label("");
 		//hbox.add(label);
-		
-		
+
+
 		var label = new Gtk.Label(_("Show Hidden"));
 		label.xalign = 0.0f;
 		hbox.add(label);
-		
+
 		sg_switch_label.add_widget(label);
-		
+
 		switch_hidden = new Gtk.Switch();
 		switch_hidden.halign = Gtk.Align.END;
 		hbox.add (switch_hidden);
 
 		//sg_switch.add_widget(switch_hidden);
-		
+
 		//label = new Gtk.Label("");
 		//label.hexpand = true;
 		//hbox.add(label);
@@ -302,7 +302,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 	}
 
 	private void on_hidden_mode_toggled(){
-		
+
 		if (switch_hidden.active) {
 			view.show_hidden_files = true;
 		}
@@ -313,7 +313,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		view.refresh_hidden();
 	}
 
-	
+
 	private void add_sidebar_toggle(Gtk.Box box){
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 12);
@@ -328,7 +328,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		switch_sidebar = new Gtk.Switch();
 		switch_sidebar.halign = Gtk.Align.END;
 		hbox.add (switch_sidebar);
-		
+
 		//sg_switch.add_widget(switch_sidebar);
 	}
 
@@ -366,13 +366,13 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		sg_switch.add_widget(combo);
 
 		// add columns ----------------------
-		
+
 		var cell_text = new CellRendererText();
 		combo.pack_start(cell_text, false);
 		combo.set_cell_data_func (cell_text, (cell_text, cell, model, iter) => {
 			Gtk.TreeViewColumn col;
 			model.get (iter, 0, out col, -1);
-			(cell as Gtk.CellRendererText).text = (col.title.length > 0) ? col.title.replace("↓","").replace("↑","").strip() : _("Indicator");
+			((Gtk.CellRendererText)cell).text = (col.title.length > 0) ? col.title.replace("↓","").replace("↑","").strip() : _("Indicator");
 		});
 	}
 
@@ -392,7 +392,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		view.set_sort_column_by_treeviewcolumn(col);
 	}
 
-		
+
 	private void add_sort_order_toggle(Gtk.Box box){
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 12);
@@ -407,7 +407,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		switch_sort_desc = new Gtk.Switch();
 		switch_sort_desc.halign = Gtk.Align.END;
 		hbox.add (switch_sort_desc);
-		
+
 		//sg_switch.add_widget(switch_sort_desc);
 	}
 
@@ -428,13 +428,13 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		hbox_main.add(box_columns);
 		gtk_hide(box_columns);
 	}
-	
+
 	private void add_column_selection_button(Gtk.Box box){
 
 		var label = new Gtk.Label("");
 		label.vexpand = true;
 		box.add(label);
-		
+
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		box.add(hbox);
 
@@ -442,12 +442,12 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		bbox.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		bbox.hexpand = true;
 		hbox.add(bbox);
-		
+
 		var button = new Gtk.Button.with_label(_("Select Columns"));
 		button.set_tooltip_text(_("Select ListView Columns"));
 		bbox.add(button);
 		btn_columns = button;
-		
+
 		button.clicked.connect(()=>{
 			gtk_hide(box_view_options);
 			gtk_show(box_columns);
@@ -470,7 +470,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		refresh_view_option();
 
 		refresh_layout_option();
-		
+
 		refresh_hidden_option();
 
 		refresh_sidebar_option();
@@ -489,7 +489,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		if (pane == null){ return; }
 
 		disconnect_layout_mode_handlers();
-		
+
 		switch (window.layout_box.get_panel_layout()){
 		case PanelLayout.SINGLE:
 			btn_single.active = true;
@@ -525,7 +525,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		if (pane == null){ return; }
 
 		disconnect_view_mode_handlers();
-		
+
 		switch (pane.view.get_view_mode()){
 		case ViewMode.LIST:
 			btn_list.active = true;
@@ -563,7 +563,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		if (pane == null){ return; }
 
 		disconnect_hidden_mode_handlers();
-		
+
 		switch_hidden.active = view.show_hidden_files;
 
 		connect_hidden_mode_handlers();
@@ -574,7 +574,7 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		if (pane == null){ return; }
 
 		disconnect_sidebar_mode_handlers();
-		
+
 		switch_sidebar.active = App.sidebar_visible;
 
 		connect_sidebar_mode_handlers();
@@ -587,23 +587,23 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		disconnect_sort_column_handlers();
 
 		// add items ----------------------
-		
+
 		var store = new Gtk.ListStore(1, typeof(TreeViewColumn));
 
 		TreeIter iter;
 		int active = 0;
 		int index = -1;
 		foreach(var col in view.get_all_columns()){
-			
+
 			var col_index = col.get_data<FileViewColumn>("index");
 			if (col_index == FileViewColumn.UNSORTABLE) { continue; }
 
 			index++;
-			
+
 			if (view.get_sort_column_index() == col_index){
 				active = index;
 			}
-			
+
 			store.append(out iter);
 			store.set (iter, 0, col, -1);
 		}
@@ -619,13 +619,9 @@ public class ViewPopover : Gtk.Popover, IPaneActive {
 		if (pane == null){ return; }
 
 		disconnect_sort_desc_handlers();
-		
+
 		switch_sort_desc.active = view.get_sort_column_desc();
 
 		connect_sort_desc_handlers();
 	}
 }
-
-
-
-

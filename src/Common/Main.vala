@@ -48,13 +48,13 @@ public const int PLUGIN_VER_IMAGE  = 18080;
 public const int PLUGIN_VER_YT     = 18080;
 public const int PLUGIN_VER_CLAMAV = 18080;
 
-const string GETTEXT_PACKAGE = "";
+[CCode(cname="GETTEXT_PACKAGE")] extern const string GETTEXT_PACKAGE;
 const string LOCALE_DIR = "/usr/share/locale";
 
 public class Main : GLib.Object {
 
 	// static defaults ---------------------------------
-	
+
 	public static double LV_FONT_SCALE = 1.0;
 	public static int LV_ICON_SIZE = 32;
 	public static int LV_ROW_SPACING = 0;
@@ -81,10 +81,10 @@ public class Main : GLib.Object {
 	public static int APP_CONFIG_ARCHIVE_FORMAT_VERSION = 1;
 
 	// instance ------------------------------------------------
-	
+
 	public string[] cmd_args;
 	public bool gui_mode = false;
-	
+
 	public string user_name = "";
 	public string user_name_effective = "";
 	public string user_home = "";
@@ -92,7 +92,7 @@ public class Main : GLib.Object {
 	public int user_id = -1;
 	public int user_id_effective = -1;
 	public XdgUserDirectories user_dirs = null;
-	
+
 	public bool add_context_menu = true;
 	public bool add_context_submenu = false;
 	public bool associate_archives = true;
@@ -103,7 +103,7 @@ public class Main : GLib.Object {
 
 	public bool first_run = false;
 	public FileItem fs_root = null;
-	
+
 	public string gtk_theme = "";
 
 	public AppLock session_lock;
@@ -146,7 +146,7 @@ public class Main : GLib.Object {
 	public bool restore_last_session = true;
 
 	public bool query_subfolders = false;
-	
+
 	public bool sidebar_visible = true;
 	public bool sidebar_bookmarks = true;
 	public bool sidebar_places = true;
@@ -165,7 +165,7 @@ public class Main : GLib.Object {
 	public bool headerbar_enabled_temp = false;
 	public bool headerbar_window_buttons_left = false;
 	public bool headerbar_show_pathbars = false;
-	
+
 	public bool middlebar_visible = true;
 
 	public bool toolbar_visible = true;
@@ -188,7 +188,7 @@ public class Main : GLib.Object {
 	public bool toolbar_item_devices = true;
 
 	public bool pathbar_unified = false;
-	public PathbarStyle pathbar_style = PathbarStyle.COMPACT; 
+	public PathbarStyle pathbar_style = PathbarStyle.COMPACT;
 	public bool pathbar_show_bookmarks = true;
 	public bool pathbar_show_disks = true;
 	public bool pathbar_show_back = false;
@@ -199,7 +199,7 @@ public class Main : GLib.Object {
 	public bool pathbar_show_other = true;
 	public bool pathbar_show_close = true;
 	public bool pathbar_show_eject = true;
-	
+
 	public bool statusbar_unified = false;
 
 	public bool confirm_delete = true;
@@ -229,7 +229,7 @@ public class Main : GLib.Object {
 	public bool overwrite_image_decolor = false;
 	public bool overwrite_image_boost_color = false;
 	public bool overwrite_image_reduce_color = false;
-	
+
 	public bool tabs_bottom = false;
 	public bool tabs_close_visible = true;
 
@@ -261,7 +261,7 @@ public class Main : GLib.Object {
 	public bool single_instance_mode = true;
 	public bool minimize_to_tray = true;
 	public bool autostart = true;
-	
+
 	public double listview_font_scale = LV_FONT_SCALE;
 	public int listview_icon_size = LV_ICON_SIZE;
 	public int listview_row_spacing = LV_ROW_SPACING;
@@ -297,10 +297,10 @@ public class Main : GLib.Object {
 	public bool dm_show_snap = false;
 	public int dm_width = 800;
 	public int dm_height = 600;
-	
+
 	public Gee.ArrayList<string> mediaview_exclude = new Gee.ArrayList<string>();
 	public Gee.ArrayList<string> mediaview_include = new Gee.ArrayList<string>();
-	
+
 	public string status_line = "";
 	public int64 progress_count;
 	public int64 progress_total;
@@ -371,7 +371,7 @@ public class Main : GLib.Object {
 		cmd_files = new Gee.ArrayList<string>();
 
 		//get user info
-		
+
 		user_name = get_username();
 		user_name_effective = get_username_effective();
 		user_id = get_user_id();
@@ -382,13 +382,13 @@ public class Main : GLib.Object {
 		user_dirs = new XdgUserDirectories(user_name);
 
 		sysinfo = new SysInfo();
-		
+
 		SystemUser.query_users();
 		SystemGroup.query_groups();
 
 		session_lock = new AppLock();
 		session_lock.create(AppShortName, "session"); // may succeed or fail
-		
+
 		Device.init();
 
 		FileItem.init();
@@ -399,16 +399,16 @@ public class Main : GLib.Object {
 
 		app_conf_dir_path      = path_combine(user_home, ".config/polo");
 		dir_create(app_conf_dir_path);
-		
+
 		app_conf_dir_path_open = path_combine(app_conf_dir_path, "open");
 		dir_create(app_conf_dir_path_open);
-		
+
 		app_conf_dir_remotes   = path_combine(app_conf_dir_path, "remotes");
 		dir_create(app_conf_dir_remotes);
 
 		app_conf_dir_workspaces   = path_combine(app_conf_dir_path, "workspaces");
 		dir_create(app_conf_dir_workspaces);
-		
+
 		app_conf_path    = path_combine(app_conf_dir_path, "polo.json");
 		app_conf_folders = path_combine(app_conf_dir_path, "polo-folders.json");
 		app_conf_session = path_combine(app_conf_dir_path, "polo-last-session.json");
@@ -461,7 +461,7 @@ public class Main : GLib.Object {
 
 		rclone = new RCloneClient();
 		rclone_mounts = rclone.rclone_mounts;
-		
+
 		/*foreach(var app in DesktopApp.applist.values){
 			if (app.desktop_file_name == "crunchy.desktop"){
 				crunchy_app = app;
@@ -530,7 +530,7 @@ public class Main : GLib.Object {
 	}
 
 	public void init_tools(){
-		
+
 		tools["ffmpeg"] = new Tool("ffmpeg","FFmpeg Encoder","Generate thumbnails for video");
 		tools["mediainfo"] = new Tool("mediainfo","MediaInfo","Read media properties from audio and video files");
 		tools["exiftool"] = new Tool("exiftool","ExifTool","Read EXIF properties from JPG/TIFF/PNG/PDF files");
@@ -560,22 +560,22 @@ public class Main : GLib.Object {
 		tools["diffuse"] = new Tool("diffuse","diffuse","File Compare Utility");
 		tools["groot"] = new Tool("groot","groot","Groot Utility for chroot");
 		tools["clamav"] = new Tool("clamscan","clamav","ClamAV antivirus scanner");
-		
+
 		check_all_tools();
 	}
 
 	public void check_all_tools(){
-		
+
 		foreach(var tool in tools.values){
-			
+
 			tool.check_availablity();
 		}
 	}
 
 	public bool tool_exists(string cmd, bool check_again = false){
-		
+
 		if (tools.keys.contains(cmd) && !check_again){
-			
+
 			var tool = tools[cmd];
 			return tool.available;
 		}
@@ -585,7 +585,7 @@ public class Main : GLib.Object {
 	}
 
 	public void init_plugins(){
-		
+
 		plugins["iso"] = new Plugin("polo-iso", "Polo ISO Plugin", PLUGIN_VER_ISO);
 		plugins["pdf"] = new Plugin("polo-pdf", "Polo PDF Plugin", PLUGIN_VER_PDF);
 		plugins["image"] = new Plugin("polo-image", "Polo Image Plugin", PLUGIN_VER_IMAGE);
@@ -596,9 +596,9 @@ public class Main : GLib.Object {
 	}
 
 	public void check_all_plugins(){
-		
+
 		foreach(var plugin in plugins.values){
-			
+
 			plugin.check_availablity();
 
 			if (plugin.available){
@@ -620,9 +620,9 @@ public class Main : GLib.Object {
 		config.set_string_member("run-count", run_count.to_string());
 
 		config.set_int_member("format-version", (int64) APP_CONFIG_FORMAT_VERSION);
-		
+
 		config.set_string_member("gtk_theme", gtk_theme);
-		
+
 		config.set_string_member("middlebar_visible", middlebar_visible.to_string());
 		config.set_string_member("sidebar_visible", sidebar_visible.to_string());
 		config.set_string_member("sidebar_dark", sidebar_dark.to_string());
@@ -703,7 +703,7 @@ public class Main : GLib.Object {
 		config.set_string_member("pathbar_show_other", pathbar_show_other.to_string());
 		config.set_string_member("pathbar_show_close", pathbar_show_close.to_string());
 		config.set_string_member("pathbar_show_eject", pathbar_show_eject.to_string());
-		
+
 		config.set_string_member("statusbar_unified", statusbar_unified.to_string());
 
 		config.set_string_member("tabs_bottom", tabs_bottom.to_string());
@@ -764,7 +764,7 @@ public class Main : GLib.Object {
 		config.set_string_member("dm_show_size", dm_show_size.to_string());
 		config.set_string_member("dm_show_headers", dm_show_headers.to_string());
 		config.set_string_member("dm_show_snap", dm_show_snap.to_string());
-		
+
 		config.set_string_member("dm_width", dm_width.to_string());
 		config.set_string_member("dm_height", dm_height.to_string());
 
@@ -775,7 +775,7 @@ public class Main : GLib.Object {
 		config.set_string_member("donation_displayed", donation_displayed.to_string());
 
 		save_folder_selections();
-		
+
 		GtkBookmark.save_bookmarks();
 
 		var json = new Json.Generator();
@@ -829,9 +829,9 @@ public class Main : GLib.Object {
 		run_count = json_get_int_from_string(config, "run-count", 0);
 		// set dummy version number, if config file exists but parameter is missing
 		// this will trigger display of change log file
-		
+
 		gtk_theme = json_get_string(config, "gtk_theme", gtk_theme);
-		
+
 		middlebar_visible = json_get_bool_from_string(config, "middlebar_visible", middlebar_visible);
 		sidebar_visible = json_get_bool_from_string(config, "sidebar_visible", sidebar_visible);
 		sidebar_dark = json_get_bool_from_string(config, "sidebar_dark", sidebar_dark);
@@ -842,7 +842,7 @@ public class Main : GLib.Object {
 		sidebar_action_button = json_get_bool_from_string(config, "sidebar_action_button", sidebar_action_button);
 
 		bookmarks_position = json_get_int_from_string(config, "bookmarks_position", bookmarks_position);
-		
+
 		headerbar_enabled = json_get_bool_from_string(config, "headerbar_enabled", headerbar_enabled);
 		headerbar_enabled_temp = headerbar_enabled;
 		headerbar_window_buttons_left = json_get_bool_from_string(config, "headerbar_window_buttons_left", headerbar_window_buttons_left);
@@ -851,7 +851,7 @@ public class Main : GLib.Object {
 		show_hidden_files = json_get_bool_from_string(config, "show_hidden_files", show_hidden_files);
 		panel_layout = (PanelLayout) json_get_int_from_string(config, "panel_layout", panel_layout);
 		shell_default = json_get_string(config, "shell_default", shell_default);
-		
+
 		int vmode = json_get_int_from_string(config, "view_mode", view_mode);
 		if (vmode >= 1 && vmode <= 4){
 			view_mode = (ViewMode) vmode;
@@ -918,7 +918,7 @@ public class Main : GLib.Object {
 		pathbar_show_other = json_get_bool_from_string(config, "pathbar_show_other", pathbar_show_other);
 		pathbar_show_close = json_get_bool_from_string(config, "pathbar_show_close", pathbar_show_close);
 		pathbar_show_eject = json_get_bool_from_string(config, "pathbar_show_eject", pathbar_show_eject);
-		
+
 		statusbar_unified = json_get_bool_from_string(config, "statusbar_unified", statusbar_unified);
 
 		tabs_bottom = json_get_bool_from_string(config, "tabs_bottom", tabs_bottom);
@@ -926,7 +926,7 @@ public class Main : GLib.Object {
 
 		var term_font_string = json_get_string(config, "term_font", TERM_FONT_DESC);
 		term_font = Pango.FontDescription.from_string(term_font_string);
-		
+
 		term_fg_color = json_get_string(config, "term_fg_color", term_fg_color);
 		term_bg_color = json_get_string(config, "term_bg_color", term_bg_color);
 		term_enable_network = json_get_bool_from_string(config, "term_enable_network", term_enable_network);
@@ -937,7 +937,7 @@ public class Main : GLib.Object {
 		kvm_cpu_limit = json_get_int_from_string(config, "kvm_cpu_limit", kvm_cpu_limit);
 		kvm_vga = json_get_string(config, "kvm_vga", kvm_vga);
 		kvm_mem = json_get_int_from_string(config, "kvm_mem", kvm_mem);
-		
+
 		selected_columns = json_get_string(config, "selected_columns", selected_columns);
 		selected_columns = selected_columns.replace(" ",""); // remove spaces
 
@@ -993,16 +993,16 @@ public class Main : GLib.Object {
 		sidebar_position = json_get_int_from_string(config, "sidebar_position", sidebar_position);
 		sidebar_action_button = json_get_bool_from_string(config, "sidebar_action_button", sidebar_action_button);
 		sidebar_collapsed_sections = json_get_string(config, "sidebar_collapsed_sections", sidebar_collapsed_sections);
-		
+
 		propbar_visible = json_get_bool_from_string(config, "propbar_visible", propbar_visible);
 		propbar_position = json_get_int_from_string(config, "propbar_position", propbar_position);
-		
+
 		dm_show_fs = json_get_bool_from_string(config, "dm_show_fs", dm_show_fs);
 		dm_show_mp = json_get_bool_from_string(config, "dm_show_mp", dm_show_mp);
 		dm_show_size = json_get_bool_from_string(config, "dm_show_size", dm_show_size);
 		dm_show_headers = json_get_bool_from_string(config, "dm_show_headers", dm_show_headers);
 		dm_show_snap = json_get_bool_from_string(config, "dm_show_snap", dm_show_snap);
-		
+
 		dm_width = json_get_int_from_string(config, "dm_width", dm_width);
 		dm_height = json_get_int_from_string(config, "dm_height", dm_height);
 
@@ -1011,7 +1011,7 @@ public class Main : GLib.Object {
 		playback_paused = json_get_bool_from_string(config, "playback_paused", playback_paused);
 
 		donation_displayed = json_get_bool_from_string(config, "donation_displayed", donation_displayed);
-		
+
 		load_folder_selections();
 
 		load_app_config_finish();
@@ -1022,26 +1022,26 @@ public class Main : GLib.Object {
 	}
 
 	private void load_app_config_finish(){
-		
+
 		GtkBookmark.load_bookmarks(user_name, true);
-		
+
 		init_gtk_themes();
 	}
-	
+
 	private void init_gtk_themes(){
 
 		log_debug("Main(): gtk_theme: user: %s".printf(user_name_effective));
-		
+
 		GtkTheme.query(user_name);
 
 		if (!GtkTheme.has_theme("Arc-Darker-Polo")){
-				
+
 			log_debug("Main(): gtk_theme: not_found: Arc-Darker-Polo");
 			log_debug("Main(): gtk_theme: installing: Arc-Darker-Polo");
-			
+
 			string sh_file = "/usr/share/polo/files/gtk-theme/install-gtk-theme";
 			Posix.system(sh_file);
-			
+
 			GtkTheme.query(user_name_effective); // requery
 		}
 		else{
@@ -1049,7 +1049,7 @@ public class Main : GLib.Object {
 		}
 
 		if (gtk_theme.length == 0){
-			
+
 			log_debug("Main(): gtk_theme: none_selected");
 			GtkTheme.set_gtk_theme_preferred();
 			gtk_theme = GtkTheme.get_gtk_theme();
@@ -1060,7 +1060,7 @@ public class Main : GLib.Object {
 			log_debug("Main(): gtk_theme: applied: %s".printf(gtk_theme));
 		}
 	}
-	
+
 	public void increment_run_count() {
 		run_count++;
 	}
@@ -1081,7 +1081,7 @@ public class Main : GLib.Object {
 	}
 
 	public void open_changelog_webpage(){
-		
+
 		string username = "";
 		if (get_user_id_effective() == 0){
 			username = get_username();
@@ -1093,7 +1093,7 @@ public class Main : GLib.Object {
 			xdg_open(uri, username);
 		}
 	}
-	
+
 	public void save_folder_selections() {
 
 		var config = new Json.Object();
@@ -1159,7 +1159,7 @@ public class Main : GLib.Object {
 			//first_run = true; // don't set
 			return;
 		}
-		
+
 		set_numeric_locale("C"); // switch numeric locale
 
 		mediaview_include = json_get_array(config, "mediaview_include", mediaview_include);
@@ -1175,7 +1175,7 @@ public class Main : GLib.Object {
 	public void save_archive_selections(ArchiveTask task) {
 
 		var config = new Json.Object();
-		
+
 		set_numeric_locale("C"); // switch numeric locale
 
 		config.set_int_member("format-version", (int64) APP_CONFIG_ARCHIVE_FORMAT_VERSION);
@@ -1237,7 +1237,7 @@ public class Main : GLib.Object {
 			//first_run = true; // don't set
 			return;
 		}
-		
+
 		set_numeric_locale("C"); // switch numeric locale
 
 		// begin ---------------------------
@@ -1252,22 +1252,22 @@ public class Main : GLib.Object {
 		task.encrypt_header = json_get_bool_from_string(config, "encrypt_header", task.encrypt_header);
 		task.encrypt_method = json_get_string(config, "encrypt_method", task.encrypt_method);
 		task.split_mb = json_get_string(config, "split_mb", task.split_mb);
-		
+
 		// end ---------------------------
-		
+
 		log_debug(_("App config loaded") + ": '%s'".printf(this.app_conf_archive));
 
 		set_numeric_locale(""); // reset numeric locale
 	}
 
 	public static bool format_is_obsolete(Json.Object node, int64 current_version){
-		
+
 		bool unsupported_format = false;
-		
+
 		if (node.has_member("format-version")){
-			
+
 			int format_version = (int) node.get_int_member("format-version");
-			
+
 			if (format_version < current_version){
 				unsupported_format = true;
 			}
@@ -1280,7 +1280,7 @@ public class Main : GLib.Object {
 	}
 
 	/* Common */
-	
+
 	public string create_log_dir() {
 		string log_dir = "%s/.local/logs/%s".printf(user_home, AppShortName);
 		dir_create(log_dir);
@@ -1324,7 +1324,7 @@ public class Main : GLib.Object {
 		int status = -1;
 		std_out = "";
 		std_err = "";
-		
+
 		if (admin_shell == null){
 
 			string admin_prefix = "";
@@ -1332,7 +1332,7 @@ public class Main : GLib.Object {
 			if (get_user_id_effective() != 0){
 
 				if (cmd_exists("pkexec")){
-					
+
 					admin_prefix = "%s ".printf("pkexec");
 				}
 				else if (cmd_exists("gksu")){
@@ -1370,16 +1370,16 @@ public class Main : GLib.Object {
 		}
 
 		if (!admin_shell.has_root_bash()){
-			
+
 			admin_shell.feed_command("exit");
 			admin_shell = null;
-			
+
 			string msg = _("Failed to execute operation as admin");
 			log_error(msg);
 			std_err = msg;
 			return 1;
 		}
-		
+
 		string cmd = _cmd;
 		string tmp_stdout = get_temp_file_path();
 		string tmp_stderr = get_temp_file_path();
@@ -1394,13 +1394,13 @@ public class Main : GLib.Object {
 		admin_shell.feed_command(cmd);
 
 		int wait_secs = 0;
-		
+
 		while (!file_exists(tmp_status)){
-			
+
 			gtk_do_events();
-			
+
 			sleep(1000);
-			
+
 			wait_secs++;
 			if (wait_secs > 30){
 				break;
@@ -1421,7 +1421,7 @@ public class Main : GLib.Object {
 
 		return status;
 	}
-	
+
 	/* Core */
 
 	public static Gee.ArrayList<Device> get_devices(){

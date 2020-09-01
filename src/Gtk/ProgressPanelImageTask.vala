@@ -37,13 +37,13 @@ public class ProgressPanelImageTask : ProgressPanel {
 
 	private ImageTask task;
 
-	// ui 
+	// ui
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_stats;
 	public Gtk.ProgressBar progressbar;
 
 	public ProgressPanelImageTask(FileViewPane _pane, ImageTask _task){
-		base(_pane, null, FileActionType.ISO_WRITE);
+		init(_pane, null, FileActionType.ISO_WRITE);
 
 		task = _task;
 	}
@@ -59,7 +59,7 @@ public class ProgressPanelImageTask : ProgressPanel {
 		label.xalign = 0.0f;
 		label.margin_bottom = 12;
 		contents.add(label);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -120,7 +120,7 @@ public class ProgressPanelImageTask : ProgressPanel {
 
 		pane.refresh_file_action_panel();
 		pane.clear_messages();
-		
+
 		start_task();
 	}
 
@@ -132,7 +132,7 @@ public class ProgressPanelImageTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelImageTask: start_task()");
@@ -142,24 +142,24 @@ public class ProgressPanelImageTask : ProgressPanel {
 		task.execute();
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add (500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelImageTask: update_status()");
 
 			if (task.current_file.length > 0){
 				lbl_status.label = "%s: %s".printf(_("File"), task.current_file);
 			}
-			
+
 			lbl_stats.label = task.stat_status_line;
-				
+
 			progressbar.fraction = task.progress;
-			
+
 			gtk_do_events();
 		}
 		else{
@@ -173,11 +173,11 @@ public class ProgressPanelImageTask : ProgressPanel {
 	public override void cancel(){
 
 		log_debug("ProgressPanelImageTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -190,7 +190,7 @@ public class ProgressPanelImageTask : ProgressPanel {
 		task_complete();
 
 		stop_status_timer();
-		
+
 		log_debug("ProgressPanelImageTask: finish()");
 
 		if (!aborted){
@@ -201,13 +201,13 @@ public class ProgressPanelImageTask : ProgressPanel {
 			else{
 				string msg = "";
 				//var list = new Gee.ArrayList<string>();
-				
+
 				foreach(string outfile in task.output_files){
 					if (msg.length > 0) { msg += "\n"; }
 					msg += (task.inplace ? _("Replaced") : _("Created")) + ": %s".printf(file_basename(outfile));
 					//list.add(outfile);
 				}
-				
+
 				pane.add_message(msg, Gtk.MessageType.INFO);
 				//view.select_items_by_file_path(list);
 
@@ -215,7 +215,7 @@ public class ProgressPanelImageTask : ProgressPanel {
 				// it will be dangerous if selection changes while user is executing another action
 			}
 		}
-		
+
 		pane.file_operations.remove(this);
 		pane.refresh_file_action_panel();
 		pane.refresh_message_panel();
@@ -226,7 +226,3 @@ public class ProgressPanelImageTask : ProgressPanel {
 		}
 	}
 }
-
-
-
-

@@ -42,9 +42,9 @@ public class FilePropertiesBox : Gtk.Box {
 	private Gtk.SizeGroup group1_value;
 	private Gtk.SizeGroup group2_value;
 
-	private Gtk.Entry entry_created; 
-	private Gtk.Entry entry_modified; 
-	private Gtk.Entry entry_changed; 
+	private Gtk.Entry entry_created;
+	private Gtk.Entry entry_modified;
+	private Gtk.Entry entry_changed;
 	private Gtk.Entry entry_accessed;
 
 	private Gtk.ComboBox cmb_user;
@@ -65,7 +65,7 @@ public class FilePropertiesBox : Gtk.Box {
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		margin = 12;
-		
+
 		window = parent_window;
 
 		panel_mode = _panel_mode;
@@ -79,7 +79,7 @@ public class FilePropertiesBox : Gtk.Box {
 		//dir_item = file_item.is_directory ? file_item : (new FileItem.from_path(file_item.file_location));
 
 		file_item.query_file_info();
-		
+
 		init_ui_for_file(query_size);
 
 		this.show_all();
@@ -90,7 +90,7 @@ public class FilePropertiesBox : Gtk.Box {
 	private void init_ui_for_file(bool query_size){
 
 		gtk_container_remove_children(this);
-		
+
 		group_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		group1_value = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		group2_value = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
@@ -101,16 +101,16 @@ public class FilePropertiesBox : Gtk.Box {
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 24);
 		this.add(hbox);
-		
+
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		hbox.add(vbox);
 
 		if (panel_mode){
-			init_preview_image(vbox); 
+			init_preview_image(vbox);
 		}
 
 		// name ----------------
-		
+
 		var txt = file_item.display_name;
 		var label = add_property(vbox, _("Name"), txt);
 
@@ -119,7 +119,7 @@ public class FilePropertiesBox : Gtk.Box {
 		}
 
 		// location -----------
-		
+
 		txt = file_item.display_location;
 
 		label = add_property(vbox, _("Location"), txt);
@@ -131,7 +131,7 @@ public class FilePropertiesBox : Gtk.Box {
 		// symlink target --------------------
 
 		if (file_item.is_symlink){
-			
+
 			label = add_property(vbox, _("Target"), file_item.symlink_target);
 
 			if (panel_mode){
@@ -140,7 +140,7 @@ public class FilePropertiesBox : Gtk.Box {
 		}
 
 		// size -------------
-		
+
 		if (file_item.file_size > -1){
 
 			txt = "%s (%'ld bytes)".printf(
@@ -152,7 +152,7 @@ public class FilePropertiesBox : Gtk.Box {
 		}
 
 		// contents ----------
-		
+
 		if ((file_item.file_count > 0)||(file_item.dir_count > 0)){
 
 			txt = "%'ld items (%'ld files, %'ld dirs)".printf(
@@ -165,39 +165,39 @@ public class FilePropertiesBox : Gtk.Box {
 		}
 
 		// archive ----------
-		
+
 		if (file_item is FileItemArchive){
 
 			var archive = (FileItemArchive) file_item;
-			
+
 			add_separator(vbox);
 
 			// type ----------
-			
+
 			if (archive.archive_type.length > 0){
 				txt = archive.archive_type;
 				add_property(vbox, _("Type"), txt);
 			}
 
 			// method ----------
-			
+
 			if (archive.archive_method.length > 0){
 				txt = archive.archive_method;
 				add_property(vbox, _("Method"), txt);
 			}
 
 			// encrypted ----------
-			
+
 			txt = archive.archive_is_encrypted ? _("Yes") : _("No");
 			add_property(vbox, _("Encrypted"), txt);
 
 			// solid ----------
-			
+
 			txt = archive.archive_is_solid ? _("Yes") : _("No");
 			add_property(vbox, _("Solid"), txt);
 
 			// blocks ----------
-			
+
 			if (archive.archive_blocks > 0){
 				txt = "%'d".printf(archive.archive_blocks);
 				add_property(vbox, _("Blocks"), txt);
@@ -206,17 +206,17 @@ public class FilePropertiesBox : Gtk.Box {
 			// packed ----------
 
 			if (archive.archive_size > 0){
-				
+
 				txt = "%s (%'ld bytes)".printf(
 					format_file_size(archive.archive_size),
 					archive.archive_size
 				);
-				
+
 				add_property(vbox, _("Packed"), txt);
 			}
 
 			// unpacked ----------
-			
+
 			if (archive.file_size > 0){
 
 				txt = "%s (%'ld bytes)".printf(
@@ -228,7 +228,7 @@ public class FilePropertiesBox : Gtk.Box {
 			}
 
 			// headers ----------
-			
+
 			if (archive.archive_header_size > 0){
 
 				txt = "%s (%'ld bytes)".printf(
@@ -243,17 +243,17 @@ public class FilePropertiesBox : Gtk.Box {
 		add_separator(vbox);
 
 		// type ------------------
-		
+
 		add_property(vbox, _("Type"), file_item.content_type_desc);
 
 		// mime -----------------
-		
+
 		add_property(vbox, _("Mime"), file_item.content_type);
 
 		add_separator(vbox);
 
 		// created ---------------------------
-		
+
 		string date_string = "";
 		if (file_item.created != null){
 			date_string = file_item.created.format("%Y-%m-%d %H:%M");
@@ -279,7 +279,7 @@ public class FilePropertiesBox : Gtk.Box {
 		});
 
 		// accessed ---------------------------
-		
+
 		entry_accessed = add_property_accessed (vbox, _("Accessed"), "");
 
 		file_touched.connect(() => {
@@ -291,9 +291,9 @@ public class FilePropertiesBox : Gtk.Box {
 			}
 			entry_accessed.text = date_string;
 		});
-		
+
 		// changed ---------------------------
-	
+
 		entry_changed = add_property_changed (vbox, _("Changed"), "");
 
 		file_touched.connect(() => {
@@ -321,15 +321,15 @@ public class FilePropertiesBox : Gtk.Box {
 		// preview ---------------------
 
 		if (!panel_mode){
-			
+
 			init_preview_image(hbox);
 		}
 
 		if ((file_item != null) && file_item.is_directory && query_size){
 			calculate_dirsize();
 		}
-	} 
- 
+	}
+
 	private void add_user_combo(Gtk.Box box){
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
@@ -356,7 +356,7 @@ public class FilePropertiesBox : Gtk.Box {
 		combo.set_cell_data_func (cell_text, (cell_text, cell, model, iter) => {
 			string user_login, user_name;
 			model.get (iter, 0, out user_login, 1, out user_name, -1);
-			(cell as Gtk.CellRendererText).text = user_login;// + ((user_name.length > 0) ? " - %s".printf(user_name) : "");
+			((Gtk.CellRendererText)cell).text = user_login;// + ((user_name.length > 0) ? " - %s".printf(user_name) : "");
 		});
 
 		// add items
@@ -415,7 +415,7 @@ public class FilePropertiesBox : Gtk.Box {
 		combo.set_cell_data_func (cell_text, (cell_text, cell, model, iter) => {
 			string group_name;
 			model.get (iter, 0, out group_name, -1);
-			(cell as Gtk.CellRendererText).text = group_name;
+			((Gtk.CellRendererText)cell).text = group_name;
 		});
 
 		// add items
@@ -453,20 +453,20 @@ public class FilePropertiesBox : Gtk.Box {
 		combo.changed.disconnect(combo_owner_changed);
 
 		gtk_set_busy(true, window);
-		
+
 		string user = gtk_combobox_get_value(combo, 0, file_item.owner_user);
 
 		string cmd = cmd_chown(file_item.file_path, user, "", false);
-		
+
 		string std_out, std_err;
 		int status = App.exec_admin(cmd, out std_out, out std_err);
 
 		gtk_set_busy(false, window);
 
 		if (status != 0){
-			
+
 			gtk_messagebox(_("Failed to update Owner"), std_err, window, true);
-			
+
 			combo.active = combo.get_data<int>("active");
 		}
 
@@ -480,20 +480,20 @@ public class FilePropertiesBox : Gtk.Box {
 		combo.changed.disconnect(combo_group_changed);
 
 		gtk_set_busy(true, window);
-		
+
 		string group = gtk_combobox_get_value(combo, 0, file_item.owner_group);
 
 		string cmd = cmd_chown(file_item.file_path, "", group, false);
-		
+
 		string std_out, std_err;
 		int status = App.exec_admin(cmd, out std_out, out std_err);
 
 		gtk_set_busy(false, window);
 
 		if (status != 0){
-			
+
 			gtk_messagebox(_("Failed to update Group"), std_err, window, true);
-			
+
 			combo.active = combo.get_data<int>("active");
 		}
 
@@ -521,18 +521,18 @@ public class FilePropertiesBox : Gtk.Box {
 		button.clicked.disconnect(btn_user_recursive);
 
 		gtk_set_busy(true, window);
-			
+
 		string user = gtk_combobox_get_value(cmb_user, 0, file_item.owner_user);
 
 		string cmd = cmd_chown(file_item.file_path, user, "", true);
-		
+
 		string std_out, std_err;
 		int status = App.exec_admin(cmd, out std_out, out std_err);
 
 		gtk_set_busy(false, window);
 
 		if (status != 0){
-			
+
 			gtk_messagebox(_("Failed to update Owner"), std_err, window, true);
 		}
 
@@ -558,18 +558,18 @@ public class FilePropertiesBox : Gtk.Box {
 		button.clicked.disconnect(btn_group_recursive);
 
 		gtk_set_busy(true, window);
-			
+
 		string group = gtk_combobox_get_value(cmb_group, 0, file_item.owner_group);
 
 		string cmd = cmd_chown(file_item.file_path, "", group, true);
-		
+
 		string std_out, std_err;
 		int status = App.exec_admin(cmd, out std_out, out std_err);
 
 		gtk_set_busy(false, window);
-		
+
 		if (status != 0){
-			
+
 			gtk_messagebox(_("Failed to update Group"), std_err, window, true);
 		}
 
@@ -583,11 +583,11 @@ public class FilePropertiesBox : Gtk.Box {
 		if (panel_mode){ return; } // preview will be displayed by parent panel
 
 		var image = new Gtk.Image();
-		
+
 		if (file_item.is_image_gdk_supported){
 
 			log_debug("is_image_gdk_supported()");
-			
+
 			try{
 				var pix = new Gdk.Pixbuf.from_file_at_scale(file_item.file_path, 256, 256, true);
 				pix = IconManager.resize_icon(pix, 256);
@@ -610,7 +610,7 @@ public class FilePropertiesBox : Gtk.Box {
 			}
 			thumb = file_item.get_image(256, true, false, false, out task);
 		}
-		
+
 		if (thumb != null) {
 			image.pixbuf = thumb;
 			log_debug("setting from file_item.get_image()");
@@ -634,11 +634,11 @@ public class FilePropertiesBox : Gtk.Box {
 	private FileTask dirsize_task;
 	private ulong dirsize_complete_id = 0;
 	private uint tmr_dirsize_progress = 0;
-	
+
 	private void calculate_dirsize(){
 
 		if (!file_item.is_directory){ return; }
-		
+
 		if ((dirsize_task != null) && dirsize_task.is_running){
 
 			dirsize_task.disconnect(dirsize_complete_id);
@@ -653,13 +653,13 @@ public class FilePropertiesBox : Gtk.Box {
 		}
 
 		lbl_size.label = _("Checking...");
-		
+
 		dirsize_task = new FileTask();
 
 		// task complete --------
-		
+
 		dirsize_complete_id = dirsize_task.complete.connect(()=>{
-			
+
 			dirsize_task = null;
 
 			if (tmr_dirsize_progress > 0){
@@ -670,27 +670,27 @@ public class FilePropertiesBox : Gtk.Box {
 				file_item.file_size_formatted,
 				file_item.file_size
 			);
-			
+
 			lbl_size.label = txt;
 
 			App.main_window.active_pane.view.refresh_iter_by_file_path(file_item.file_path);
 		});
 
 		// progress ---------
-		
+
 		int elapsed = 0;
 
 		tmr_dirsize_progress = Timeout.add(1000, ()=>{
 
 			elapsed += 1;
-			
+
 			lbl_size.label = "> %s (%s... %ds)".printf(format_file_size(dirsize_task.stat_size), _("Checking"), elapsed);
-			
+
 			return dirsize_task.is_running;
 		});
 
 		// execute ---------
-		
+
 		dirsize_task.calculate_dirsize_async(new FileItem[] { file_item });
 	}
 
@@ -746,7 +746,7 @@ public class FilePropertiesBox : Gtk.Box {
 		group2_value.add_widget(entry);
 
 		entry.text = property_value;
-		
+
 		if (file_item is FileItemCloud){ return entry; }
 
 		if ((file_item is FileItemArchive) && (file_item.parent != null) && (file_item.parent is FileItemArchive)){ return entry; }
@@ -869,11 +869,9 @@ public class FilePropertiesBox : Gtk.Box {
 	}
 
 	private void add_separator(Gtk.Box box){
-		
+
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.margin_left = 12;
+		separator.margin_start = 12;
 		box.add(separator);
 	}
 }
-
-

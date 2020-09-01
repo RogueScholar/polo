@@ -40,7 +40,7 @@ public class TermBox : Gtk.Box {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	FileViewPane _pane;
 	private FileViewPane? pane {
 		get{
@@ -58,7 +58,7 @@ public class TermBox : Gtk.Box {
 	}
 
 	// -------------------------------
-	
+
 	private Vte.Terminal term;
 	private Pid child_pid;
 	//private bool admin_mode = false;
@@ -69,7 +69,7 @@ public class TermBox : Gtk.Box {
 	public const int DEF_FONT_SIZE = 11;
 	public const string DEF_COLOR_FG = "#DCDCDC";
 	public const string DEF_COLOR_BG = "#2C2C2C";
-	
+
 	public TermBox(FileViewPane? parent_pane){
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		Object(orientation: Gtk.Orientation.VERTICAL, spacing: 0); // work-around
@@ -77,11 +77,11 @@ public class TermBox : Gtk.Box {
 		log_debug("TermBox(): ----------------------------");
 
 		//var timer = timer_start();
-		
+
 		_pane = parent_pane;
 
 		//admin_mode = _admin_mode;
-		
+
 		init_ui();
 
 		this.set_no_show_all(true);
@@ -104,17 +104,17 @@ public class TermBox : Gtk.Box {
 		term = new Vte.Terminal();
 		term.expand = true;
 		scrolled.add(term);
-		
+
 		//#if VTE_291
-		
+
 		term.input_enabled = true;
 		term.backspace_binding = Vte.EraseBinding.AUTO;
 		term.cursor_blink_mode = Vte.CursorBlinkMode.SYSTEM;
 		term.cursor_shape = Vte.CursorShape.UNDERLINE;
-		term.rewrap_on_resize = true;
-		term.allow_bold = false;
+		//term.rewrap_on_resize = true;
+		//term.allow_bold = false;
 		//#endif
-		
+
 		term.scroll_on_keystroke = true;
 		term.scroll_on_output = false;
 		term.scrollback_lines = 100000;
@@ -150,7 +150,7 @@ public class TermBox : Gtk.Box {
 			pane.selection_bar.close_panel(false);
 
 			term.grab_focus();
-			
+
 			if (event.button == 3) {
 				menu_term = new TermContextMenu(pane);
 				return menu_term.show_menu(event);
@@ -163,7 +163,7 @@ public class TermBox : Gtk.Box {
 	public void start_shell(){
 
 		log_debug("TermBox: start_shell()");
-		
+
 		string[] argv = new string[1];
 
 		argv[0] = get_cmd_path(App.shell_default);
@@ -173,11 +173,11 @@ public class TermBox : Gtk.Box {
 		}
 
 		string[] env = Environ.get();
-		
+
 		try{
 
 			is_running = true;
-			
+
 			term.spawn_sync(
 				Vte.PtyFlags.DEFAULT, //pty_flags
 				App.user_home, //working_directory
@@ -197,7 +197,7 @@ public class TermBox : Gtk.Box {
 			});
 
 			log_debug("TermBox: App.shell_default: %s".printf(App.shell_default));
-			
+
 			if (App.shell_default == "bash"){
 				string bashrc = path_combine(App.app_conf_dir_path, "bashrc");
 				if (file_exists(bashrc)){
@@ -250,20 +250,20 @@ public class TermBox : Gtk.Box {
 		}
 
 		#if VTE_291_OLD
-		 
+
 		term.feed_child(cmd, -1);
 
-		#else 
- 
-		term.feed_child(cmd.to_utf8());  
-		
+		#else
+
+		term.feed_child((uint8[])cmd);
+
 		#endif
 	}
 
 	public void refresh(){
 
 		log_debug("TermBox: refresh()");
-		
+
 		if (this.visible && !is_running){
 			start_shell();
 		}
@@ -272,7 +272,7 @@ public class TermBox : Gtk.Box {
 	public void toggle(){
 
 		log_debug("TermBox: toggle()");
-		
+
 		if (this.visible){
 			gtk_hide(this);
 			window.update_accelerators_for_active_pane();
@@ -281,9 +281,9 @@ public class TermBox : Gtk.Box {
 			gtk_show(this);
 
 			pane.unmaximize_terminal();
-			
+
 			refresh();
-			
+
 			if (view.is_normal_directory){
 				change_directory(view.current_item.file_path);
 				reset();
@@ -301,7 +301,7 @@ public class TermBox : Gtk.Box {
 		//	show_running_process_message();
 		//	return;
 		//}
-		
+
 		log_debug("TermBox: change_directory()");
 
 		feed_command("cd '%s'".printf(escape_single_quote(dir_path)));
@@ -316,7 +316,7 @@ public class TermBox : Gtk.Box {
 	public void copy(){
 
 		log_debug("TermBox: copy()");
-		
+
 		term.copy_primary();
 
 		Gdk.Display display = this.get_display ();
@@ -331,7 +331,7 @@ public class TermBox : Gtk.Box {
 	public void paste(){
 
 		log_debug("TermBox: paste()");
-		
+
 		Gdk.Display display = this.get_display ();
 		Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
 		string txt = clipboard.wait_for_text();
@@ -355,35 +355,35 @@ public class TermBox : Gtk.Box {
 	}
 
 	public void set_font_size(int size_pts){
-		
+
 		term.font_desc = Pango.FontDescription.from_string("normal %d".printf(size_pts));
 	}
 
 	public void set_font_desc(Pango.FontDescription font_desc){
-		
+
 		term.set_font(font_desc);
 	}
 
 	public void set_color_foreground(string color){
 
 		//log_debug("TermBox: set_color_foreground(): %s".printf(color));
-		
+
 		var rgba = Gdk.RGBA();
 		rgba.parse(color);
 		term.set_color_foreground(rgba);
 	}
-	
+
 	public void set_color_background(string color){
-		
+
 		//log_debug("TermBox: set_color_background(): %s".printf(color));
-		
+
 		var rgba = Gdk.RGBA();
 		rgba.parse(color);
 		term.set_color_background(rgba);
 	}
 
 	public void set_defaults(){
-		
+
 		set_font_size(DEF_FONT_SIZE);
 		set_color_foreground(DEF_COLOR_FG);
 		set_color_background(DEF_COLOR_BG);
@@ -392,32 +392,32 @@ public class TermBox : Gtk.Box {
 	public void chroot_current(){
 
 		string cmd = "";
-		
+
 		if (App.shell_default == "fish"){
 			cmd = "sudo groot --chroot-fstab (pwd)";
 		}
 		else{
 			cmd = "sudo groot --chroot-fstab $(pwd)";
 		}
-		
+
 		feed_command(cmd);
 	}
 
 	public Proc[] get_child_processes(){
-		
+
 		return Proc.enumerate_descendants(child_pid, null);
 	}
 
 	public bool waiting_for_admin_prompt(){
 
 		var procs = get_child_processes();
-		
+
 		foreach(var proc in procs){
 			if ((proc.user == "root") && ((proc.cmdline == "pkexec bash") || (proc.cmdline == "gksu bash"))){
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -426,14 +426,13 @@ public class TermBox : Gtk.Box {
 		var procs = get_child_processes();
 
 		string cmd_bash = get_cmd_path("bash");
-		
+
 		foreach(var proc in procs){
 			if ((proc.user == "root") && (proc.cmdline == cmd_bash)){
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }
-

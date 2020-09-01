@@ -40,7 +40,7 @@ public class TrashBar : Gtk.Box {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	protected FileViewPane pane;
 
 	protected FileViewList view {
@@ -52,7 +52,7 @@ public class TrashBar : Gtk.Box {
 	}
 
 	// -------------------------------
-	
+
 	private Gtk.Label lbl_status;
 
 	public TrashBar(FileViewPane parent_pane){
@@ -171,7 +171,7 @@ public class TrashBar : Gtk.Box {
 		var label = new Gtk.Label(text);
 		label.set_use_markup(true);
 		label.margin = 6;
-		label.margin_right = 12;
+		label.margin_end = 12;
 		label.set_tooltip_text(_("Empty trash can"));
 		ebox.add(label);
 
@@ -215,4 +215,3 @@ public class TrashBar : Gtk.Box {
 		}
 	}
 }
-

@@ -34,7 +34,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class CustomMessageDialog : Gtk.Dialog {
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Label lbl_msg;
 	private Gtk.ScrolledWindow sw_msg;
@@ -47,11 +47,11 @@ public class CustomMessageDialog : Gtk.Dialog {
 	private string msg_body;
 	private Gtk.MessageType msg_type;
 	private Gtk.ButtonsType buttons_type;
-	
+
 	public CustomMessageDialog(
 		string _msg_title, string _msg_body,
 		Gtk.MessageType _msg_type, Window? parent, Gtk.ButtonsType _buttons_type) {
-			
+
 		set_transient_for(parent);
 		set_modal(true);
 
@@ -59,15 +59,15 @@ public class CustomMessageDialog : Gtk.Dialog {
 		msg_body = _msg_body;
 		msg_type = _msg_type;
 		buttons_type = _buttons_type;
-		
+
 		init_window();
 
 		//lbl_msg.label += string.nfill(4000, 'n');
-		
+
 		lbl_msg.expand = true;
 		sw_msg.expand = true;
 		sw_msg.vscrollbar_policy = PolicyType.NEVER;
-		
+
 		//log_debug("0: label=%dx%d".printf(lbl_msg.get_allocated_width(), lbl_msg.get_allocated_height()));
 		//log_debug("0: scroll=%dx%d".printf(sw_msg.get_allocated_width(), sw_msg.get_allocated_height()));
 
@@ -93,7 +93,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 	}
 
 	public void init_window () {
-		
+
 		this.title = "";
 		this.window_position = WindowPosition.CENTER_ON_PARENT;
 		this.icon = get_app_icon(16);
@@ -101,7 +101,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		this.deletable = false;
 		this.skip_taskbar_hint = true;
 		this.skip_pager_hint = true;
-		
+
 		//vbox_main
 		vbox_main = get_content_area () as Gtk.Box;
 		vbox_main.margin = 6;
@@ -112,7 +112,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		vbox_main.add (hbox_contents);
 
 		string icon_name = "dialog-info";
-		
+
 		switch(msg_type){
 		case Gtk.MessageType.INFO:
 			icon_name = "dialog-info";
@@ -129,11 +129,11 @@ public class CustomMessageDialog : Gtk.Dialog {
 		}
 
 		// image ----------------
-		
+
 		var img = new Image.from_icon_name(icon_name, Gtk.IconSize.DIALOG);
 		img.margin = 12;
 		hbox_contents.add(img);
-		
+
 		// label -------------------
 
 		var text = "<span weight=\"bold\" size=\"x-large\">%s</span>\n\n%s".printf(
@@ -141,7 +141,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 			msg_body);
 
 		this.title = "";
-			
+
 		lbl_msg = new Gtk.Label(text);
 		lbl_msg.xalign = 0.0f;
 		lbl_msg.yalign = 0.0f;
@@ -150,7 +150,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		lbl_msg.wrap_mode = Pango.WrapMode.WORD_CHAR;
 		lbl_msg.use_markup = true;
 		lbl_msg.margin = 12;
-		
+
 		//sw_msg
 		sw_msg = new Gtk.ScrolledWindow(null, null);
 		//sw_msg.set_shadow_type (ShadowType.ETCHED_IN);
@@ -161,9 +161,7 @@ public class CustomMessageDialog : Gtk.Dialog {
 		hbox_contents.add(sw_msg);
 
 		// actions -------------------------
-		
-		var action_area = get_action_area () as Gtk.Box;
-		action_area.margin_top = 12;
+		set_margin_top(12);
 
 		switch(buttons_type){
 		case Gtk.ButtonsType.OK:
@@ -183,5 +181,3 @@ public class CustomMessageDialog : Gtk.Dialog {
 		}
 	}
 }
-
-

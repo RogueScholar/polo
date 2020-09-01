@@ -43,9 +43,9 @@ public class BookmarkContextMenu : Gtk.Menu, IPaneActive {
 	private Gtk.Box label_box;
 	private Gtk.ListBoxRow row;
 	private Gtk.ListBox listbox;
-	
+
 	public BookmarkContextMenu(GtkBookmark _bm, Gtk.Entry _entry, Gtk.Box _label_box, Gtk.ListBoxRow _row, Gtk.ListBox _listbox){
-		
+
 		margin = 0;
 
 		log_debug("BookmarkContextMenu()");
@@ -70,7 +70,7 @@ public class BookmarkContextMenu : Gtk.Menu, IPaneActive {
 
 		sg_icon = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_edit();
 
 		add_remove();
@@ -127,10 +127,10 @@ public class BookmarkContextMenu : Gtk.Menu, IPaneActive {
 	public bool show_menu(Gdk.EventButton? event) {
 
 		if (event != null) {
-			this.popup (null, null, null, event.button, event.time);
+			this.popup_at_pointer(event);
 		}
 		else {
-			this.popup (null, null, null, 0, Gtk.get_current_event_time());
+			this.popup_at_pointer(null);
 		}
 
 		return true;

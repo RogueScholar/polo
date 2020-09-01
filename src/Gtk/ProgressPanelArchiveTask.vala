@@ -78,7 +78,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	public ProgressPanelArchiveTask(FileViewPane _pane,
 		Gee.ArrayList<FileItem> _items, FileActionType _action, bool _create_new_folder){
 
-		base(_pane, _items, _action);
+		init(_pane, _items, _action);
 
 		task = new ArchiveTask(window);
 		task.extract_to_new_folder = _create_new_folder;

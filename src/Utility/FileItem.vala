@@ -1139,7 +1139,6 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	// helpers ----------------------------------------------
 
 	public int compare_to(FileItem b){
-
 		if (this.file_type == b.file_type) {
 			return strcmp(this.file_name.replace(".","..").down().collate_key_for_filename(), b.file_name.replace(".","..").down().collate_key_for_filename());
 		}

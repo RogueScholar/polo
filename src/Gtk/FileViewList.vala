@@ -4214,16 +4214,6 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		// update
 		action.set_destination(current_item);
 
-		if (action.source.file_path == action.destination.file_path){
-			if (action.action_type == FileActionType.CUT){
-				show_msg_for_same_source_and_dest();
-				return;
-			}
-			else if (confirm_copy_for_same_source_and_dest() == Gtk.ResponseType.NO){
-				return;
-			}
-		}
-
 		// link
 		action.set_pane(pane);
 		pane.file_operations.add(action);
@@ -4252,16 +4242,6 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		// update
 		action.set_destination(selected_items[0]);
-
-		if (action.source.file_path == action.destination.file_path){
-			if (action.action_type == FileActionType.CUT){
-				show_msg_for_same_source_and_dest();
-				return;
-			}
-			else if (confirm_copy_for_same_source_and_dest() == Gtk.ResponseType.NO){
-				return;
-			}
-		}
 
 		// link
 		action.set_pane(pane);
@@ -4335,16 +4315,6 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			// update
 			action.set_destination(opp_pane.view.current_item);
 
-			if (action.source.file_path == action.destination.file_path){
-				if (move){
-					show_msg_for_same_source_and_dest();
-					return;
-				}
-				else if (confirm_copy_for_same_source_and_dest() == Gtk.ResponseType.NO){
-					return;
-				}
-			}
-
 			// link
 			pane.file_operations.add(action);
 
@@ -4378,16 +4348,6 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		// update
 		action.set_source(current_item);
 		action.set_destination(new FileItem.from_path(list[0]));
-
-		if (action.source.file_path == action.destination.file_path){
-			if (move){
-				show_msg_for_same_source_and_dest();
-				return;
-			}
-			else if (confirm_copy_for_same_source_and_dest() == Gtk.ResponseType.NO){
-				return;
-			}
-		}
 
 		// link
 		pane.file_operations.add(action);
@@ -4469,18 +4429,6 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		// execute
 		action.execute();
-	}
-
-	private void show_msg_for_same_source_and_dest(){
-		string title = _("Source and destination are same");
-		string msg = _("Requested operation is not possible");
-		gtk_messagebox(title, msg, window, true);
-	}
-
-	private Gtk.ResponseType confirm_copy_for_same_source_and_dest(){
-		string title = _("Source and destination are same");
-		string msg = _("Create copies of selected items?");
-		return gtk_messagebox_yes_no(title, msg, window, true);
 	}
 
 	public void trash(){

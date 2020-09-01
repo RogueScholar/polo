@@ -1,8 +1,4 @@
-### This a fork from https://github.com/teejee2008/polo All thanks should be expressed to the author, but the project was officially frozen ...
-
-### Also thanks for the ideas https://github.com/zlita/polo and https://github.com/ave4/polo .
-
-## Polo File Manager
+# Polo File Manager
 
 Polo is a modern, light-weight file manager for Linux with support for multiple
 panes and tabs; support for archives, and much more.
@@ -63,4 +59,4 @@ _Support for browsing cloud storage accounts_
 PPA and DEB files are available for Ubuntu and Ubuntu-based distributions.
 Binary installers are available for all Linux distributions.
 
-**[Installation](https://github.com/teejee2008/polo/wiki/Installation)**
+**[Installation](https://github.com/RogueScholar/polo/wiki/Installation)**

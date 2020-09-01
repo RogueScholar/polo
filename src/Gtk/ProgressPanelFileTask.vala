@@ -424,7 +424,9 @@ public class ProgressPanelFileTask : ProgressPanel {
 		switch (action_type){
 		case FileActionType.CUT:
 		case FileActionType.COPY:
+
 			if ((copied_bytes > 0) && (stalled_counter < 0) && !stalled_warning_shown){
+
 				string title = _("Not Responding");
 				string msg = _("The data transfer seems to have stopped. Check if device is working correctly and if connection with the device is reliable.");
 				gtk_messagebox(title, msg, window, true);

@@ -20,7 +20,6 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **System:**
- - Linux Distribution Name and Version: [e.g. Ubuntu 16.04]
- - Desktop [e.g. MATE, XFCE]
+ - Linux Distribution Name and Version: [e.g. Kubuntu 20.04, Linux Mint Tessa, etc.]
+ - Desktop [e.g. KDE Plasma 5.19, GNOME 3.34, XFCE, etc.]
  - Application Version [e.g. v18.8]
-

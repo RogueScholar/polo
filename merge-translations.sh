@@ -14,13 +14,13 @@ echo " Update PO files in po/ with translations placed in po-temp/"
 echo "=========================================================================="
 echo ""
 
-for lang in $languages; do
-	if [ -e "po-temp/${app_name}-$lang.po" ]; then
+for lang in "$languages"; do
+	if [ -e "po-temp/$app_name-$lang.po" ]; then
 		# remove headers in po-temp/*.po so that msgcat does not create malformed headers
-		sed -i '/^#/d' po-temp/${app_name}-$lang.po
-		msgcat -o po/${app_name}-$lang.po po-temp/${app_name}-$lang.po po/${app_name}-$lang.po
-		sed -i '/#-#-#-#-#/d' po/${app_name}-$lang.po
-		sed -i '/#, fuzzy/d' po/${app_name}-$lang.po
+		sed -i '/^#/d' po-temp/"$app_name-$lang".po
+		msgcat -o po/"$app_name-$lang".po po-temp/"$app_name-$lang".po po/"$app_name-$lang".po
+		sed -i '/#-#-#-#-#/d' po/"$app_name-$lang".po
+		sed -i '/#, fuzzy/d' po/"$app_name-$lang".po
 	fi
 done
 
@@ -30,9 +30,9 @@ echo " Update PO files in po/ with latest POT file"
 echo "=========================================================================="
 echo ""
 
-for lang in $languages; do
-	if [ -e "po-temp/${app_name}-$lang.po" ]; then
-		msgmerge --update -v po/${app_name}-$lang.po ${app_name}.pot
+for lang in "$languages"; do
+	if [ -e "po-temp/$app_name-$lang.po" ]; then
+		msgmerge --update -v po/"$app_name-$lang".po "$app_name".pot
 	fi
 done
 

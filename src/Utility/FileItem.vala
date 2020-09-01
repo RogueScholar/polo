@@ -53,17 +53,17 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public string owner_user = "";
 	public string owner_group = "";
 	public string file_status = "";
-	
+
 	public string checksum_md5 = "";
 	public string checksum_sha1 = "";   // sha1 - 160 bits
 	public string checksum_sha256 = ""; // sha2 - 256 bits
 	public string checksum_sha512 = ""; // sha2 - 512 bits
-	
+
 	public string checksum_compare = "";
 	public ChecksumCompareResult checksum_compare_result;
 	public string checksum_compare_message = "";
 	public Gdk.Pixbuf checksum_compare_icon;
-	
+
 	public string content_type = "";
 	public string content_type_desc = "";
 
@@ -88,9 +88,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public bool filesystem_read_only = false;
 	public string filesystem_type = "";
 	public string filesystem_id = "";
-	
+
 	// trash support ---------------------
-	
+
 	public bool is_trash = false;
 	public bool is_trashed_item = false;
 
@@ -103,7 +103,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public DateTime trash_deletion_date = null;
 
 	// archive support ------------------------
-	
+
 	public static bool is_archive_by_extension(string fpath) {
 
 		foreach(var ext in archive_extensions){
@@ -116,7 +116,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public static bool is_package_by_extension(string fpath) {
-	
+
 		foreach(var ext in package_extensions){
 			if (fpath.has_suffix(ext)) {
 				return true;
@@ -151,7 +151,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	};
 
 	// other -----------------
-	
+
 	public bool is_selected = false;
 	public bool is_symlink = false;
 	public bool is_symlink_broken = false;
@@ -181,7 +181,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public long hidden_count = 0;
 	public long file_count_total = 0;
 	public long dir_count_total = 0;
-	
+
 	/*public long item_count{
 		get {
 			return (file_count + dir_count);
@@ -199,7 +199,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public bool query_children_pending = false;
 	protected Mutex mutex_children = Mutex();
 	protected Mutex mutex_file_info = Mutex();
-	
+
 	// operation flags
 	public bool query_children_follow_symlinks = true;
 	public bool query_children_async_is_running = false;
@@ -255,7 +255,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public void set_file_path(string _file_path){
 
 		GLib.File file;
-		
+
 		if (_file_path.contains("://")){
 			file_uri = _file_path;
 			file = File.new_for_uri(file_uri);
@@ -270,7 +270,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		if (file_path == null){ file_path = ""; }
 
 		file_uri_scheme = file.get_uri_scheme();
-		
+
 		//log_debug("");
 		//log_debug("file_path      : %s".printf(file_path));
 		//log_debug("file.get_path(): %s".printf(file.get_path()));
@@ -279,28 +279,28 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public static void add_to_cache(FileItem item){
-		
+
 		cache[item.display_path] = item;
-		
+
 		if (item.is_directory){
 			cache[item.display_path + "/"] = item;
 		}
-		
+
 		//log_debug("add cache: %s".printf(item.display_path), true);
 	}
 
 	public static void remove_from_cache(FileItem item){
-		
+
 		if (cache.has_key(item.display_path)){
 			cache.unset(item.display_path);
 		}
-		
+
 		if (item.is_directory){
 			if (cache.has_key(item.display_path + "/")){
 				cache.unset(item.display_path + "/");
 			}
 		}
-		
+
 		//log_debug("add cache: %s".printf(item.display_path), true);
 	}
 
@@ -316,13 +316,13 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 		return null;
 	}
-	
+
 	// size and count ---------------
 
 	public bool dir_size_queried = false;
-	
+
 	protected int64 _file_size = 0;
-	
+
 	public int64 file_size {
 		get{
 			return _file_size;
@@ -342,7 +342,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public int64 get_dir_size_recursively(bool depth_is_negative){
-		
+
 		int64 dir_size = 0;
 
 		foreach(var child in children.values){
@@ -362,12 +362,12 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		if (depth_is_negative){
 			file_size = dir_size;
 		}
-		
+
 		return dir_size;
 	}
 
 	public long get_file_count_recursively(bool depth_is_negative){
-		
+
 		long count = 0;
 
 		foreach(var child in children.values){
@@ -387,7 +387,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public long get_dir_count_recursively(bool depth_is_negative){
-		
+
 		long count = 0;
 
 		foreach(var child in children.values){
@@ -407,13 +407,13 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 	public bool calculate_size_from_disk_aborted = false;
 	public int64 calculate_dirsize_from_disk_result = 0;
-	
+
 	private Gee.ArrayList<string> calculate_size_from_disk_pathlist;
-	
+
 	public int64 calculate_size_from_disk(string file_path, bool first_item){
 
 		//log_debug("FileItem:calculate_size_from_disk(): " + file_path);
-		
+
 		if (first_item){
 			calculate_size_from_disk_aborted = false;
 			calculate_size_from_disk_pathlist = new Gee.ArrayList<string>();
@@ -423,18 +423,18 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		if (calculate_size_from_disk_aborted){ return 0; }
 
 		int64 size = 0;
-			
+
 		try{
 			File file = File.parse_name(file_path);
 			FileInfo child_info;
-			
+
 			if (file.query_exists()) {
-				
+
 				FileInfo info = file.query_info("%s,%s,%s".printf(FileAttribute.STANDARD_TYPE,
 					FileAttribute.STANDARD_SIZE, FileAttribute.STANDARD_SYMLINK_TARGET), FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
 
 				if (info.get_file_type() == FileType.SYMBOLIC_LINK) {
-					
+
 					string target = info.get_symlink_target();
 					string targetpath = file_resolve_relative_path(target, file_parent(file_path));
 					log_debug("symlink:" + target + " > " + targetpath);
@@ -447,17 +447,17 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 				if (calculate_size_from_disk_pathlist.contains(file_path)){ return 0; }
 				calculate_size_from_disk_pathlist.add(file_path);
-				
+
 				if (info.get_file_type() == FileType.DIRECTORY){
 
 					FileEnumerator enumerator = file.enumerate_children("%s".printf(FileAttribute.STANDARD_NAME), FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
-					
+
 					while ((child_info = enumerator.next_file()) != null) {
 
 						string child_name = child_info.get_name();
 
 						string child_path = path_combine(file_path, child_name);
-							
+
 						size += calculate_size_from_disk(child_path, false);
 					}
 				}
@@ -483,7 +483,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public int64 item_count = 0;
 
 	public int64 file_count = 0;
-	
+
 	public int64 dir_count = 0;
 
 	public int64 size_compressed = 0;
@@ -492,12 +492,12 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		owned get{
 
 			string txt = "";
-			
+
 			if (is_dummy) {
 				txt += "-";
 			}
 			else if (is_directory){
-				
+
 				if (dir_size_queried){
 					if (file_size > 0){
 						txt += format_file_size(file_size);
@@ -507,7 +507,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 					}
 				}
 				else if (children_queried){
-					
+
 					if (item_count == 1){
 						txt += "%'lld %s".printf(item_count, _("item"));
 					}
@@ -533,7 +533,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public bool exists_on_disk() {
 
 		GLib.File file;
-		
+
 		if (file_path.length > 0){
 			file = File.new_for_path(file_path);
 		}
@@ -558,7 +558,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			return file_get_extension(file_path);
 		}
 	}
-	
+
 	public string file_title {
 		owned get{
 			if (file_path.length == 0){ return ""; }
@@ -606,10 +606,10 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public virtual string display_path {
 		owned get {
 
-			if (_display_path.length > 0){ 
+			if (_display_path.length > 0){
 				return _display_path;
 			}
-			
+
 			string txt = "";
 
 			if (is_trash){
@@ -636,7 +636,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	// helpers ---------------------
-	
+
 	public bool is_backup {
 		get{
 			return file_name.has_suffix("~");
@@ -763,7 +763,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	// check file type ----------------------
-	
+
 	public bool is_image{
 		get{
 			return content_type.has_prefix("image/");
@@ -773,7 +773,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public bool is_image_gdk_supported{
 		get{
 			string ext = file_extension.down();
-			
+
 			return (ext == ".bmp")||(ext == ".ico")||(ext == ".jpeg")||(ext == ".jpg")
 				||(ext == ".ico")||(ext == ".png")||(ext == ".pnm")||(ext == ".qtif")
 				||(ext == ".svg")||(ext == ".tga")||(ext == ".tiff")||(ext == ".wmf")
@@ -784,7 +784,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public bool is_animation_gdk_supported{
 		get{
 			string ext = file_extension.down();
-			
+
 			return (ext == ".gif")||(ext == ".ani");
 		}
 	}
@@ -796,11 +796,11 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			if (content_type.has_prefix("audio/")){ return true; }
 
 			if (content_type.has_prefix("video/")){ return true; }
-			
+
 			string ext = file_extension.down();
 
 			var supported = new string[] { ".mp4", ".gif"};
-			
+
 			return (ext in supported);
 		}
 	}
@@ -965,7 +965,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		bool load_thumbnail, bool add_transparency, bool add_emblems, out ThumbTask? task){
 
 		Gdk.Pixbuf? pixbuf = null;
-		
+
 		task = null;
 
 		//if (changed == null){
@@ -1086,7 +1086,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		//int emblem_size = (int) (icon_size * 0.40);
 
 		int emblem_size = 16;
-		
+
 		if (icon_size < 32){
 			emblem_size = 8;
 		}
@@ -1125,9 +1125,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public Gtk.Image? get_icon_image(int icon_size, bool add_transparency, bool add_emblems){
-		
+
 		Gdk.Pixbuf? pix = get_icon(icon_size, add_transparency, add_emblems);
-		
+
 		if (pix != null){
 			return new Gtk.Image.from_pixbuf(pix);
 		}
@@ -1135,7 +1135,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			return null;
 		}
 	}
-	
+
 	// helpers ----------------------------------------------
 
 	public int compare_to(FileItem b){
@@ -1178,7 +1178,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public Device? get_device(){
 		return Device.get_device_for_path(file_path);
 	}
-	
+
 	// query info --------------------------
 
 	public virtual void query_file_info() {
@@ -1186,12 +1186,12 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		try {
 
 			//var timer = timer_start();
-			
+
 			//log_debug("query_file_info(): %s".printf(file_path));
 
 			FileInfo info;
 			GLib.File file;
-			
+
 			if (file_path.length > 0){
 				file = File.new_for_path(file_path);
 			}
@@ -1205,7 +1205,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			}
 
 			mutex_file_info.lock();
-			
+
 			// get type without following symlinks
 
 			info = file.query_info("%s,%s,%s".printf(
@@ -1272,7 +1272,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 				this.file_type = FileType.REGULAR; // fake it, so that sorting is not broken
 				//log_debug("broken_link: %s".printf(file_name));
 			}
-			
+
 			if (this.is_symlink && !this.is_symlink_broken){
 				// get icon for the resolved file
 				this.icon = info.get_icon();
@@ -1307,11 +1307,11 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			// owner_user
 			this.owner_user = info.get_attribute_string(FileAttribute.OWNER_USER);
 			if (owner_user == null) { owner_user = ""; }
-			
+
 			// owner_group
 			this.owner_group = info.get_attribute_string(FileAttribute.OWNER_GROUP);
 			if (owner_group == null) { owner_group = ""; }
-			
+
 			this.can_read = info.get_attribute_boolean(FileAttribute.ACCESS_CAN_READ);
 			this.can_write = info.get_attribute_boolean(FileAttribute.ACCESS_CAN_WRITE);
 			this.can_execute = info.get_attribute_boolean(FileAttribute.ACCESS_CAN_EXECUTE);
@@ -1348,7 +1348,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public virtual void query_children(int depth, bool follow_symlinks) {
 
 		//log_debug("FileItem: query_children(): enter");
-		
+
 		/* Queries the file item's children using the file_path
 		 * depth = -1, recursively find and add all children from disk
 		 * depth =  1, find and add direct children
@@ -1361,7 +1361,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		if (query_children_running) { return; }
 
 		// check if directory and continue -------------------
-		
+
 		if (!is_directory) {
 			query_file_info();
 			query_children_running = false;
@@ -1375,7 +1375,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		log_debug("FileItem: query_children(%d): %s".printf(depth, file_path), true);
 
 		query_children_running = true;
-		
+
 		query_children_follow_symlinks = follow_symlinks;
 
 		FileEnumerator enumerator;
@@ -1398,9 +1398,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 		//mutex_children.lock();
 		//log_debug("FileItem: query_children(): lock_acquired");
-		
+
 		query_file_info(); // read folder properties
-		
+
 		try{
 
 			if (depth < 0){
@@ -1408,15 +1408,15 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			}
 
 			permission_denied = false;
-			
+
 			// mark existing children as stale -----------------
-			
+
 			foreach(var child in children.values){
 				child.is_stale = true;
 			}
 
 			// reset counts --------------
-			
+
 			item_count = 0;
 			file_count = 0;
 			dir_count = 0;
@@ -1424,7 +1424,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			//log_debug("FileItem: query_children(): enumerate_children");
 
 			// recurse children -----------------------
-			
+
 			enumerator = file.enumerate_children ("%s".printf(FileAttribute.STANDARD_NAME), 0);
 			while ((info = enumerator.next_file()) != null) {
 				//log_debug("FileItem: query_children(): found: %s".printf(info.get_name()));
@@ -1440,7 +1440,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			//log_debug("FileItem: query_children(): enumerate_children: done");
 
 			// update counts --------------------------
-			
+
 			foreach(var child in children.values){
 				if (child.is_directory){
 					dir_count++;
@@ -1455,7 +1455,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			//log_debug("FileItem: query_children(): count_children: done");
 
 			// remove stale children ----------------------------
-			
+
 			var list = new Gee.ArrayList<string>();
 			foreach(var key in children.keys){
 				if (children[key].is_stale){
@@ -1492,7 +1492,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		log_debug("query_children_async(): %s".printf(file_path));
 
 		query_children_follow_symlinks = follow_symlinks;
-		
+
 		query_children_async_is_running = true;
 		query_children_aborted = false;
 
@@ -1512,7 +1512,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		query_children_async_is_running = false;
 		query_children_aborted = false; // reset
 	}
-	
+
 	public virtual void query_file_system_info(bool fix_fstype = false) {
 
 		try {
@@ -1541,7 +1541,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	public void read_hidden_list(){
 
 		hidden_list = new Gee.ArrayList<string>();
-		
+
 		if ((file_name == ".dbus")||((file_name == ".gvfs"))){ return; }
 
 		if (is_remote){ return; }
@@ -1665,9 +1665,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 			// add item
 			item = this.add_child(child_item_file_path, item_file_type, 0, 0, true);
-			
+
 			// check if directory  ---------------------------------
-			
+
 			if (!item.is_directory) { return item; }
 
 			if (!item.can_read){ return item; }
@@ -1675,22 +1675,22 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			if (depth == 0){ return item; }
 
 			if (!query_children_follow_symlinks && item.is_symlink) { return item; }
-			
+
 			//log_debug("add_child_from_disk(): enumerate_children");
 
 			// enumerate item's children ----------------------------
-			
+
 			enumerator = file.enumerate_children ("%s,%s".printf(FileAttribute.STANDARD_NAME,FileAttribute.STANDARD_TYPE), 0);
-			
+
 			while ((info = enumerator.next_file()) != null) {
 
 				if (query_children_aborted) {
 					item.query_children_aborted = true;
 					return null;
 				}
-				
+
 				string child_path = path_combine(child_item_file_path, info.get_name());
-	
+
 				if (depth != 0){
 					// add item's children from disk and drill down further
 					item.add_child_from_disk(child_path, depth - 1);
@@ -1705,9 +1705,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	}
 
 	public FileItem add_descendant(string _file_path, FileType? _file_type, int64 item_size,int64 item_size_compressed) {
-		
+
 		FileItem? item = null;
-			
+
 		//log_debug("FileItem: add_descendant=%s".printf(_file_path));
 
 		string item_path = _file_path.strip();
@@ -1727,13 +1727,13 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 		// create dirs and find parent dir
 		FileItem current_dir = this;
-		
+
 		string[] arr = item_path.split("/");
 
 		//mutex_children.lock();
-		
+
 		for (int i = 0; i < arr.length - 1; i++) {
-			
+
 			//get dir name
 			dir_name = arr[i];
 
@@ -1778,7 +1778,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		//log_debug("FileItem: add_child: %s ---------------".printf(item_file_path));
 
 		mutex_children.lock();
-		
+
 		FileItem item = null;
 
 		// check existing ----------------------------
@@ -1786,17 +1786,17 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		bool existing_file = false;
 
 		string item_name = file_basename(item_file_path);
-		
+
 		if (children.has_key(item_name) && (children[item_name].file_name == item_name)){
 
 			existing_file = true;
 			item = children[item_name];
 			item.set_file_path(item_file_path); // path may have changed (rename issue)
-			
+
 			//log_debug("existing child, queried: %s".printf(item.fileinfo_queried.to_string()));
 		}
 		/*else if (cache.has_key(item_file_path) && (cache[item_file_path].file_path == item_file_path)){
-			
+
 			item = cache[item_file_path];
 
 			// set relationships
@@ -1810,7 +1810,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			if (item == null){
 				item = new FileItem.from_path_and_type(item_file_path, item_file_type, false);
 			}
-			
+
 			// set relationships
 			item.parent = this;
 			this.children[item.file_name] = item;
@@ -1823,9 +1823,9 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		//item.display_path = path_combine(this.display_path, item_name);
 
 		//bool item_was_queried = item.fileinfo_queried;
-		
+
 		// query file properties ------------
-		
+
 		if (item_query_file_info){
 			item.query_file_info();
 		}
@@ -1871,7 +1871,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 				this.file_count--;
 				this.file_count_total--;
 				*/
-				
+
 				//subtract child size
 				//this._size -= child.size;
 				//this._size_compressed -= child.size_compressed;
@@ -1893,7 +1893,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 				this.dir_count--;
 				this.dir_count_total--;
 				*/
-				
+
 				//subtract child counts
 				this.file_count_total -= child.file_count_total;
 				this.dir_count_total -= child.dir_count_total;
@@ -2000,12 +2000,12 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 
 	private void update_access_time(){
 		// update access time (and changed time) - forces cached icon to expire
-		touch(file_path, true, false, false, false, null); 
+		touch(file_path, true, false, false, false, null);
 		query_file_info();
 	}
 
 	// set properties -------------------------
-	
+
 	private enum ModeMask{
 		FILE_MODE_SUID       = 04000,
 		FILE_MODE_SGID       = 02000,
@@ -2061,11 +2061,11 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		}
 		this.permissions = txt.strip();
 	}
-	
+
 	public void set_content_type_from_extension(){
-		
+
 		if (content_type.length > 0){ return; }
-		
+
 		if (file_type == FileType.DIRECTORY){
 			content_type = "inode/directory";
 		}
@@ -2079,16 +2079,16 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		}
 
 		set_content_type_desc();
-		
+
 		set_content_type_icon();
 	}
-	
+
 	public void set_content_type_desc(){
 		if ((content_type.length > 0) && MimeType.mimetypes.has_key(this.content_type)){
 			this.content_type_desc = MimeType.mimetypes[this.content_type].comment;
 		}
 	}
-	
+
 	public void set_content_type_icon(){
 		if ((icon == null) && (content_type.length > 0)){
 			icon = GLib.ContentType.get_icon(content_type);
@@ -2114,13 +2114,13 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			break;
 		}
 	}
-	
+
 	// monitor
 
 	public FileMonitor? monitor_for_changes(out Cancellable? monitor_cancellable){
 
 		monitor_cancellable = null;
-				
+
 		if (!is_directory){ return null; }
 
 		FileMonitor file_monitor = null;
@@ -2191,7 +2191,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 	// archives
 
 	/*public void add_items_to_archive(Gee.ArrayList<FileItem> item_list){
-		
+
 		if (item_list.size > 0){
 			foreach(var item in item_list){
 				var child = add_child_from_disk(item.file_path);
@@ -2206,7 +2206,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 		var task = new ArchiveTask();
 		task.compress(file_path);
 		return task;
-		
+
 		this.extraction_path = current_item.file_path;
 
 		// select a subfolder in source path for extraction
@@ -2217,7 +2217,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			// since user has not specified the directory we need to
 			// make sure that files are not overwritten accidentally
 			// in existing directories
-			 
+
 			// create a unique extraction directory
 			int count = 0;
 			string outpath = archiver.extraction_path;
@@ -2228,7 +2228,7 @@ public class FileItem : GLib.Object, Gee.Comparable<FileItem> {
 			log_debug("create_dir: %s".printf(outpath));
 			archiver.extraction_path = outpath;
 	}
-	
+
 	public ArchiveTask extract_archive(){
 		var task = new ArchiveTask();
 		task.compress(this);

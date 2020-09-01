@@ -144,4 +144,3 @@ public abstract class ProgressPanel : Gtk.Box {
 
 	public abstract void finish();
 }
-

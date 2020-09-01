@@ -32,7 +32,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class AboutWindow : Dialog {
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.Box vbox_logo;
 	private Gtk.Box vbox_credits;
@@ -79,7 +79,7 @@ public class AboutWindow : Dialog {
 			_contributors = value;
 		}
 	}
-	
+
 	private string _comments = "";
 	public string comments{
 		get{
@@ -159,7 +159,7 @@ public class AboutWindow : Dialog {
 			_translators = value;
 		}
 	}
-	
+
 	private string[] _third_party;
 	public string[] third_party{
 		get{
@@ -201,9 +201,9 @@ public class AboutWindow : Dialog {
 	}
 
 	private string username = "";
-	
+
 	public AboutWindow() {
-		
+
         window_position = WindowPosition.CENTER_ON_PARENT;
 		set_destroy_with_parent (true);
 		set_modal (true);
@@ -222,7 +222,7 @@ public class AboutWindow : Dialog {
 		vbox_main.add(vbox_logo);
 
 		// license -------------------------------------
-		
+
 		vbox_license = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_license.no_show_all = true;
 		vbox_main.add(vbox_license);
@@ -231,7 +231,7 @@ public class AboutWindow : Dialog {
 		sw_license.set_shadow_type(ShadowType.ETCHED_IN);
 		sw_license.expand = true;
 		vbox_license.add(sw_license);
-		
+
 		var label = new Gtk.Label("");
 		label.set_use_markup(true);
 		label.margin_top = 5;
@@ -242,12 +242,12 @@ public class AboutWindow : Dialog {
 		label.wrap_mode = Pango.WrapMode.WORD_CHAR;
 		label.use_markup = true;
 		label.margin = 6;
-		label.margin_right = 25;
+		label.margin_end = 25;
 		sw_license.add(label);
 		lbl_license = label;
-		
+
 		// credits --------------------------------
-		
+
 		vbox_credits = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_credits.no_show_all = true;
 		vbox_main.add(vbox_credits);
@@ -256,11 +256,11 @@ public class AboutWindow : Dialog {
 		sw_credits.set_shadow_type(ShadowType.ETCHED_IN);
 		sw_credits.expand = true;
 		vbox_credits.add(sw_credits);
-		
+
 		vbox_lines = new Gtk.Box(Orientation.VERTICAL,0);
 		vbox_lines.margin_top = 10;
 		sw_credits.add(vbox_lines);
-		
+
 		//logo
 		img_logo = new Gtk.Image();
 		img_logo.margin_top = 6;
@@ -290,7 +290,7 @@ public class AboutWindow : Dialog {
 		vbox_logo.add(lbtn_website);
 
 		lbtn_website.activate_link.connect(()=>{
-			return xdg_open(lbtn_website.uri, username); 
+			return xdg_open(lbtn_website.uri, username);
 		});
 
 		//copyright
@@ -308,27 +308,17 @@ public class AboutWindow : Dialog {
 	}
 
 	private void add_action_buttons(){
-		
-		hbox_action = (Box) get_action_area();
 
 		//btn_license
 		btn_license = new Gtk.Button.with_label("  " + _("License"));
 		btn_license.image = IconManager.lookup_image("help-about-symbolic", 16);
-		hbox_action.add(btn_license);
 
-		//btn_credits
-		btn_credits = new Gtk.Button.with_label("  " + _("Credits"));
-		btn_credits.image = IconManager.lookup_image("help-about-symbolic", 16);
-		hbox_action.add(btn_credits);
+        int btn_license_response_id = (int)btn_license.clicked.connect(()=>{
 
-		// handlers
-		
-        btn_license.clicked.connect(()=>{
-			
 			vbox_logo.visible = !vbox_logo.visible;
 
 			vbox_license.visible = !vbox_license.visible;
-			
+
 			if (vbox_license.visible){
 				vbox_license.set_no_show_all(false);
 				vbox_license.show_all();
@@ -355,8 +345,14 @@ public class AboutWindow : Dialog {
 			}
 		});
 
-        btn_credits.clicked.connect(()=>{
-			
+		add_action_widget(btn_license, btn_license_response_id);
+
+		//btn_credits
+		btn_credits = new Gtk.Button.with_label("  " + _("Credits"));
+		btn_credits.image = IconManager.lookup_image("help-about-symbolic", 16);
+
+        int btn_credits_response_id = (int)btn_credits.clicked.connect(()=>{
+
 			vbox_logo.visible = !vbox_logo.visible;
 
 			vbox_credits.visible = !vbox_credits.visible;
@@ -385,6 +381,8 @@ public class AboutWindow : Dialog {
 			}
 		});
 
+		add_action_widget(btn_credits, btn_credits_response_id);
+
 
 		if (AppVersion == AppWikiVersion){
 			// changelog
@@ -397,15 +395,15 @@ public class AboutWindow : Dialog {
 		}
 
 		// close
-		var button = new Gtk.Button.with_label("  " + _("Close"));
-		button.image = IconManager.lookup_image("window-close", 16);
-		hbox_action.add(button);
+		var btn_close = new Gtk.Button.with_label("  " + _("Close"));
+		btn_close.image = IconManager.lookup_image("window-close", 16);
 
-		button.clicked.connect(()=>{ this.destroy(); });
+		int btn_close_response_id = (int)btn_close.clicked.connect(()=>{ this.destroy(); });
+		add_action_widget(btn_close, btn_close_response_id);
 	}
 
 	public void initialize() {
-		
+
 		title = program_name;
 		img_logo.pixbuf = logo.scale_simple(128,128,Gdk.InterpType.HYPER);
 		lbl_program_name.label = "<span size='larger'>%s</span>".printf(program_name);
@@ -484,7 +482,7 @@ public class AboutWindow : Dialog {
 	}
 
 	private void add_line(string text, bool escape_html_chars = true){
-		
+
 		if (text.split(":").length >= 2){
 			var link = new LinkButton(escape_html(text.split(":")[0]));
 			vbox_lines.add(link);
@@ -501,7 +499,7 @@ public class AboutWindow : Dialog {
 			}
 
 			link.activate_link.connect(()=>{
-				return xdg_open(link.uri, username); 
+				return xdg_open(link.uri, username);
 			});
 		}
 		else{

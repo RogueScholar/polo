@@ -48,19 +48,19 @@ public class ArchiveTask : AsyncTask {
 	// encryption
 	public bool encrypt_header = false;
 	public string encrypt_method = "AES256";
-	
+
 	// splitting
 	public string split_mb = "0";
 
 	// password for creation new archive
 	public string password = "";
 	public string keyfile = "";
-	
+
 	// archive
 	public FileItemArchive archive;
 	public Gee.ArrayList<FileItemArchive> archives = new Gee.ArrayList<FileItemArchive>();
 	public Gee.ArrayList<FileItem> items = new Gee.ArrayList<FileItem>();
-	
+
 	public ArchiveAction action = ArchiveAction.CREATE;
 	public string parser_name;
 	public string archive_path; // may not always be same as 'archive' FileItem
@@ -69,7 +69,7 @@ public class ArchiveTask : AsyncTask {
 	public string virtual_archive_path = "";
 	//public string file_path_prefix_backup = "";
 	public bool extract_to_new_folder = false;
-	
+
 	// stats vars
 	private int archiver_pid;
 	public string proc_io_name;
@@ -96,7 +96,7 @@ public class ArchiveTask : AsyncTask {
 		else{
 			window = App.main_window;
 		}
-		
+
 		init_regular_expressions();
 	}
 
@@ -104,15 +104,15 @@ public class ArchiveTask : AsyncTask {
 		if (regex_list != null){
 			return; // already initialized
 		}
-		
+
 		regex_list = new Gee.HashMap<string, Regex>();
-		
+
 		try {
 			//Extracting  packages/option.d.ts
 			//Compressing  packages/option.d.ts
 			//Compressing  packages/option.d.ts 100%
 			regex_list["7z"] = new Regex("""[^ \t]{3,}[ ]{2}(.*)""");
-			
+
 			// 20% 12653 - atom/packages/atom-beautify/node_modules/.bin/uuid
 			regex_list["7z1509"] = new Regex("""^[ \t]*([0-9]+)%[ \t]*[0-9]*[ \t]*-[ \t]*(.*)""");
 
@@ -122,10 +122,10 @@ public class ArchiveTask : AsyncTask {
 
 			//Example: atom/keymap.cson
 			regex_list["tar"] = new Regex("""^(.*)$""");
-			
+
 			//Example: 10
 			regex_list["pv"] = new Regex("""([0-9]+)""");
-		
+
 			//Example: drwxrwxr-x teejee/teejee     0 2015-10-19 10:05 atom/node-uuid/uuid.js
 			regex_list["tar_list"] = new Regex("""^([^ \t]{1})([^ \t]*)[ \t]+([^ \t\/]+)\/([^ \t\/]+)[ \t]+([0-9]+)[ \t]+([0-9-]+)[ \t]+([0-9:]+)[ \t]+(.+)$""");
 
@@ -147,17 +147,17 @@ public class ArchiveTask : AsyncTask {
 	public static double 7zip_version {
 		get {
 			if ((7zip_version_name == null) || (7zip_version_name.length == 0)){
-				
+
 				string std_out, std_err;
 				exec_sync("7z", out std_out, out std_err);
-				
+
 				foreach(string line in std_out.split("\n")){
-					
+
 					if ((line == null) || (line.strip().length == 0)){ continue; }
 
 					// 7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
 					string expression = """^[^ \t]+[ ]+[^ \t]+[ ]+([0-9.]*)[ ]+""";
-					
+
 					MatchInfo match = regex_match(expression, line);
 					if (match != null){
 						7zip_version_name = match.fetch(1);
@@ -165,7 +165,7 @@ public class ArchiveTask : AsyncTask {
 					break;
 				}
 			}
-			
+
 			if (7zip_version_name.length > 0){
 				return double.parse(7zip_version_name);
 			}
@@ -180,14 +180,14 @@ public class ArchiveTask : AsyncTask {
 	public void prepare() {
 
 		init_temp_directories();
-		
+
 		string script_text = build_script();
 
 		// use archive's temp dir
 		//working_dir = working_dir;
 		//script_file = archive.script_file;
 		//log_file = archive.log_file;
-		
+
 		save_bash_script_temp(script_text, script_file);
 	}
 
@@ -199,7 +199,7 @@ public class ArchiveTask : AsyncTask {
 			script.append("if [ -f '%s' ]; then\n".printf(escape_single_quote(archive_path)));
 			script.append("  rm '%s'\n".printf(escape_single_quote(archive_path)));
 			script.append("fi\n");
-			
+
 			if (file_exists(archive_path + ".tmp")) {
 				script.append("rm '%s.tmp'\n".printf(escape_single_quote(archive_path)));
 			}
@@ -213,7 +213,7 @@ public class ArchiveTask : AsyncTask {
 		case ArchiveAction.INFO:
 			script.append(get_commands_list_archive_info());
 			break;
-			
+
 		case ArchiveAction.EXTRACT:
 		case ArchiveAction.TEST:
 			script.append(get_commands_extract());
@@ -226,7 +226,7 @@ public class ArchiveTask : AsyncTask {
 	public string get_commands_compress() {
 
 		log_debug("ArchiveTask: get_commands_compress()");
-		
+
 		string cmd = "";
 
 		if (format == "tar") {
@@ -283,7 +283,7 @@ public class ArchiveTask : AsyncTask {
 			// already handled
 			break;
 		}
-		
+
 		return cmd;
 	}
 
@@ -298,13 +298,13 @@ public class ArchiveTask : AsyncTask {
 		else{
 			cmd += " '%s'".printf(escape_single_quote(archive_path));
 		}
-		
+
 		foreach (string key in archive.children.keys) {
 			var item = archive.children[key];
 			cmd += " -C '%s'".printf(escape_single_quote(file_parent(item.file_path)));
 			cmd += " '%s'".printf(escape_single_quote(file_basename(item.file_path)));
 		}
-		
+
 		if (split_mb != "0"){
 			cmd += " | split -d --bytes=%sMB - '%s.'".printf(
 				split_mb,
@@ -316,7 +316,7 @@ public class ArchiveTask : AsyncTask {
 
 		return cmd;
 	}
-	
+
 	public string get_commands_compress_7zip(){
 		string cmd = "";
 
@@ -327,7 +327,7 @@ public class ArchiveTask : AsyncTask {
 				cmd += " -mhe";
 			}
 		}
-			
+
 		//format and method
 		switch (format) {
 		case "7z":
@@ -464,14 +464,14 @@ public class ArchiveTask : AsyncTask {
 
 		return cmd;
 	}
-	
+
 	public string get_commands_compress_lzop(){
 		string cmd = "";
-		
+
 		cmd += "lzop";
 
 		cmd += " -%s".printf(level);
-		
+
 		// input files
 		if (format.has_prefix("tar_")) {
 			cmd += ""; // nothing required
@@ -497,7 +497,7 @@ public class ArchiveTask : AsyncTask {
 		//cmd += " c%s".printf(level);
 
 		cmd += " '%s'".printf(escape_single_quote(archive_path));
-		
+
 		// input files
 		if (format.has_prefix("tar_")) {
 			cmd += ""; // nothing required
@@ -516,32 +516,32 @@ public class ArchiveTask : AsyncTask {
 		string cmd = "";
 
 		cmd += "7z l -slt '%s' -y".printf(escape_single_quote(archive_path));
-		
+
 		if ((archive.password.length > 0)||(archive.keyfile.length > 0)){
 			cmd += " '-p%s'\n".printf(archive.password);
 		}
 		else{
 			cmd += " -p --\n"; //required for non-encrypted archives
 		}
-					
+
 		parser_name = "7z_list";
 		archiver_name = "7z";
-				
+
 		return cmd;
-		
+
 		//string cmd = get_commands_list();
 		//change parser
 		//parser_name = parser_name.replace("list","info");
 		//return cmd;
 	}
-	
+
 	public string get_commands_list() {
 		string cmd = "";
 
 		// check if multi-volume TAR (.tar.00, etc)
-		
+
 		string file_pattern;
-		bool is_tar_volume = ArchiveTask.is_multi_volume_tar(archive_path, out file_pattern);	
+		bool is_tar_volume = ArchiveTask.is_multi_volume_tar(archive_path, out file_pattern);
 		if (is_tar_volume){
 			// escape spaces in path and do not enclose in quotes
 			cmd += "cat %s | tar tvf -".printf(file_pattern.replace(" ","\\ "));
@@ -551,10 +551,10 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		// check if TAR or compressed TAR archive
-		
+
 		foreach(string extension in array_concat(
 			Main.extensions_tar_compressed,Main.extensions_tar)) {
-				
+
 			if (archive_path.has_suffix(extension)) {
 				cmd += "tar tvf '%s'".printf(escape_single_quote(archive_path));
 				parser_name = "tar_list";
@@ -571,7 +571,7 @@ public class ArchiveTask : AsyncTask {
 			archiver_name = "lzop";
 			return cmd;
 		}
-		
+
 		// check if TAR archive packed with 7zip or Zip
 
 		foreach(var extension in Main.extensions_tar_packed) {
@@ -585,7 +585,7 @@ public class ArchiveTask : AsyncTask {
 					foreach(var ext in Main.extensions_tar_packed) {
 						if (file_title.has_suffix(ext)){
 							file_title = file_title.replace(ext, "");
-						}	
+						}
 					}
 				}
 
@@ -597,14 +597,14 @@ public class ArchiveTask : AsyncTask {
 				if (ArchiveTask.7zip_version >= 15.05){
 					cmd += " -bb1";
 				}
-		
+
 				if ((archive.password.length > 0)||(archive.keyfile.length > 0)){
 					cmd += " '-p%s'\n".printf(archive.password);
 				}
 				else{
 					cmd += " -p --\n"; //required for non-encrypted archives
 				}
-				
+
 				cmd += "tar tvf '%s/%s.tar'".printf(
 					escape_single_quote(working_dir),
 					escape_single_quote(file_title));
@@ -616,7 +616,7 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		// attempt to open all remaining extensions using 7zip
-			
+
 		cmd += "7z l '%s' -y".printf(escape_single_quote(archive_path));
 
 		if (ArchiveTask.7zip_version >= 15.05){
@@ -629,7 +629,7 @@ public class ArchiveTask : AsyncTask {
 		else{
 			cmd += " -p --\n"; //required for non-encrypted archives
 		}
-		
+
 		parser_name = "7z_list";
 		archiver_name = "7z";
 		return cmd;
@@ -639,9 +639,9 @@ public class ArchiveTask : AsyncTask {
 		string cmd = "";
 
 		// check if multi-volume TAR (.tar.00, etc)
-		
+
 		string file_pattern;
-		bool is_tar_volume = ArchiveTask.is_multi_volume_tar(archive_path, out file_pattern);	
+		bool is_tar_volume = ArchiveTask.is_multi_volume_tar(archive_path, out file_pattern);
 		if (is_tar_volume){
 			// escape spaces in path and do not enclose in quotes
 			cmd += "cat %s | tar xvf - -C '%s' --overwrite".printf(
@@ -652,14 +652,14 @@ public class ArchiveTask : AsyncTask {
 				cmd += " '%s'".printf(escape_single_quote(item));
 			}
 			archive.extract_list.clear();
-				
+
 			parser_name = "tar";
 			archiver_name = "tar";
 			return cmd;
 		}
 
 		// check if TAR or compressed TAR archive
-		
+
 		foreach(string extension in array_concat(Main.extensions_tar_compressed, Main.extensions_tar)) {
 			if (archive_path.has_suffix(extension)) {
 				cmd += "tar xvf '%s' -C '%s' --overwrite".printf(
@@ -670,7 +670,7 @@ public class ArchiveTask : AsyncTask {
 					cmd += " '%s'".printf(escape_single_quote(item));
 				}
 				archive.extract_list.clear();
-				
+
 				parser_name = "tar";
 				archiver_name = "tar";
 				return cmd;
@@ -690,7 +690,7 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		// check if TAR archive packed with 7zip or Zip
-		
+
 		foreach(string extension in Main.extensions_tar_packed) {
 			if (archive_path.has_suffix(extension)) {
 				string file_title = file_basename(archive_path);
@@ -702,7 +702,7 @@ public class ArchiveTask : AsyncTask {
 					foreach(var ext in Main.extensions_tar_packed) {
 						if (file_title.has_suffix(ext)){
 							file_title = file_title.replace(ext, "");
-						}	
+						}
 					}
 				}
 
@@ -714,14 +714,14 @@ public class ArchiveTask : AsyncTask {
 				if (ArchiveTask.7zip_version >= 15.05){
 					cmd += " -bb1";
 				}
-				
+
 				if ((archive.password.length > 0)||(archive.keyfile.length > 0)){
 					cmd += " '-p%s'\n".printf(archive.password);
 				}
 				else{
 					cmd += " -p --\n"; //required for non-encrypted archives
 				}
-				
+
 				cmd += "tar xvf '%s/%s.tar' -C '%s'".printf(
 					escape_single_quote(working_dir),
 					escape_single_quote(file_title),
@@ -731,7 +731,7 @@ public class ArchiveTask : AsyncTask {
 					cmd += " '%s'".printf(escape_single_quote(item));
 				}
 				archive.extract_list.clear();
-				
+
 				parser_name = "tar";
 				archiver_name = "tar";
 				return cmd;
@@ -739,7 +739,7 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		// attempt to extract all remaining extensions using 7zip
-			
+
 		cmd += "7z x '%s' '-o%s' '-w%s' -y".printf(
 			escape_single_quote(archive_path),
 			escape_single_quote(extraction_path),
@@ -749,18 +749,18 @@ public class ArchiveTask : AsyncTask {
 			cmd += " '%s'".printf(escape_single_quote(item));
 		}
 		archive.extract_list.clear();
-		
+
 		if (ArchiveTask.7zip_version >= 15.05){
 			cmd += " -bb1";
 		}
-		
+
 		if ((archive.password.length > 0)||(archive.keyfile.length > 0)){
 			cmd += " '-p%s'\n".printf(archive.password);
 		}
 		else{
 			cmd += " -p --\n"; //required for non-encrypted archives
 		}
-		
+
 		parser_name = "7z";
 		archiver_name = "7z";
 		return cmd;
@@ -792,7 +792,7 @@ public class ArchiveTask : AsyncTask {
 	// actions ----------------------------------
 
 	public void compress(FileItemArchive arch) {
-		
+
 		this.archive = arch;
 		//this.items = _items;
 		this.archive_path = archive.file_path;
@@ -807,15 +807,15 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		// set some values for estimating progress
-		
+
 		prg_bytes_total = archive.file_size;
 		log_debug("data_size: %s".printf(format_file_size(prg_bytes_total)));
-		
+
 		prg_count_total = archive.file_count_total;
 		log_debug("file_count: %lld".printf(prg_count_total));
 
 		// begin
-		
+
 		execute(arch);
 	}
 
@@ -834,24 +834,24 @@ public class ArchiveTask : AsyncTask {
 		extract_next_archive();
 	}
 
-	private bool extract_next_archive(){ 
+	private bool extract_next_archive(){
 
-		log_debug("ArchiveTask: extract_next_archive(): %d".printf(archives.size)); 
+		log_debug("ArchiveTask: extract_next_archive(): %d".printf(archives.size));
 
-		if (archives.size > 0){ 
-			var arch = archives[0]; 
-			archives.remove(arch); 
+		if (archives.size > 0){
+			var arch = archives[0];
+			archives.remove(arch);
 			extract_archive(arch, extract_to_new_folder);
 			return true;
-		} 
+		}
 
-		return false; 
-	} 
+		return false;
+	}
 
 	public void extract_archive(FileItemArchive arch, bool _extract_to_new_folder) {
 
 		log_debug("ArchiveTask: extract_archive(): %s".printf(arch.file_path));
-		
+
 		this.archive = arch;
 
 		// set some properties to be passed to children
@@ -862,9 +862,9 @@ public class ArchiveTask : AsyncTask {
 		if (_extract_to_new_folder){
 			archive.extraction_path = file_generate_unique_name(archive.extraction_path);
 		}
-		
+
 		this.extraction_path = archive.extraction_path;
-		
+
 		log_msg("\nAction: EXTRACT");
 		log_msg("Archive: %s".printf(archive_path));
 		this.action = ArchiveAction.EXTRACT;
@@ -899,7 +899,7 @@ public class ArchiveTask : AsyncTask {
 		this.archive.archive_base_item = this.archive;
 
 		archive_path = archive.archive_base_item.file_path;
-		
+
 		log_msg("\nAction: TEST");
 		log_msg("Archive: %s".printf(archive_path));
 		action = ArchiveAction.TEST;
@@ -908,7 +908,7 @@ public class ArchiveTask : AsyncTask {
 			log_error("Main.extract(): archive_path not set");
 			exit(1);
 		}
-			
+
 		if (extraction_path.length == 0){
 			log_error("Main.extract(): extraction_path not set");
 			exit(1);
@@ -924,7 +924,7 @@ public class ArchiveTask : AsyncTask {
 
 		execute(arch, wait);
 	}
-	
+
 	public void open(FileItemArchive arch, bool wait = false, bool info_only = false) {
 
 		this.archive = arch;
@@ -953,14 +953,14 @@ public class ArchiveTask : AsyncTask {
 						FileAttribute.STANDARD_SIZE, FileAttribute.TIME_MODIFIED), 0);
 
 					archive.archive_size = finfo.get_size();
-					archive.archive_modified = (new DateTime.from_timeval_utc(finfo.get_modification_time())).to_local();
+					archive.archive_modified = (new DateTime.from_unix_utc(finfo.get_modification_date_time().get_second())).to_local();
 				}
 				catch (Error e) {
 					log_error(e.message);
 				}
 			}
 		}
-		
+
 		archive.clear_children();
 
 		if (archive_path.length == 0){
@@ -972,7 +972,7 @@ public class ArchiveTask : AsyncTask {
 			log_error("ArchiveTask.open(): file not found: %s".printf(archive_path));
 			exit(1);
 		}
-		
+
 		// set some values for estimating progress
 		//archiver.prg_bytes_total = file_get_size(task.file_path);
 		//log_debug("archive_size: %lld".printf(archiver.prg_bytes_total));
@@ -990,9 +990,9 @@ public class ArchiveTask : AsyncTask {
 	public void execute(FileItemArchive arch, bool wait = false) {
 
 		log_debug("ArchiveTask: execute()");
-		
+
 		this.archive = arch;
-		
+
 		prepare();
 
 		//this.script_file = archive.script_file;
@@ -1010,7 +1010,7 @@ public class ArchiveTask : AsyncTask {
 			log_debug("actual path: %s".printf(archive_path));
 			archive_path = archive.display_name;
 		}*/
-		
+
 		begin();
 
 		if (status == AppStatus.RUNNING){
@@ -1031,7 +1031,7 @@ public class ArchiveTask : AsyncTask {
 			log_debug("archiver_pid: %d".printf(archiver_pid));
 			log_debug("parser_name: %s".printf(parser_name));
 		}
-		
+
 		if (wait){
 			while (status == AppStatus.RUNNING){ // don't wait if AppStatus.PASSWORD_REQUIRED
 				sleep(200);
@@ -1043,14 +1043,14 @@ public class ArchiveTask : AsyncTask {
 	}
 
 	public override void parse_stdout_line(string out_line){
-		
+
 		if (is_terminated) { return; }
 
 		//log_msg("O: " + out_line);
-		
+
 		update_progress_parse_console_output(out_line);
 	}
-	
+
 	public override void parse_stderr_line(string err_line){
 
 		if (is_terminated) { return; }
@@ -1058,10 +1058,10 @@ public class ArchiveTask : AsyncTask {
 		log_error(err_line);
 
 		if (err_line.down().contains("wrong password?")){
-			
+
 			archive.archive_is_encrypted = true;
 			is_terminated = true;
-			
+
 			if (archive.password.length == 0){
 				log_error(_("Password not set for encrypted archive"));
 			}
@@ -1076,7 +1076,7 @@ public class ArchiveTask : AsyncTask {
 	}
 
 	public bool update_progress_parse_console_output (string line) {
-		
+
 		if ((line == null) || (line.length == 0)) {
 			return true;
 		}
@@ -1094,7 +1094,7 @@ public class ArchiveTask : AsyncTask {
 		case "7z":
 			if (regex_list["7z"].match(line, 0, out match)) {
 				//log_debug("7z: %s".printf(line));
-				
+
 				status_line = match.fetch(1);
 				if (!status_line.has_suffix("/")){
 					processed_file_count += 1;
@@ -1102,13 +1102,13 @@ public class ArchiveTask : AsyncTask {
 			}
 			else if (regex_list["7z1509"].match(line, 0, out match)) {
 				//log_debug("7z1509: %s".printf(line));
-				
+
 				status_line = match.fetch(2);
 				progress = double.parse(match.fetch(1));
 			}
 			else if (regex_list["7z1509prg"].match(line, 0, out match)) {
 				//log_debug("7z1509prg: %s".printf(line));
-				
+
 				status_line = match.fetch(1);
 				//progress = double.parse(match.fetch(1));
 			}
@@ -1125,10 +1125,10 @@ public class ArchiveTask : AsyncTask {
 				}
 			}
 			break;
-			
+
 		case "tar_list":
 			//Example: (d)(rwxrwxr-x) (teejee)/(teejee)     (0) (2015-10-19) (10:05) (atom/node-uuid/uuid.js)
-			
+
 			if (regex_list[parser_name].match(line, 0, out match)) {
 				string type = match.fetch(1).strip();
 				string permissions = match.fetch(2).strip();
@@ -1161,7 +1161,7 @@ public class ArchiveTask : AsyncTask {
 					int64 item_size = int64.parse(size);
 
 					var item = archive.add_descendant(file_path, FileType.REGULAR, item_size, 0);
-					
+
 					item.modified = datetime_from_string(modified);
 					item.permissions = permissions;
 					item.owner_user = owner;
@@ -1179,7 +1179,7 @@ public class ArchiveTask : AsyncTask {
 		case "7z_list":
 
 			//log_debug("7z_list: " + line);
-			
+
 			if (regex_list[parser_name].match(line, 0, out match)) {
 
 				string modified = "%s %s".printf(match.fetch(1).strip(), match.fetch(2).strip());
@@ -1209,12 +1209,12 @@ public class ArchiveTask : AsyncTask {
 					string val = line.split("=",2)[1];
 					val = (val == null) ? "" : val.strip();
 					archive.archive_method = val;
-					
+
 					if (archive.archive_method.contains("7zAES")){
 
 						//this info is available only if archive header is not encrypted
 						archive.archive_is_encrypted = true;
-						
+
 						switch (action){
 						case ArchiveAction.EXTRACT:
 						case ArchiveAction.TEST:
@@ -1251,7 +1251,7 @@ public class ArchiveTask : AsyncTask {
 					string val = line.split("=",2)[1];
 					val = (val == null) ? "0" : val.strip();
 					archive.archive_unpacked_size = int64.parse(val);
-					
+
 					if ((action == ArchiveAction.INFO) || (action == ArchiveAction.LIST)){
 						log_msg("Archive Unpacked Size: %'ld bytes".printf(
 							archive.archive_unpacked_size));
@@ -1269,7 +1269,7 @@ public class ArchiveTask : AsyncTask {
 				}
 			}
 			break;
-			
+
 		case "lzop_list":
 			if (regex_list[parser_name].match(line, 0, out match)) {
 				//string method = match.fetch(1).strip();;
@@ -1302,17 +1302,17 @@ public class ArchiveTask : AsyncTask {
 		}
 		log_debug("ArchiveTask: wait_for_pending_threads: done");
 	}
-	
+
 	protected override void finish_task(){
 
 		log_debug("ArchiveTask: finish_task()");
 
 		wait_for_threads_to_finish();
-		
+
 		/*if (status == AppStatus.PASSWORD_REQUIRED){
 
 			log_debug("ArchiveTask: finish_task(): password_required");
-			
+
 			if (archive.prompt_for_password()){
 				log_debug("ArchiveTask: finish_task(): password_entered: execute()");
 				execute(archive);
@@ -1340,7 +1340,7 @@ public class ArchiveTask : AsyncTask {
 		}*/
 
 		// finish  ---------------------------------
-		
+
 		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
 			log_debug("ArchiveTask: finish_task(): set AppStatus.FINISHED");
 			status = AppStatus.FINISHED;
@@ -1352,14 +1352,14 @@ public class ArchiveTask : AsyncTask {
 
 		log_debug("ArchiveTask: finish_task(): exit");
 	}
-	
+
 	// query stats ---------------------------
-	
+
 	public bool query_io_stats () {
 		if (archiver_pid > 0) {
 			get_proc_io_stats(archiver_pid, out proc_read_bytes, out proc_write_bytes);
 
-			//log_debug("%d Processed: %s, Written: %s".printf(archiver_pid, 
+			//log_debug("%d Processed: %s, Written: %s".printf(archiver_pid,
 			//	format_file_size(proc_read_bytes),
 			//	format_file_size(proc_write_bytes)));
 
@@ -1367,7 +1367,7 @@ public class ArchiveTask : AsyncTask {
 		}
 
 		//log_debug("prg_count_total: %.0f, Progress: %.0f".printf(progress));
-		
+
 		if (percent > 0){
 			progress = percent;
 			//log_debug("Percent: Progress: %.2f".printf(progress));
@@ -1389,7 +1389,7 @@ public class ArchiveTask : AsyncTask {
 				compressed_bytes = file_get_size(archive_path + ".tmp");
 			}
 			break;
-			
+
 		case ArchiveAction.EXTRACT:
 		case ArchiveAction.TEST:
 			// set archive size
@@ -1420,7 +1420,7 @@ public class ArchiveTask : AsyncTask {
 				txt = _("Verifying");
 				break;
 			}
-			
+
 			if ((status_line != null) && (status_line.length > 0)) {
 				txt += ": %s".printf(status_line);
 			}
@@ -1433,7 +1433,7 @@ public class ArchiveTask : AsyncTask {
 			return txt;
 		}
 	}
-	
+
 	public string stat_speed{
 		owned get{
 			long elapsed = (long) timer_elapsed(timer);
@@ -1525,7 +1525,7 @@ public class ArchiveTask : AsyncTask {
 	}
 
 	// serialize --------------------------
-	
+
 	public Json.Object to_json() {
 		var task = new Json.Object();
 		task.set_string_member("format", format);
@@ -1555,7 +1555,7 @@ public class ArchiveTask : AsyncTask {
 	}
 
 	// helper methods ------------------------------
-	
+
 	public static bool is_multi_volume_tar(string archive_path, out string pattern){
 		Regex rex = null;
 		try {
@@ -1565,7 +1565,7 @@ public class ArchiveTask : AsyncTask {
 		catch (Error e) {
 			log_error (e.message);
 		}
-		
+
 		MatchInfo match;
 		if (rex.match(archive_path, 0, out match)) {
 			pattern = match.fetch(1) + "*";
@@ -1588,4 +1588,3 @@ public enum ArchiveAction {
 	EXTRACT,
 	INFO
 }
-

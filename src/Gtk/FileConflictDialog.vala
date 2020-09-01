@@ -46,10 +46,10 @@ public class FileConflictDialog : Gtk.Dialog {
 	private Gtk.Button btn_skip;
 
 	private Gtk.Box preview_box;
-	
+
 	private Gtk.Label lbl_header;
 	private Gtk.Label lbl_file_count_message;
-	
+
 	private Gtk.Image img_src;
 	private Gtk.Label lbl_size_src;
 	private Gtk.Label lbl_modified_src;
@@ -104,7 +104,7 @@ public class FileConflictDialog : Gtk.Dialog {
 		label.set_use_markup(true);
 		label.xalign = 0.0f;
 		label.margin_bottom = 12;
-		label.margin_left = 6;
+		label.margin_start = 6;
 		vbox_main.add(label);
 		lbl_file_count_message = label;
 
@@ -246,9 +246,9 @@ public class FileConflictDialog : Gtk.Dialog {
 				replace_mode = FileReplaceMode.CUSTOM;
 				gtk_show(scrolled);
 				refresh_treeview();
-				
+
 				lbl_header.label = format_text(_("Select Files to Replace"), true, false, true);
-				
+
 				gtk_hide(lbl_file_count_message);
 
 				btn_custom.label = _("OK");
@@ -558,7 +558,7 @@ public class FileConflictDialog : Gtk.Dialog {
 	}
 
 	private void set_image_for_item(FileItem item, Gtk.Image image){
-		
+
 		ThumbTask task;
 		var thumb = item.get_image(thumb_size, true, false, false, out task);
 
@@ -578,5 +578,3 @@ public class FileConflictDialog : Gtk.Dialog {
 		}
 	}
 }
-
-

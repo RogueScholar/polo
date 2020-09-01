@@ -43,8 +43,6 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	// ui for archive_task
 	private Gtk.Spinner spinner;
 	private Gtk.Label lbl_header;
-	private Gtk.Box hbox_bar;
-	private Gtk.DrawingArea drawing_area;
 	private Gtk.Label lbl_file_count_value;
 	private Gtk.Label lbl_data_value;
 	private Gtk.Label lbl_processed_value;
@@ -80,7 +78,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	public ProgressPanelArchiveTask(FileViewPane _pane,
 		Gee.ArrayList<FileItem> _items, FileActionType _action, bool _create_new_folder){
 
-		init(_pane, _items, _action);
+		base(_pane, _items, _action);
 
 		task = new ArchiveTask(window);
 		task.extract_to_new_folder = _create_new_folder;
@@ -206,7 +204,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var lbl_data = new Gtk.Label(_("Data:"));
 		lbl_data.xalign = 0.0f;
-		//lbl_data.margin_left = 12;
+		//lbl_data.margin_start = 12;
 		grid_stats.attach(lbl_data, 2, ++row, 1, 1);
 
 		//lbl_data_value
@@ -218,7 +216,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var lbl_processed = new Gtk.Label(_("Processed:"));
 		lbl_processed.xalign = 0.0f;
-		//lbl_processed.margin_left = 12;
+		//lbl_processed.margin_start = 12;
 		grid_stats.attach(lbl_processed, 2, ++row, 1, 1);
 
 		//lbl_processed_value
@@ -230,7 +228,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var lbl_compressed = new Gtk.Label(_("Compressed:"));
 		lbl_compressed.xalign = 0.0f;
-		//lbl_compressed.margin_left = 12;
+		//lbl_compressed.margin_start = 12;
 		grid_stats.attach(lbl_compressed, 2, ++row, 1, 1);
 
 		//lbl_compressed_value
@@ -242,7 +240,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var lbl_ratio = new Gtk.Label(_("Ratio:"));
 		lbl_ratio.xalign = 0.0f;
-		//lbl_ratio.margin_left = 12;
+		//lbl_ratio.margin_start = 12;
 		grid_stats.attach(lbl_ratio, 2, ++row, 1, 1);
 
 		//lbl_ratio_value

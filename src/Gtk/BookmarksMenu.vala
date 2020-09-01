@@ -37,14 +37,14 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 	public BookmarksMenu(){
 
 		reserve_toggle_size = false;
-		
+
 		build_menu();
 	}
 
 	public void build_menu(){
 
 		log_debug("BookmarksMenu: build_menu()");
-		
+
 		// menu_item
 		var menu_item = new Gtk.MenuItem();
 		this.append(menu_item);
@@ -53,14 +53,14 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 		menu_item.add(box);
 
 		if (view.current_item != null){
-			
+
 			var path = view.current_item.file_path;
 			var uri =  view.current_item.file_uri;
-			
+
 			if (GtkBookmark.is_bookmarked(uri)){
 				var lbl = new Gtk.Label(_("Remove Bookmark"));
 				lbl.xalign = 0.0f;
-				lbl.margin_right = 6;
+				lbl.margin_end = 6;
 				box.add(lbl);
 
 				menu_item.activate.connect (() => {
@@ -73,7 +73,7 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 			else{
 				var lbl = new Gtk.Label(_("Add Bookmark"));
 				lbl.xalign = 0.0f;
-				lbl.margin_right = 6;
+				lbl.margin_end = 6;
 				box.add(lbl);
 
 				menu_item.activate.connect (() => {
@@ -121,7 +121,7 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 
 		var label = new Gtk.Label(bm.name);
 		label.xalign = 0.0f;
-		label.margin_right = 6;
+		label.margin_end = 6;
 		label.set_tooltip_text(bm.path);
 		box.add(label);
 
@@ -146,10 +146,10 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 	public bool show_menu(Gdk.EventButton? event) {
 
 		if (event != null) {
-			this.popup (null, null, null, event.button, event.time);
+			this.popup_at_pointer(event);
 		}
 		else {
-			this.popup (null, null, null, 0, Gtk.get_current_event_time());
+			this.popup_at_pointer(null);
 		}
 
 		return true;
@@ -159,5 +159,3 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 		this.popdown();
 	}
 }
-
-

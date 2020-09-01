@@ -87,7 +87,7 @@ public abstract class AsyncTask : GLib.Object{
 	public signal void stderr_line_read(string line);
 	public signal void task_complete();
 
-	/*public AsyncTask(){
+	protected AsyncTask(){
 		init_temp_directories();
 	}*/
 
@@ -160,7 +160,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading output stream
-				Thread.create<void> (read_stdout, true);
+				new Thread<void>.try ("AsyncTask::read_stdout", read_stdout);
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stdout()");
 				log_error (e.message);
@@ -168,7 +168,7 @@ public abstract class AsyncTask : GLib.Object{
 
 			try {
 				//start thread for reading error stream
-				Thread.create<void> (read_stderr, true);
+				new Thread<void>.try ("AsyncTask::read_stderr", read_stderr);
 			} catch (Error e) {
 				log_error ("AsyncTask.begin():create_thread:read_stderr()");
 				log_error (e.message);
@@ -300,6 +300,7 @@ public abstract class AsyncTask : GLib.Object{
 	}
 
 	/*public void wait_for_threads_to_finish(){
+
 		while (threads_are_pending()){
 			sleep(100);
 			//gtk_do_events();
@@ -538,10 +539,14 @@ public class RsyncTask : AsyncTask{
 	// parameters
 	public bool delete_extra = true;
 	public RsyncTask(){
+
 		init_regular_expressions();
 	}
+
 	private void init_regular_expressions(){
+
 		regex_list = new Gee.HashMap<string, Regex>();
+
 		try {
 			//   (1.00/100%)
 			regex_list["qemu-convert"] = new Regex("""[ \t]*[(]?([0-9.]+)\/[0-9.]+[%]?[)]?""");
@@ -550,31 +555,43 @@ public class RsyncTask : AsyncTask{
 			log_error (e.message);
 		}
 	}
+
 	public void prepare() {
+
 		string script_text = build_script();
 		save_bash_script_temp(script_text, script_file);
 		count_completed = 0;
 		count_total = 100;
 	}
 	private string build_script() {
+
 		var script = new StringBuilder();
 		var cmd = "rsync -ai";
 		cmd += " --numeric-ids --stats --relative --delete-excluded";
 		return script.str;
 	}
+
 	// execution ----------------------------
 	public void execute() {
 		prepare();
 		begin();
 		if (status == AppStatus.RUNNING){
+
+
 		}
 	}
 	public override void parse_stdout_line(string out_line){
+
 		if (is_terminated) { return; }
+
 		update_progress_parse_console_output(out_line);
 	}
+
 	public override void parse_stderr_line(string err_line){
+
 		if (is_terminated) { return; }
+
+
 		update_progress_parse_console_output(err_line);
 	}
 	public bool update_progress_parse_console_output (string line) {

@@ -40,7 +40,7 @@ public enum GvfsTaskType {
 }
 
 public class GvfsTask : AsyncTask {
-	
+
 	public string uri = "";
 	public string domain = "";
 	public string username = "";
@@ -49,31 +49,25 @@ public class GvfsTask : AsyncTask {
 	public GvfsTaskType action;
 
 	public static bool use_gio;
-	
+
 	public GvfsTask(){
-		
+
 		init_regular_expressions();
 	}
 
 	static construct {
-		
+
 		use_gio = cmd_exists("gio");
 	}
-	
+
 	private void init_regular_expressions(){
-		
+
 		regex_list = new Gee.HashMap<string, Regex>();
-		
-		try {
-			// none
-		}
-		catch (Error e) {
-			log_error (e.message);
-		}
+
 	}
-	
+
 	public void prepare() {
-	
+
 		string script_text = build_script();
 		script_file = save_bash_script_temp(script_text, script_file, true, false, false);
 
@@ -87,16 +81,16 @@ public class GvfsTask : AsyncTask {
 		string cmd = "";
 
 		string cmd_name = use_gio ? "gio mount" : "gvfs-mount";
-		
+
 		switch(action){
 		case GvfsTaskType.MOUNT:
-		
+
 			if (uri.has_prefix("smb://")){
-				
+
 				sh += "echo '%s' >> samba.props \n".printf(escape_single_quote(username));
 				sh += "echo '%s' >> samba.props \n".printf(escape_single_quote(domain));
 				sh += "echo '%s' >> samba.props \n".printf(escape_single_quote(password));
-				
+
 				cmd = "%s '%s' < ./samba.props".printf(cmd_name, escape_single_quote(uri));
 				sh += cmd + "\n";
 			}
@@ -106,19 +100,19 @@ public class GvfsTask : AsyncTask {
 				// or use ftp://anonymous@server:port, which will not ask for username or password
 				sh += "echo '%s' >> samba.props \n".printf(escape_single_quote(username));
 				sh += "echo '%s' >> samba.props \n".printf(escape_single_quote(password));
-				
+
 				cmd = "%s '%s' < ./samba.props".printf(cmd_name, escape_single_quote(uri));
 				sh += cmd + "\n";
 			}
 
 			break;
-			
+
 		case GvfsTaskType.UNMOUNT:
-		
+
 			cmd += "%s -u '%s'".printf(cmd_name, escape_single_quote(uri));
-			
+
 			sh += cmd + "\n";
-			
+
 			break;
 		}
 
@@ -126,7 +120,7 @@ public class GvfsTask : AsyncTask {
 
 		return sh;
 	}
-	
+
 	// execution ----------------------------
 
 	public void mount(string _uri, string _domain, string _username, string _password){
@@ -137,7 +131,7 @@ public class GvfsTask : AsyncTask {
 		password = _password;
 		//execute();
 	}
-	
+
 	public void unmount(string _uri){
 		action = GvfsTaskType.UNMOUNT;
 		uri = _uri;
@@ -151,20 +145,20 @@ public class GvfsTask : AsyncTask {
 		begin();
 
 		if (status == AppStatus.RUNNING){
-			
-			
+
+
 		}
 	}
 
 	public override void parse_stdout_line(string out_line){
-		
+
 		if (is_terminated) { return; }
 
 		log_error(out_line); // any output from gvfs-mount indicates error
-		
+
 		// nothing to parse
 	}
-	
+
 	public override void parse_stderr_line(string err_line){
 
 		if (is_terminated) { return; }

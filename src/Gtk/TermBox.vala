@@ -111,8 +111,8 @@ public class TermBox : Gtk.Box {
 		term.backspace_binding = Vte.EraseBinding.AUTO;
 		term.cursor_blink_mode = Vte.CursorBlinkMode.SYSTEM;
 		term.cursor_shape = Vte.CursorShape.UNDERLINE;
-		term.rewrap_on_resize = true;
-		term.allow_bold = false;
+		//term.rewrap_on_resize = true;
+		//term.allow_bold = false;
 		//#endif
 
 		term.scroll_on_keystroke = true;
@@ -255,7 +255,7 @@ public class TermBox : Gtk.Box {
 
 		#else
 
-		term.feed_child((uint8[]) cmd.to_utf8());
+		term.feed_child((uint8[])cmd);
 
 		#endif
 	}

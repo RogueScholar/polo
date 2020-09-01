@@ -73,11 +73,11 @@ public class FileTask : GLib.Object {
 	private bool aborted;
 	private Cancellable cancellable;
 	private FileItem current_query_item;
-	
+
 	public Gee.HashMap<string, FileConflictItem> conflicts;
 	public Gee.ArrayList<FileConflictItem> conflicts_sorted;
 	public Gee.HashMap<string, FileCopyItem> copy_list;
-	
+
 	private FileReplaceMode replace_mode;
 	private bool first_pass;
 
@@ -85,15 +85,15 @@ public class FileTask : GLib.Object {
 
 	// status
 	public bool is_running = false;
-	
+
 	private int64 bytes_file = 0;
 	private int64 bytes_file_total = 0;
 	private int64 bytes_completed_files = 0;
 	private int64 bytes_batch_total = 0;
-	
+
 	private int64 count_batch_completed = 0;
 	private int64 count_batch_total = 0;
-	
+
 	private GLib.Timer timer = new GLib.Timer();
 	private GLib.Timer rate_timer = new GLib.Timer();
 
@@ -102,7 +102,7 @@ public class FileTask : GLib.Object {
 	public RCloneTask rclone;
 
 	public signal void complete();
-	
+
 	private void init_task(){
 
 		// file byte status --------------
@@ -135,7 +135,7 @@ public class FileTask : GLib.Object {
 	}
 
 	// public actions --------------
-	
+
 	public void copy_items_to_path(FileItem _source, string dest_path, FileItem[] _items,
 		FileReplaceMode _replace_mode, Gee.HashMap<string, FileConflictItem>? _conflicts, Gtk.Window? _window){
 
@@ -151,16 +151,16 @@ public class FileTask : GLib.Object {
 	public void cloud_rename(string _source_file, string new_name, Gtk.Window? _window){
 
 		log_debug("FileTask: cloud_rename(): %s, %s".printf(_source_file, new_name));
-		
+
 		is_running = true;
-		
+
 		window = _window;
 
 		init_task();
 
 		status = _("Renaming items...");
 		log_debug(status);
-		
+
 		timer = new GLib.Timer();
 		timer.start();
 
@@ -174,7 +174,7 @@ public class FileTask : GLib.Object {
 		rclone.source_path = _source_file;
 		rclone.dest_path = path_combine(file_parent(_source_file), new_name);
 		rclone.action = RcloneActionType.RENAME;
-		
+
 		// ---------------------
 
 		//rclone.dry_run = true;
@@ -196,16 +196,16 @@ public class FileTask : GLib.Object {
 
 
 	// private helpers --------------
-	
+
 	private void copy_or_move_items_to_path(FileItem _source, string dest_path, FileItem[] _items, bool move,
 		FileReplaceMode _replace_mode, Gee.HashMap<string, FileConflictItem>? _conflicts, Gtk.Window? _window){
 
 		is_running = true;
-		
+
 		// assign arguments -----------------
-		
+
 		action = move ? "move" : "copy";
-		
+
 		items = _items;
 
 		replace_mode = _replace_mode;
@@ -228,7 +228,7 @@ public class FileTask : GLib.Object {
 				log_debug("FileTask: is_remote_path: %s".printf(dest_path));
 				destination = new FileItemCloud.from_path_and_type(dest_path, FileType.DIRECTORY);
 			}
-			else{	
+			else{
 				destination = new FileItem.from_path(dest_path);
 			}
 		}
@@ -236,7 +236,7 @@ public class FileTask : GLib.Object {
 		log_debug("FileTask: copy_or_move_items_to_path(%s): %s".printf(dest_path, action));
 
 		// init -----------------------
-		
+
 		init_task();
 
 		status = _("Preparing...");
@@ -250,16 +250,16 @@ public class FileTask : GLib.Object {
 			//start thread
 
 			if (first_pass){
-				Thread.create<void> (check_conflicts_thread, true);
+				new Thread<void>.try ("FileTask::check_conflicts_thread", check_conflicts_thread);
 			}
 			else if ((source is FileItemCloud) || (destination is FileItemCloud)){
-				Thread.create<void> (rclone_copy_thread, true);
+				new Thread<void>.try ("FileTask::rclone_copy_thread", rclone_copy_thread);
 			}
 			else {
 				//Thread.create<void> (rsync_copy_thread, true);
-				Thread.create<void> (copy_items_thread, true);
+				new Thread<void>.try ("FileTask::copy_items_thread", copy_items_thread);
 			}
-			
+
 		} catch (Error e) {
 			log_error ("FileTask: copy_or_move_items_to_path(): error");
 			log_error (e.message);
@@ -269,23 +269,23 @@ public class FileTask : GLib.Object {
 	private void check_conflicts_thread(){
 
 		log_debug("FileTask: check_conflicts_thread() ----------");
-		
+
 		rate_timer = new GLib.Timer();
 		rate_timer.start();
 
 		status = _("Listing destination items...");
 		log_debug(status);
-		
+
 		destination.query_children(1, false);
-			
+
 		status = _("Listing source items...");
 		log_debug(status);
-		
+
 		query_source_items();
 
 		status = _("Comparing items...");
 		log_debug(status);
-		
+
 		foreach(var item in items){
 			if (aborted) { break; }
 
@@ -317,9 +317,9 @@ public class FileTask : GLib.Object {
 
 		complete();
 	}
-	
+
 	private void copy_items_thread(){
-		
+
 		log_debug("FileTask: copy_items_thread(): start ----------");
 
 		//log_debug("replace_mode: %s".printf(replace_mode.to_string()));
@@ -334,7 +334,7 @@ public class FileTask : GLib.Object {
 
 		status = _("Building file list...");
 		log_debug(status);
-		
+
 		update_copy_list();
 
 		//count_items_for_copy();
@@ -357,7 +357,7 @@ public class FileTask : GLib.Object {
 
 			compare_item(item, destination, (action == "move"), dest_item_name, false);
 		}
-		
+
 		rate_timer.stop();
 
 		timer.stop();
@@ -368,8 +368,9 @@ public class FileTask : GLib.Object {
 		complete();
 	}
 
+	/*
 	private void rsync_copy_thread(){
-		
+
 		log_debug("FileTask: rsync_copy_thread(): start");
 
 		log_debug("FileTask: rsync_copy_thread(): %lld items, %s".printf(count_batch_total, format_file_size(bytes_batch_total)));
@@ -389,18 +390,18 @@ public class FileTask : GLib.Object {
 
 		status = _("Building file list...");
 		log_debug(status);
-		
+
 		update_copy_list();
 
 		//count_items_for_copy();
-		
+
 		status = _("Copying...");
 		log_debug(status);
 
 		//rsync.dry_run = true;
 
 		rsync.task_complete.connect(()=>{
-			
+
 			rate_timer.stop();
 
 			timer.stop();
@@ -417,11 +418,11 @@ public class FileTask : GLib.Object {
 		Limitations:
 		* Rclone does not remove sub folders when moving
 		* No way to specify destination item name ?
-		*/
-	}
+
+	}	*/
 
 	private void rclone_copy_thread(){
-		
+
 		log_debug("FileTask: rclone_copy_thread(): start");
 
 		//log_debug("replace_mode: %s".printf(replace_mode.to_string()));
@@ -440,7 +441,7 @@ public class FileTask : GLib.Object {
 		rclone.source_path = source.file_path;
 		rclone.dest_path = destination.file_path;
 		rclone.action = RcloneActionType.COPY;
-		
+
 		if (action == "move"){
 			rclone.action = RcloneActionType.MOVE;
 			//rclone.remove_source_files = true;
@@ -453,14 +454,14 @@ public class FileTask : GLib.Object {
 
 		status = _("Building file list...");
 		log_debug(status);
-		
+
 		update_copy_list();
 
 		//count_items_for_copy();
 
 		// ---------------------
-		
-		if (source is FileItemCloud){ 
+
+		if (source is FileItemCloud){
 			status = _("Downloading items...");
 		}
 		else if (destination is FileItemCloud){
@@ -490,7 +491,7 @@ public class FileTask : GLib.Object {
 	}
 
 	// ---------------------------------------------------------
-	
+
 	private bool compare_item(FileItem src_item, FileItem dest_dir, bool move, string dest_item_name, bool dry_run){
 
 		//log_debug("compare_item: src_item: %s, dest: %s, dest_item_name: %s".printf(src_item.file_path, dest_dir.file_path, dest_item_name));
@@ -541,7 +542,7 @@ public class FileTask : GLib.Object {
 				// dest not existing
 
 				var dest_item_path = path_combine(dest_dir.file_path, dest_item_name);
-				
+
 				if (dry_run){
 					copy_list[src_item.file_path] = new FileCopyItem(src_item.file_path, dest_item_path, src_item.file_size);
 				}
@@ -561,13 +562,13 @@ public class FileTask : GLib.Object {
 			if (dest_dir.children.has_key(dest_item_name)){
 
 				// dest exists
-				
+
 				dest_item = dest_dir.children[dest_item_name];
 
 				if (dest_item.file_type == FileType.DIRECTORY){
 
 					// dest is folder
-					
+
 					dest_item.query_children(1, false);
 
 					if (!dry_run){
@@ -660,7 +661,7 @@ public class FileTask : GLib.Object {
 	private void update_copy_list(){
 
 		log_debug("FileTask: update_copy_list(): before: %lld items, %s".printf(count_batch_total, format_file_size(bytes_batch_total)));
-		
+
 		foreach(var con in conflicts.values){
 			if (!get_replace_action(con.source_item, con.dest_item)){
 				var item = con.source_item;
@@ -702,15 +703,15 @@ public class FileTask : GLib.Object {
 	private Gee.ArrayList<FileCopyItem> get_copy_list_sorted(){
 
 		var list = new Gee.ArrayList<FileCopyItem>();
-		
+
 		foreach(var item in copy_list.values){
 			list.add(item);
 		}
-		
+
 		list.sort((a,b)=>{
 			return strcmp(a.source_path, b.source_path);
 		});
-		
+
 		return list;
 	}
 
@@ -721,7 +722,7 @@ public class FileTask : GLib.Object {
 			log_debug("%s, %s".printf(item.source_path, format_file_size(item.size)));
 		}
 	}
-	
+
 	private bool get_replace_action(FileItem src_item, FileItem dest_item){
 
 		bool replace = false;
@@ -747,15 +748,15 @@ public class FileTask : GLib.Object {
 
 		return replace;
 	}
-	
+
 	private void sort_conflicts(){
-		
+
 		var list = new Gee.ArrayList<FileConflictItem>();
-		
+
 		foreach(var con in conflicts.values){
 			list.add(con);
 		}
-		
+
 		list.sort((a,b)=>{
 			int val = strcmp(a.location, b.location);
 			if (val == 0){
@@ -765,23 +766,23 @@ public class FileTask : GLib.Object {
 				return val;
 			}
 		});
-		
+
 		conflicts_sorted =  list;
 	}
 
 	private bool copy_file(string src_path, string dest_path, bool move){
 
 		bool ok = false;
-		
+
 		var src = File.new_for_path(src_path);
 		var dest = File.new_for_path(dest_path);
-		
+
 		if (!src.query_exists()){
 			return true; // ignore, src may have been a symlink which was moved
 		}
 
 		//bool is_replace = dest.query_exists();
-		
+
 		bytes_file = 0;
 		bytes_file_total = 0;
 
@@ -851,7 +852,7 @@ public class FileTask : GLib.Object {
 		if (calculate_dirsize_current_item != null){
 			calculate_dirsize_current_item.calculate_size_from_disk_aborted = true;
 		}
-		
+
 		if (rsync != null){
 			rsync.stop();
 		}
@@ -883,11 +884,11 @@ public class FileTask : GLib.Object {
 	public void restore_trashed_items(FileItem[] _items, Gtk.Window? _window){
 
 		is_running = true;
-		
+
 		// assign arguments -----------------
-		
+
 		action = "move";
-		
+
 		items = _items;
 
 		window = _window;
@@ -900,7 +901,7 @@ public class FileTask : GLib.Object {
 		log_debug("FileTask: restore_trashed_items(): %d".printf(_items.length));
 
 		// init -----------------------
-		
+
 		init_task();
 
 		status = _("Preparing...");
@@ -912,7 +913,7 @@ public class FileTask : GLib.Object {
 
 		try {
 			//start thread for copy operation
-			Thread.create<void> (restore_items_thread, true);
+			new Thread<void>.try ("FileTask::restore_items_thread", restore_items_thread);
 		} catch (Error e) {
 			log_error ("FileTask: restore_items_thread(): error");
 			log_error (e.message);
@@ -933,7 +934,7 @@ public class FileTask : GLib.Object {
 
 				source = new FileItem.from_path(item.trash_data_file);
 				source.query_children(-1, false);
-				
+
 				destination = new FileItem.from_path(file_parent(item.trash_original_path));
 				destination.query_children(1, false);
 
@@ -982,9 +983,9 @@ public class FileTask : GLib.Object {
 
 
 	public void empty_trash(){
-		
+
 		//action = send_to_trash ? "trash" : "delete";
-		
+
 		log_debug("FileTask: empty_trash()");
 
 		is_running = true;
@@ -996,18 +997,18 @@ public class FileTask : GLib.Object {
 
 		try {
 			// start thread
-			Thread.create<void> (empty_trash_thread, true);
+			new Thread<void>.try ("FileTask::empty_trash_thread", empty_trash_thread);
 		}
 		catch (Error e) {
 			log_error ("FileTask: empty_trash_thread(): error");
 			log_error (e.message);
 		}
 	}
-	
+
 	public void empty_trash_thread(){
 
 		log_debug("FileTask: empty_trash_thread(): enter");
-		
+
 		TrashCan.empty_trash();
 
 		timer.stop();
@@ -1017,13 +1018,13 @@ public class FileTask : GLib.Object {
 
 		complete();
 	}
-	
+
 	// ----------------
-	
+
 	private void remove_items(bool send_to_trash){
 
 		action = send_to_trash ? "trash" : "delete";
-		
+
 		log_debug("FileTask: remove_items(%s): %d".printf(action, items.length));
 
 		is_running = true;
@@ -1036,12 +1037,12 @@ public class FileTask : GLib.Object {
 		try {
 			//start thread for operation
 			if ((source is FileItemCloud) || (destination is FileItemCloud)){
-				Thread.create<void> (rclone_delete_thread, true);
+				new Thread<void>.try ("FileTask::rclone_delete_thread", rclone_delete_thread);
 			}
 			else{
-				Thread.create<void> (delete_items_thread, true);
+				new Thread<void>.try ("FileTask::delete_items_thread", delete_items_thread);
 			}
-			
+
 		} catch (Error e) {
 			log_error ("FileTask: remove_items(): error");
 			log_error (e.message);
@@ -1051,7 +1052,7 @@ public class FileTask : GLib.Object {
 	private void delete_items_thread(){
 
 		log_debug("FileTask: delete_items(): enter");
-		
+
 		if (action == "delete"){
 			query_source_items();
 		}
@@ -1094,21 +1095,21 @@ public class FileTask : GLib.Object {
 		if (aborted) { return false; }
 
 		// trash -----------------------
-		
+
 		if (send_to_trash){
 
 			status = _("Item") + ": %s".printf(item.file_path);
-			
+
 			log_debug("trash: %s".printf(item.file_path));
-			
+
 			bool ok = file_trash(item.file_path, null); // pass window=null to avoid weird XWindow issue
 			bytes_completed_files += item.file_size;
 			count_batch_completed += 1;
-			return ok; 
+			return ok;
 		}
 
 		// delete ----------------------------
-		
+
 		if (item.file_type != FileType.DIRECTORY){
 
 			status = "%s".printf(item.file_path);
@@ -1143,7 +1144,7 @@ public class FileTask : GLib.Object {
 	}
 
 	private void rclone_delete_thread(){
-		
+
 		log_debug("FileTask: rclone_delete_thread(): start");
 
 		//log_debug("FileTask: rclone_delete_thread(): %lld items, %s".printf(count_batch_total, format_file_size(bytes_batch_total)));
@@ -1158,23 +1159,23 @@ public class FileTask : GLib.Object {
 		rclone.action = RcloneActionType.DELETE;
 
 		// ---------------------
-		
+
 		//status = _("Building file list...");
 		//log_debug(status);
-		
+
 		//query_source_items();
 
 		// ---------------------
-		
+
 		status = _("Building file list...");
 		log_debug(status);
-		
+
 		update_rclone_delete_list();
 
 		//count_items_for_copy();
 
 		// ---------------------
-		
+
 		status = _("Removing items...");
 		log_debug(status);
 
@@ -1202,11 +1203,11 @@ public class FileTask : GLib.Object {
 		}
 		rclone.add_rule_exclude_others();
 	}
-	
+
 	// query async -------------------------
 
 	private void query_source_items(){
-		
+
 		log_debug("FileTask: query_source_items()");
 
 		//status = _("Building file list...");
@@ -1219,7 +1220,7 @@ public class FileTask : GLib.Object {
 			if (aborted) { break; }
 
 			if ((item.file_type == FileType.DIRECTORY) && !item.is_symlink){
-				
+
 				current_query_item = item;
 				item.query_children_async(false);
 
@@ -1257,20 +1258,19 @@ public class FileTask : GLib.Object {
 	// calculate_dirsize ------------------------------------------
 
 	private FileItem calculate_dirsize_current_item = null;
-	
+
 	public void calculate_dirsize_async(FileItem[] _items) {
 
 		is_running = true;
 		aborted = false;
-		
+
 		items = _items;
-		
+
 		log_debug("FileTask: calculate_dirsize_async(): %d".printf(items.length));
 
 		try {
 			//start thread
-			Thread.create<void> (calculate_dirsize_async_thread, true);
-			//Thread<void*> thread = new Thread<void*>.try("", calculate_dirsize_async_thread);
+			new Thread<void>.try ("FileTask::calculate_dirsize_async_thread", calculate_dirsize_async_thread);
 		}
 		catch (Error e) {
 			log_error ("FileItem: calculate_dirsize_async(): error");
@@ -1279,19 +1279,19 @@ public class FileTask : GLib.Object {
 	}
 
 	private void calculate_dirsize_async_thread() {
-		
+
 		log_debug("FileTask: calculate_dirsize_async_thread()");
-	
+
 		foreach(var item in items){
-			
+
 			if (aborted){ break; }
 
 			if (item.dir_size_queried){ continue; }
-			
+
 			calculate_dirsize_current_item = item;
 
 			item.file_size = item.calculate_size_from_disk(item.file_path, true);
-			
+
 			if (aborted){
 				item.file_size = 0;
 			}
@@ -1353,7 +1353,7 @@ public class FileTask : GLib.Object {
 					}
 
 					//txt += " %s".printf(_("transferred"));
-					
+
 					txt += " (%.0f%%),".printf(progress * 100.0);
 
 					txt += " %s,".printf(stat_speed);
@@ -1433,9 +1433,9 @@ public class FileTask : GLib.Object {
 		}
 	}
 
-		
+
 	private string _status = "";
-	
+
 	public string status{
 		owned get {
 			if ((rsync != null) && (rsync.is_running)){
@@ -1480,7 +1480,7 @@ public class FileConflictItem : GLib.Object {
 		dest_base_dir = dest_base;
 		replace = true;
 	}
-	
+
 	public string location {
 		owned get {
 			if (source_item.file_location.length == source_base_dir.file_path.length){
@@ -1494,7 +1494,7 @@ public class FileConflictItem : GLib.Object {
 }
 
 public class FileCopyItem : GLib.Object {
-	
+
 	public string source_path = "";
 	public string dest_path = "";
 	public int64 size = 0;
@@ -1504,5 +1504,5 @@ public class FileCopyItem : GLib.Object {
 		dest_path = _dest_path;
 		size = _size;
 	}
-	
+
 }

@@ -39,7 +39,7 @@ public class ClamScanTask : AsyncTask {
 	public Gee.ArrayList<string> scan_list;
 	public string scan_mode = "fast";
 	public bool admin_mode = false;
-	
+
 	public string scanned = "";
 	public string found = "";
 	public string elapsed = "";
@@ -57,16 +57,16 @@ public class ClamScanTask : AsyncTask {
 	public signal void file_found(ClamScanResult res);
 
 	public ClamScanTask(){
-		
+
 		init_regular_expressions();
-		
+
 		results = new Gee.ArrayList<ClamScanResult>();
 	}
-	
+
 	private void init_regular_expressions(){
-		
+
 		regex_list = new Gee.HashMap<string, Regex>();
-		
+
 		try {
 			//0 scanned, 0 found, 00:00:00 elapsed ~ /filepath
 			regex_list["status"] = new Regex("""^([0-9]+) scanned, ([0-9]+) found, ([0-9:]+) elapsed ~ (.*)$""");
@@ -82,22 +82,22 @@ public class ClamScanTask : AsyncTask {
 			log_error (e.message);
 		}
 	}
-	
+
 	public void prepare() {
-	
+
 		string script_text = build_script();
-		
+
 		script_file = save_bash_script_temp(script_text, script_file, true, false, false);
 	}
 
 	private string build_script() {
-	
+
 		string cmd = "";
 
 		if (admin_mode){
 			cmd += "pkexec ";
 		}
-		
+
 		cmd += "polo-clamav --scripted";
 
 		if (scan_mode == "fast"){
@@ -108,22 +108,22 @@ public class ClamScanTask : AsyncTask {
 		}
 
 		cmd += " --scan";
-		
+
 		foreach(string path in scan_list){
 			cmd += " '%s'".printf(escape_single_quote(path));
 		}
-		
+
 		log_debug(cmd);
 
 		return cmd;
 	}
-	
+
 	// execution ----------------------------
 
 	public void scan(Gee.ArrayList<string> _scan_list){
 
 		log_debug("ClamScanTask.scan()");
-		
+
 		scan_list = _scan_list;
 
 		execute();
@@ -132,19 +132,19 @@ public class ClamScanTask : AsyncTask {
 	public void list(){
 
 		log_debug("ClamScanTask.list()");
-		
+
 		string cmd = "";
 
 		if (admin_mode){
 			cmd += "pkexec ";
 		}
-		
+
 		cmd += "polo-clamav --scripted --list";
 
 		string std_out, std_err;
-		
+
 		if (admin_mode){
-			int status = App.exec_admin(cmd, out std_out, out std_err);
+			(void)App.exec_admin(cmd, out std_out, out std_err);
 		}
 		else{
 			exec_sync(cmd, out std_out, out std_err);
@@ -153,39 +153,39 @@ public class ClamScanTask : AsyncTask {
 		results.clear();
 
 		var res = new ClamScanResult();
-		
+
 		foreach(string line in std_out.split("\n")){
 
 			MatchInfo match;
-			
+
 			if (regex_list["path"].match(line, 0, out match)) {
-			
+
 				res = new ClamScanResult();
 				res.file_path = match.fetch(1);
 				results.add(res);
 			}
 			else if (regex_list["archive"].match(line, 0, out match)) {
-			
+
 				res.archive_path = match.fetch(1);
 			}
 			else if (regex_list["signature"].match(line, 0, out match)) {
-			
+
 				res.signature = match.fetch(1);
 			}
 			else if (regex_list["modified"].match(line, 0, out match)) {
-			
+
 				res.modified = match.fetch(1);
 			}
 			else if (regex_list["quarantined"].match(line, 0, out match)) {
-			
+
 				res.quarantined = match.fetch(1);
 			}
 			else if (regex_list["modified"].match(line, 0, out match)) {
-			
+
 				res.modified = match.fetch(1);
 			}
 			else if (regex_list["size"].match(line, 0, out match)) {
-			
+
 				res.size = match.fetch(1);
 			}
 		}
@@ -198,20 +198,20 @@ public class ClamScanTask : AsyncTask {
 		begin();
 
 		if (status == AppStatus.RUNNING){
-			
-			
+
+
 		}
 	}
 
 	public override void parse_stdout_line(string out_line){
-		
+
 		if (is_terminated) { return; }
 
 		update_progress_parse_console_output(out_line);
 	}
-	
+
 	public override void parse_stderr_line(string err_line){
-		
+
 		if (is_terminated) { return; }
 
 		update_progress_parse_console_output(err_line);
@@ -224,7 +224,7 @@ public class ClamScanTask : AsyncTask {
 		//log_debug(line);
 
 		mutex_parser.lock();
-		
+
 		MatchInfo match;
 		if (regex_list["status"].match(line, 0, out match)) {
 
@@ -232,13 +232,13 @@ public class ClamScanTask : AsyncTask {
 			found = match.fetch(2);
 			elapsed = match.fetch(3);
 			file_path = match.fetch(4);
-			
+
 			status_line = line;
 		}
 		else if (regex_list["found"].match(line, 0, out match)) {
 
 			var res = new ClamScanResult();
-			
+
 			res.file_path = match.fetch(1);
 			res.signature = match.fetch(2);
 
@@ -247,7 +247,7 @@ public class ClamScanTask : AsyncTask {
 				res.size = format_file_size(file_get_size(res.file_path));
 				res.modified = file_get_modified_date(res.file_path).format("%Y-%m-%d %H:%M:%S");
 			}
-			
+
 			results.add(res);
 
 			file_found(res); // signal
@@ -276,50 +276,50 @@ public class ClamScanTask : AsyncTask {
 	}
 
 	protected override void finish_task(){
-		
+
 		if ((status != AppStatus.CANCELLED) && (status != AppStatus.PASSWORD_REQUIRED)) {
 			status = AppStatus.FINISHED;
 		}
 	}
 
 	public int read_status(){
-		
+
 		var status_file = working_dir + "/status";
-		
+
 		var f = File.new_for_path(status_file);
-		
+
 		if (f.query_exists()){
 			var txt = file_read(status_file);
 			return int.parse(txt);
 		}
-		
+
 		return -1;
 	}
 
 	public new string get_error_message(){
-		
+
 		return error_log;
 	}
 
 	// stats
 
 	public string stat_status_line{
-		
+
 		owned get{
-			
+
 			var txt = "";
-			
+
 			txt = "%.2f %% complete, %s elapsed, %s remaining, %s".printf(
 				progress * 100.0, stat_time_elapsed, stat_time_remaining, stat_speed);
 
 			return txt;
 		}
 	}
-	
+
 	public string stat_speed{
-		
+
 		owned get{
-			
+
 			long elapsed = (long) timer_elapsed(timer);
 			long speed = (long)(bytes_completed / (elapsed / 1000.0));
 			return format_file_size(speed) + "/s";

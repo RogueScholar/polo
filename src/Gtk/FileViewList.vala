@@ -294,6 +294,11 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		treeview.get_selection().changed.connect(on_selection_changed);
 
+		// mouse forward & backward connect
+		treeview.button_press_event.connect(on_mbutton_press_event);
+		iconview.button_press_event.connect(on_mbutton_press_event);
+
+
 		// context menu will be connected in connect_file_context_menu()
 
 		// tooltip
@@ -567,7 +572,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.row_collapsed.connect(treeview_row_collapsed);
 	}
 
-	//private string propbar_last_folder_path = "";
+	private string propbar_last_folder_path = "";
 
 	private void on_selection_changed(){
 
@@ -1936,6 +1941,29 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		return false;
+	}
+
+	// mouse buttons forward & backward -------
+
+	private bool on_mbutton_press_event(Gdk.EventButton event){
+
+		if (event.button == 2) {
+			go_up();
+			return false;
+		}
+
+		if (event.button == 8) {
+			go_back();
+			return false;
+		}
+
+		if (event.button == 9) {
+			go_forward();
+			return false;
+		}
+
+		return false;
+
 	}
 
 	// DND ------------------------------------

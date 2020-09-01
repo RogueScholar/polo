@@ -46,7 +46,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_stats;
 	public Gtk.ProgressBar progressbar;
-	
+
 	private bool first_pass = true;
 	private FileReplaceMode replace_mode = FileReplaceMode.NONE;
 	private Gee.HashMap<string, FileConflictItem> conflicts;
@@ -55,9 +55,9 @@ public class ProgressPanelFileTask : ProgressPanel {
 	private const int stalled_counter_limit = 10 * (1000 / 200);
 	//private int stalled_counter = (int) stalled_counter_limit;
 	//private bool stalled_warning_shown = false;
-		
+
 	public ProgressPanelFileTask(FileViewPane _pane, Gee.ArrayList<FileItem> _items, FileActionType _action){
-		base(_pane, _items, _action);
+		init(_pane, _items, _action);
 
 		task = new FileTask();
 	}
@@ -74,7 +74,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 		lbl_header = label;
 
 		set_header();
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -143,7 +143,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 		string txt = "";
 		switch(action_type){
 		case FileActionType.COPY:
-			if (source is FileItemCloud){ 
+			if (source is FileItemCloud){
 				txt = _("Downloading files from cloud storage:");
 			}
 			else if (destination is FileItemCloud){
@@ -283,7 +283,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelFileTask: start_task()");
@@ -295,7 +295,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 			task.move_items_to_path(source, destination.file_path, items.to_array(),
 				replace_mode, conflicts, (Gtk.Window) window);
 			break;
-			
+
 		case FileActionType.COPY:
 			task.copy_items_to_path(source, destination.file_path, items.to_array(),
 				replace_mode, conflicts, (Gtk.Window) window);
@@ -304,17 +304,17 @@ public class ProgressPanelFileTask : ProgressPanel {
 		case FileActionType.CLOUD_RENAME:
 			task.cloud_rename(source_file, new_name, (Gtk.Window) window);
 			break;
-			
+
 		case FileActionType.RESTORE:
 			task.restore_trashed_items(items.to_array(), (Gtk.Window) window);
 			break;
-			
+
 		case FileActionType.DELETE:
 		case FileActionType.DELETE_TRASHED:
 			log_debug("------------------------------------------%d".printf(items.size));
 			task.delete_items(source, items.to_array(), (Gtk.Window) window);
 			break;
-			
+
 		case FileActionType.TRASH:
 			log_debug("------------------------------------------%d".printf(items.size));
 			task.trash_items(source, items.to_array(), (Gtk.Window) window);
@@ -327,22 +327,22 @@ public class ProgressPanelFileTask : ProgressPanel {
 		}
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add (500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelFileTask: update_status()");
 
 			lbl_status.label = task.status;
 
 			lbl_stats.label = task.stats;
-			
+
 			progressbar.fraction = task.progress;
-			
+
 			gtk_do_events();
 
 			// do events ~10 times/sec but refresh stats ~5 times/sec
@@ -354,7 +354,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 
 			var error_message = err_log_read();
 			if (error_message.length > 0){
-				
+
 				string title = _("There were some errors:");
 				string msg = error_message;
 				gtk_messagebox(title, msg, window, true);
@@ -363,13 +363,13 @@ public class ProgressPanelFileTask : ProgressPanel {
 			}
 
 			if (first_pass && ((action_type == FileActionType.CUT) || (action_type == FileActionType.COPY))){
-				
+
 				if (aborted){ return false; }
 
 				log_debug("conflicts=%d".printf(task.conflicts.keys.size));
 
 				int response = Gtk.ResponseType.OK;
-				
+
 				if (task.conflicts.keys.size > 0){
 
 					lbl_status.label = _("Resolving conflicts...");
@@ -383,7 +383,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 					gtk_do_events();
 				}
 				if (response == Gtk.ResponseType.OK){
-					
+
 					first_pass = false;
 					conflicts = task.conflicts;
 
@@ -406,14 +406,12 @@ public class ProgressPanelFileTask : ProgressPanel {
 	}
 
 	/*private bool check_if_stalled(){
-
 		switch (action_type){
 		case FileActionType.DELETE:
 		case FileActionType.DELETE_TRASHED:
 		case FileActionType.TRASH:
 			return false;
 		}
-
 		if (task.bytes_batch == copied_bytes){
 			// no bytes were copied in last 200 ms
 			stalled_counter--;
@@ -423,13 +421,10 @@ public class ProgressPanelFileTask : ProgressPanel {
 			stalled_counter = stalled_counter_limit;
 			copied_bytes = task.bytes_batch;
 		}
-
 		switch (action_type){
 		case FileActionType.CUT:
 		case FileActionType.COPY:
-		
 			if ((copied_bytes > 0) && (stalled_counter < 0) && !stalled_warning_shown){
-				
 				string title = _("Not Responding");
 				string msg = _("The data transfer seems to have stopped. Check if device is working correctly and if connection with the device is reliable.");
 				gtk_messagebox(title, msg, window, true);
@@ -438,18 +433,17 @@ public class ProgressPanelFileTask : ProgressPanel {
 			}
 			break;
 		}
-
 		return false;
 	}*/
 
 	public override void cancel(){
 
 		log_debug("ProgressPanelFileTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -462,14 +456,14 @@ public class ProgressPanelFileTask : ProgressPanel {
 		task_complete();
 
 		stop_status_timer();
-		
+
 		log_debug("ProgressPanelFileTask: finish()");
 
 		pane.file_operations.remove(this);
 		pane.refresh_file_action_panel();
 
 		// refresh trash --------------------------------
-		
+
 		switch (action_type){
 		case FileActionType.TRASH:
 		case FileActionType.TRASH_EMPTY:
@@ -480,17 +474,17 @@ public class ProgressPanelFileTask : ProgressPanel {
 		}
 
 		// refresh cloud and remote locations --------------------------------
-		
+
 		switch (action_type){
 		case FileActionType.COPY:
-		
+
 			if ((destination != null) && ((destination is FileItemCloud) || destination.is_remote)){
 				window.refresh_views(destination.file_path);
 			}
 			break;
 
 		case FileActionType.CUT:
-		
+
 			if ((source != null) && ((source is FileItemCloud) || source.is_remote)){
 				window.refresh_views(source.file_path);
 			}
@@ -503,7 +497,7 @@ public class ProgressPanelFileTask : ProgressPanel {
 		case FileActionType.TRASH:
 		case FileActionType.DELETE:
 		case FileActionType.CLOUD_RENAME:
-		
+
 			if ((source != null) && ((source is FileItemCloud) || source.is_remote)){
 				window.refresh_views(source.file_path);
 			}
@@ -511,7 +505,3 @@ public class ProgressPanelFileTask : ProgressPanel {
 		}
 	}
 }
-
-
-
-

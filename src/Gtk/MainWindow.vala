@@ -136,17 +136,11 @@ public class MainWindow : Gtk.Window {
 		}
 		else{
 			log_debug("MainWindow: no operations running");
-			
+
 			save_session();
 
-			if (App.check_donation_trigger()){
-				log_debug("Donation message shown");
-				App.increment_run_count();
-				open_donate_window();
-			}
-
 			log_debug("MainWindow: exiting...");
-		
+
 			window_is_closing = true; // set after save_session()
 			return false; // close window
 		}
@@ -190,7 +184,7 @@ public class MainWindow : Gtk.Window {
 		add (vbox_main);
 
 		init_hotkeys();
-		
+
 		init_menubar();
 
 		init_headerbar();
@@ -210,7 +204,7 @@ public class MainWindow : Gtk.Window {
 		this.show_all(); // show_all() before hiding
 
 		this.hide(); // hide window while initialization completes
-		
+
 		tmr_init = Timeout.add(100, init_delayed);
 	}
 
@@ -226,7 +220,7 @@ public class MainWindow : Gtk.Window {
 		initialize_views();
 
 		headerbar.refresh();
-		
+
 		toolbar.refresh();
 
 		pathbar.refresh();
@@ -276,39 +270,34 @@ public class MainWindow : Gtk.Window {
 				//log_debug(status);
 
 				string txt = "";
-				
+
 				var match = regex_match("""RssAnon:[ \t]*([0-9]+)[ \t]*kB""", status);
 				if (match != null){
 					txt += "Mem: %s, ".printf(format_file_size(int.parse(match.fetch(1)) * KB));
 				}
-				
+
 				//match = regex_match("""VmRSS:[ \t]*([0-9]+)[ \t]*kB""", status);
 				//if (match != null){
 				//	txt += "RSS: %s, ".printf(format_file_size(int.parse(match.fetch(1)) * KB));
 				//}
 
 				txt += "%lld objects, %d cached".printf(FileItem.object_count, FileItem.cache.keys.size);
-				
+
 				this.title = txt;
-				
+
 				return true;
 			});
 		}
 
 		Timeout.add(100, ()=>{
-			
+
 			restore_propbar_position();
 
-			//if (!App.donation_displayed){
-			//	open_donate_window();
-			//	App.donation_displayed = true;
-			//}
-			
 			return false;
 		});
 
 		log_debug("Initialization complete -----------------", true);
-		
+
 		return false;
 	}
 
@@ -321,9 +310,9 @@ public class MainWindow : Gtk.Window {
 	private void init_menubar(){
 
 		log_debug("MainWindow: init_menubar()");
-		
+
 		if (!App.headerbar_enabled){
-			
+
 			menubar = new MainMenuBar(false);
 			vbox_main.add(menubar);
 		}
@@ -360,7 +349,7 @@ public class MainWindow : Gtk.Window {
 		//pane.position = 300;
 		//pane.margin = 3;
 		vbox_main.add(pane);
-		
+
 		pane_nav = pane;
 
 		// add the navigation box to the left pane of pane_nav
@@ -378,7 +367,7 @@ public class MainWindow : Gtk.Window {
 
 		pane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		pane_nav.pack2(pane, true, true); // resize, shrink
-		
+
 		pane_prop = pane;
 
 		// add the layoutbox to the left pane of pane_props
@@ -393,9 +382,9 @@ public class MainWindow : Gtk.Window {
 	}
 
 	private void init_layout_box(){
-		
+
 	}
-	
+
 	private void initialize_views(){
 
 		TreeModelCache.enable();
@@ -405,9 +394,9 @@ public class MainWindow : Gtk.Window {
 			log_debug("opening directories specified as command line arguments");
 
 			foreach(string file_path in App.cmd_files){
-				
+
 				if (dir_exists(file_path)){
-					
+
 					var tab = layout_box.panel1.add_tab(false);
 					tab.pane.view.set_view_path(file_path);
 				}
@@ -416,7 +405,7 @@ public class MainWindow : Gtk.Window {
 			foreach(var panel in layout_box.panels){
 
 				if (panel == layout_box.panel1){ continue; }
-				
+
 				panel.add_tab(false);
 				//tab.pane.view.set_view_path(App.user_home);
 				//tab.pane.view.set_view_path(file_path);
@@ -425,7 +414,7 @@ public class MainWindow : Gtk.Window {
 			layout_box.set_panel_layout(PanelLayout.SINGLE, false);
 
 			if (layout_box.panel1.tabs.size > 0){
-				
+
 				active_pane = layout_box.panel1.tabs[0].pane;
 			}
 
@@ -436,16 +425,16 @@ public class MainWindow : Gtk.Window {
 			bool session_loaded = false;
 
 			if (App.restore_last_session && App.session_lock.lock_acquired){
-				
+
 				session_loaded = load_session();
 			}
 
 			if (!session_loaded){
-				
+
 				log_debug("opening new session with default settings");
 
 				foreach(var panel in layout_box.panels){
-					
+
 					panel.add_tab(false);
 					//tab.pane.view.set_view_path(App.user_home);
 				}
@@ -464,7 +453,7 @@ public class MainWindow : Gtk.Window {
 	}
 
 	private void add_monitor_for_single_instance(){
-		
+
 		var openpath = new FileItem.from_path(App.app_conf_dir_path_open);
 		Cancellable? cancellable;
 		open_task_monitor = openpath.monitor_for_changes(out cancellable);
@@ -507,23 +496,23 @@ public class MainWindow : Gtk.Window {
 		gtk_set_busy(false, this);
 	}
 
-	private void init_hotkeys() { 
+	private void init_hotkeys() {
 
 		Hotkeys.init();
 		this.add_accel_group(Hotkeys.accel_group);
 
 		//enable_accelerators();
 		//this.accel_group.connect("<Control>x", Gdk.ModifierType.CONTROL_MASK, Gtk.AccelFlags.VISIBLE, () => view.cut());
-		
-		//Hotkeys.bind("<Control>c", (grp, acc, keyval, mod) =>{ active_pane.view.copy(); return true; }); 
-		//Hotkeys.bind("<Control>x", (grp, acc, keyval, mod) =>{ active_pane.view.cut(); return true; }); 
-		//Hotkeys.bind("<Control>v", (grp, acc, keyval, mod) =>{ active_pane.view.paste(); return true; }); 
+
+		//Hotkeys.bind("<Control>c", (grp, acc, keyval, mod) =>{ active_pane.view.copy(); return true; });
+		//Hotkeys.bind("<Control>x", (grp, acc, keyval, mod) =>{ active_pane.view.cut(); return true; });
+		//Hotkeys.bind("<Control>v", (grp, acc, keyval, mod) =>{ active_pane.view.paste(); return true; });
 	}
 
 	public void update_accelerators_for_active_pane(){
 
 		log_debug("update_accelerators_for_active_pane()");
-		
+
 		if (active_pane == null){ return; }
 		if (active_pane.view == null){ return; }
 		if (active_pane.view.current_item == null){ return; }
@@ -549,11 +538,11 @@ public class MainWindow : Gtk.Window {
 	public void update_accelerators_for_edit(){
 		update_accelerators_for_context(AccelContext.EDIT);
 	}
-	
+
 	public void update_accelerators_for_context(AccelContext context){
 
 		menubar.context_none();
-		
+
 		switch(context){
 		case AccelContext.TERM:
 			menubar.context_term();
@@ -587,7 +576,7 @@ public class MainWindow : Gtk.Window {
 	private void init_device_events(){
 		DeviceMonitor.get_monitor().mount_removed.connect(mount_removed);
 	}
-	
+
 	private void mount_removed(Mount mount){
 		//log_debug("MainWindow: mount_removed(): %s".printf(path_prefix));
 		var mount_path = mount.get_root().get_path();
@@ -598,7 +587,7 @@ public class MainWindow : Gtk.Window {
 			}
 		}
 	}
-	
+
 	private void check_dependencies(){
 
 		string message;
@@ -631,7 +620,7 @@ public class MainWindow : Gtk.Window {
 			}
 
 			log_debug("MainWindow: active_pane_changed: panel = %ld, tab = %d".printf(value.panel.number, value.tab.tab_index));
-			
+
 			_active_pane = value;
 
 			toolbar.refresh_for_active_pane();
@@ -675,7 +664,7 @@ public class MainWindow : Gtk.Window {
 			return list;
 		}
 	}
-	
+
 	public Gee.ArrayList<FileViewPane> panes {
 		owned get {
 			var list = new Gee.ArrayList<FileViewPane>();
@@ -697,18 +686,18 @@ public class MainWindow : Gtk.Window {
 	// refresh  ------------------------------------
 
 	public void refresh_views(string dir_path){
-		
+
 		log_debug("MainWindow: refresh_remote_views(%s)".printf(dir_path));
-		
+
 		foreach(var view in views){
-			
+
 			if (view.current_item == null) { continue; }
 			//if (view.current_item.is_remote == false) { continue; }
 			if (view.current_item.file_path != dir_path) { continue; }
-			
+
 			view.reload();
 		}
-		
+
 		log_debug("MainWindow: refresh_remote_views(): exit");
 	}
 
@@ -717,9 +706,9 @@ public class MainWindow : Gtk.Window {
 		log_debug("MainWindow: close_tabs_for_location(%s)".printf(dir_path));
 
 		var list = new Gee.ArrayList<FileViewTab>();
-		
+
 		foreach(var view in views){
-			
+
 			if (view.current_item == null) { continue; }
 
 			if (view.current_location.has_prefix(dir_path)){
@@ -730,10 +719,10 @@ public class MainWindow : Gtk.Window {
 		foreach(var tab in list){
 			tab.close_tab();
 		}
-		
+
 		log_debug("MainWindow: close_tabs_for_location(): exit");
 	}
-	
+
 	public void refresh_trash(){
 		log_debug("MainWindow: refresh_trash()");
 		foreach(var view in views){
@@ -756,7 +745,7 @@ public class MainWindow : Gtk.Window {
 	}*/
 
 	public void refresh_pathbars(){
-		
+
 		foreach(var pn in panes){
 			pn.pathbar.refresh();
 		}
@@ -765,15 +754,15 @@ public class MainWindow : Gtk.Window {
 	}
 
 	public void refresh_statusbars(){
-		
+
 		foreach(var pn in panes){
-			
+
 			pn.statusbar.refresh_visibility();
 		}
 
 		this.statusbar.refresh_visibility();
 	}
-	
+
 	public void refresh_treemodels(){
 
 		log_debug("MainWindow: refresh_treemodels()");
@@ -805,29 +794,29 @@ public class MainWindow : Gtk.Window {
 		App.tileview_padding = Main.TV_PADDING;
 
 		foreach(var v in views){
-			
+
 			v.listview_font_scale = App.listview_font_scale;
 			v.listview_icon_size = App.listview_icon_size;
 			v.listview_row_spacing = App.listview_row_spacing;
-			
+
 			v.iconview_icon_size = App.iconview_icon_size;
 			v.iconview_row_spacing = App.iconview_row_spacing;
 			v.iconview_column_spacing = App.iconview_column_spacing;
-			
+
 			v.tileview_icon_size = App.tileview_icon_size;
 			v.tileview_row_spacing = App.tileview_row_spacing;
 			v.tileview_padding = App.tileview_padding;
-			
+
 			v.refresh(false, false);
 		}
 	}
 
 	// sidebar ----------------
-	
+
 	public void reset_sidebar_position(){
-		
+
 		if (App.sidebar_visible){
-			
+
 			pane_nav.position = Main.DEFAULT_SIDEBAR_POSITION;
 		}
 		else{
@@ -853,37 +842,37 @@ public class MainWindow : Gtk.Window {
 	}
 
 	// propbar ----------------
-	
+
 	public void reset_propbar_position(){
-		
+
 		if (propbar.visible){
 
 			int pos = pane_prop.get_allocated_width() - 400;
-			
+
 			log_debug("MainWindow: reset_propbar_position: %d".printf(pos));
-			
+
 			pane_prop.position = pos;
 		}
 	}
 
 	public void save_propbar_position(){
-		
+
 		if (propbar.visible){
-			
+
 			log_debug("MainWindow: save_propbar_position: %d".printf(pane_prop.position));
-			
+
 			App.propbar_position = pane_prop.position;
 		}
 	}
 
 	public void restore_propbar_position(){
-		
+
 		if (propbar.visible){
-			
+
 			log_debug("MainWindow: restore_propbar_position: %d".printf(App.propbar_position));
 
 			if (App.propbar_position > 0){
-				
+
 				pane_prop.position = App.propbar_position;
 			}
 			else {
@@ -895,15 +884,15 @@ public class MainWindow : Gtk.Window {
 	public void toggle_properties_panel(){
 
 		propbar.toggle();
-		
+
 		if ((active_pane != null) && propbar.visible){
-			
+
 			var view = active_pane.view;
 
 			if (view != null){
-				
+
 				var selected = view.get_selected_items();
-				
+
 				if (selected.size > 0){
 					propbar.show_properties_for_file(selected[0], true);
 				}
@@ -912,9 +901,9 @@ public class MainWindow : Gtk.Window {
 	}
 
 	public bool is_fullscreen = false;
-	
+
 	public void toggle_fullscreen(){
-		
+
 		if (this.is_fullscreen){
 			this.unfullscreen();
 			is_fullscreen = false;
@@ -925,7 +914,7 @@ public class MainWindow : Gtk.Window {
 		}
 
 	}
-	
+
 	// actions ----------------------------
 
 	public void open_settings_window(){
@@ -948,14 +937,6 @@ public class MainWindow : Gtk.Window {
 		new WizardWindow();
 	}
 
-	public void open_donate_window(){
-		
-		log_debug("open_donate_window()");
-		
-		var dialog = new DonationWindow(this);
-		dialog.show_all();
-	}
-	
 	public void open_about_window(){
 
 		var dialog = new AboutWindow();
@@ -1018,12 +999,12 @@ public class MainWindow : Gtk.Window {
 	public void clear_thumbnail_cache(){
 
 		string cmd = "";
-		
+
 		foreach(string dir in new string[] { "normal", "large", "fail" }){
 			cmd += "rm -rfv '%s/.cache/thumbnails/%s'\n".printf(escape_single_quote(App.user_home), dir);
 			cmd += "mkdir -pv '%s/.cache/thumbnails/%s'\n".printf(escape_single_quote(App.user_home), dir);
 		}
-		
+
 		layout_box.panel1.run_script_in_new_terminal_tab(cmd, _("Cleaning Thumbnail Cache..."));
 	}
 
@@ -1046,7 +1027,7 @@ public class MainWindow : Gtk.Window {
 	public void run_rclone_config(string account_name, string account_type){
 
 		log_debug("run_rclone_config(): %s, %s".printf(account_name, account_type));
-		
+
 		string sh_path = path_combine(App.share_dir, "files/install-rclone.sh");
 		string cmd = sh_path;
 
@@ -1057,19 +1038,19 @@ public class MainWindow : Gtk.Window {
 
 		term.feed_command("rclone config");
 		sleep(200);
-		
+
 		term.feed_command("n");
 		sleep(200);
-		
+
 		term.feed_command(account_name);
 		sleep(200);
-		
+
 		term.feed_command(account_type);
 		sleep(200);
 
 		//tab.tab_closed.connect();
 	}
-	
+
 	public void add_rclone_account(){
 
 		err_log_clear();
@@ -1078,7 +1059,7 @@ public class MainWindow : Gtk.Window {
 
 		//TermBox term = new TermBox(pane);
 		//term.start_shell();
-		
+
 		//if (LOG_DEBUG){
 			//var tab = layout_box.panel1.add_new_terminal_tab();
 			//term = tab.pane.terminal;
@@ -1094,7 +1075,7 @@ public class MainWindow : Gtk.Window {
 
 		var tab = layout_box.panel1.add_new_terminal_tab();
 		term = tab.pane.terminal;
-			
+
 		sleep(200);
 		term.feed_command("rclone config");
 
@@ -1103,18 +1084,18 @@ public class MainWindow : Gtk.Window {
 	}
 
 	public bool remove_rclone_account(CloudAccount acc){
-		
+
 		err_log_clear();
 
 		var term = new TermBox(active_pane);
 		term.start_shell();
-		
+
 		sleep(200);
 		term.feed_command("rclone config");
 
 		sleep(200);
 		term.feed_command("d");
-		
+
 		sleep(200);
 		term.feed_command(acc.name);
 
@@ -1124,12 +1105,12 @@ public class MainWindow : Gtk.Window {
 		//App.rclone.query_accounts();
 
 		//window.refre
-		
+
 		return true;
 	}
 
 	// session -------------------------------
-	
+
 	public void save_session(string session_file_path = ""){
 
 		log_msg("MainWindow: save_session()");
@@ -1183,7 +1164,7 @@ public class MainWindow : Gtk.Window {
 			foreach(var tab in panel.tabs){
 
 				if (tab.is_dummy) { continue; }
-				
+
 				if (tab.pane.view.current_item != null){
 					if (tab.pane.view.current_item is FileItemCloud){
 						continue;
@@ -1270,7 +1251,7 @@ public class MainWindow : Gtk.Window {
 		}
 
 		this.sensitive = false;
-		
+
 		var win = new LoadingWindow(this, msg, "", false);
 		win.show_all();
 
@@ -1287,7 +1268,7 @@ public class MainWindow : Gtk.Window {
 			else{
 				parser.load_from_file(App.app_conf_session);
 			}
-			
+
 		}
 		catch (Error e) {
 	        log_error (e.message);
@@ -1298,7 +1279,7 @@ public class MainWindow : Gtk.Window {
 		// close open tabs ------------------------------
 
 		var old_tabs = new Gee.ArrayList<FileViewTab>();
-		
+
 		foreach(var panel in layout_box.panels){
 
 			foreach(var tab in panel.tabs){
@@ -1308,7 +1289,7 @@ public class MainWindow : Gtk.Window {
 				old_tabs.add(tab);
 			}
 		}
-		
+
 		// ----------------------------------------------
 
 	    TreeModelCache.enable();
@@ -1372,7 +1353,7 @@ public class MainWindow : Gtk.Window {
 		var panel = layout_box.panels[num-1];
 
 		bool atleast_one_tab_loaded = false;
-		
+
 		var node_tabs = (Json.Array) node_pane.get_array_member("tabs");
 		foreach(var tabnode in node_tabs.get_elements()){
 			bool ok = load_session_tab(panel, tabnode);
@@ -1427,7 +1408,7 @@ public class MainWindow : Gtk.Window {
 		view.show_hidden_files = show_hidden;
 		view.set_view_mode((ViewMode) vmode);
 		view.set_view_path(path);
-		
+
 		if (is_active){
 			active_pane = tab.pane;
 		}
@@ -1440,20 +1421,20 @@ public class MainWindow : Gtk.Window {
 	// workspace ---------------------------------------
 
 	public void save_workspace(){
-		
+
 		log_debug("action.save_workspace()");
 
 		log_debug("current_workspace_file_name: " + current_workspace_file_name);
-		
+
 		if (current_workspace_file_name.length > 0){
 
 			var ws_file = path_combine(App.app_conf_dir_workspaces, current_workspace_file_name);
 
 			if (file_exists(ws_file)){
-				
+
 				log_debug("file_name: " + ws_file);
 				save_session(ws_file);
-				
+
 				return;
 			}
 		}
@@ -1469,7 +1450,7 @@ public class MainWindow : Gtk.Window {
 		string? new_name = _("New Workspace");
 		string file_path_new = file_generate_unique_name(path_combine(App.app_conf_dir_workspaces, new_name));
 		new_name = file_basename(file_path_new);
-		
+
 		do {
 			new_name = gtk_inputbox(_("Save Workspace"),_("Enter workspace name"), this, false, new_name);
 			if ((new_name == null) || (new_name.length == 0)){
@@ -1489,16 +1470,16 @@ public class MainWindow : Gtk.Window {
 
 		current_workspace_file_name = file_basename(file_path_new);
 		log_debug("current_workspace_file_name: " + current_workspace_file_name);
-		
+
 		save_session(file_path_new);
 	}
 
 	public void load_workspace(string ws_name){
 
 		log_debug("action.load_workspace(): " + ws_name);
-		
+
 		var ws_file = path_combine(App.app_conf_dir_workspaces, ws_name);
-		
+
 		if (!file_exists(ws_file)){
 			log_debug("Missing: " + ws_file);
 			return;
@@ -1512,18 +1493,18 @@ public class MainWindow : Gtk.Window {
 	public bool remove_workspace(string ws_name){
 
 		log_debug("action.remove_workspace(): " + ws_name);
-		
+
 		var ws_file = path_combine(App.app_conf_dir_workspaces, ws_name);
-		
+
 		if (file_exists(ws_file)){
 			file_delete(ws_file);
 			log_debug("removed: " + ws_file);
 		}
-		
+
 		return !file_exists(ws_file);
 	}
 
 	public void list_workspaces(){
-		
+
 	}
 }

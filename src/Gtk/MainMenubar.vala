@@ -2041,8 +2041,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		add_shortcuts(submenu);
 
-		add_donate(submenu);
-
 		add_about(submenu);
 	}
 
@@ -2083,16 +2081,6 @@ public class MainMenuBar : Gtk.MenuBar, IPaneActive {
 
 		item.activate.connect (() => {
 			//window.open_shortcuts_window();
-		});
-	}
-
-	private void add_donate(Gtk.Menu menu){
-
-		var item = new Gtk.MenuItem.with_label (_("Donate"));
-		menu.add(item);
-
-		item.activate.connect (() => {
-			window.open_donate_window();
 		});
 	}
 

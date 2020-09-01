@@ -655,7 +655,7 @@ public class GeneralStream : MediaStream {
 	public string Format = "";
 
 	public GeneralStream(){
-		base(MediaStreamType.GENERAL);
+		init(MediaStreamType.GENERAL);
 	}
 
 	public override string description{
@@ -675,7 +675,7 @@ public class VideoStream : MediaStream {
 	public long Duration = 0;
 
 	public VideoStream(){
-		base(MediaStreamType.VIDEO);
+		init(MediaStreamType.VIDEO);
 	}
 
 	public override string description{
@@ -717,7 +717,7 @@ public class AudioStream : MediaStream {
 	public long Duration = 0;
 
 	public AudioStream(){
-		base(MediaStreamType.AUDIO);
+		init(MediaStreamType.AUDIO);
 	}
 
 	public override string description{
@@ -767,7 +767,7 @@ public class TextStream : MediaStream {
 	public string CharacterEncoding = "";
 
 	public TextStream(){
-		base(MediaStreamType.TEXT);
+		init(MediaStreamType.TEXT);
 	}
 
 	public override string description{

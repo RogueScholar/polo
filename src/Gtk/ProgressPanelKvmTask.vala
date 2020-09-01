@@ -39,16 +39,16 @@ public class ProgressPanelKvmTask : ProgressPanel {
 	private string file_path = "";
 	private string base_file = "";
 	private string derived_file = "";
-	private double disk_size = 0; 
+	private double disk_size = 0;
 	private string disk_format = "QCOW2";
-	
-	// ui 
+
+	// ui
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_stats;
 	public Gtk.ProgressBar progressbar;
 
 	public ProgressPanelKvmTask(FileViewPane _pane, FileActionType _action){
-		base(_pane, null, _action);
+		init(_pane, null, _action);
 	}
 
 	public void set_parameters(string _file_path, string _base_file, string _derived_file, double _disk_size){
@@ -63,7 +63,7 @@ public class ProgressPanelKvmTask : ProgressPanel {
 		base_file = _base_file;
 		disk_format = _disk_format;
 	}
-	
+
 	public override void init_ui(){ // TODO: make protected
 
 		string txt = "";
@@ -85,7 +85,7 @@ public class ProgressPanelKvmTask : ProgressPanel {
 		label.xalign = 0.0f;
 		label.margin_bottom = 12;
 		contents.add(label);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -143,7 +143,7 @@ public class ProgressPanelKvmTask : ProgressPanel {
 	public override void execute(){
 
 		task = new KvmTask();
-		
+
 		log_debug("ProgressPanelKvmTask: execute(%s)".printf(action_type.to_string()));
 
 		//if (items.size == 0){
@@ -171,7 +171,7 @@ public class ProgressPanelKvmTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelKvmTask: start_task()");
@@ -190,36 +190,36 @@ public class ProgressPanelKvmTask : ProgressPanel {
 		}
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add (500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelKvmTask: update_status()");
-			
+
 			lbl_status.label = "%s: %s".printf(_("File"), file_basename(file_path));
-			
+
 			lbl_stats.label = "%.0f%% complete, %s elapsed, %s remaining".printf(
 				task.progress * 100.0, task.stat_time_elapsed, task.stat_time_remaining);
-				
+
 			progressbar.fraction = task.progress;
-			
+
 			gtk_do_events();
 		}
 		else{
 
 			var error_message = err_log_read();
-			
+
 			if (error_message.length > 0){
 				string title = _("Error");
 				string msg = error_message;
 				gtk_messagebox(title, msg, window, true);
 				pane.add_message("%s: %s".printf(_("Error"), msg), Gtk.MessageType.ERROR);
 			}
-			
+
 			finish();
 			return false;
 		}
@@ -230,11 +230,11 @@ public class ProgressPanelKvmTask : ProgressPanel {
 	public override void cancel(){
 
 		log_debug("ProgressPanelKvmTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -247,14 +247,14 @@ public class ProgressPanelKvmTask : ProgressPanel {
 		task_complete();
 
 		stop_status_timer();
-		
+
 		log_debug("ProgressPanelKvmTask: finish()");
 
 		if (!aborted && file_exists(file_path)){
-			
+
 			//var list = new Gee.ArrayList<string>();
 			//list.add(file_path);
-			
+
 			pane.add_message("%s: %s".printf(_("Created"), file_basename(file_path)), Gtk.MessageType.INFO);
 
 			//view.select_items_by_file_path(list);
@@ -262,12 +262,8 @@ public class ProgressPanelKvmTask : ProgressPanel {
 			// do not select items when operation completes
 			// it will be dangerous if selection changes while user is executing another action
 		}
-		
+
 		pane.file_operations.remove(this);
 		pane.refresh_file_action_panel();
 	}
 }
-
-
-
-

@@ -67,7 +67,8 @@ public abstract class ProgressPanel : Gtk.Box {
 
 	protected ProgressPanel(FileViewPane _pane, Gee.ArrayList<FileItem>? _items, FileActionType _action){
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
-		Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+		//Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
+
 		margin = 6;
 
 		var frame = new Gtk.Frame(null);

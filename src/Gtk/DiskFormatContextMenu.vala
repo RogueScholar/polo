@@ -36,14 +36,14 @@ using TeeJee.Misc;
 public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 
 	private Device? device;
-	
+
 	private Gtk.SizeGroup sg_icon;
 	private Gtk.SizeGroup sg_label;
 
 	public signal void device_formatting_complete();
 
 	public DiskFormatContextMenu(){
-		
+
 		margin = 0;
 
 		log_debug("DiskFormatContextMenu()");
@@ -79,7 +79,7 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 
 			item.sensitive = format_available(fmt);
 		}
-		
+
 		show_all();
 	}
 
@@ -99,23 +99,23 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 		}
 
 		string txt = "%s".printf(_("Format device?"));
-		
+
 		string msg = "%s:\n\n▰ %s".printf(_("Existing data on device will be destroyed"), device.description_friendly());
 
 		msg += "\n\nDevice will be formatted with '%s' file system".printf(fmt);
-		
+
 		var resp = gtk_messagebox_yes_no(txt, msg, window, true);
-		
+
 		if (resp != Gtk.ResponseType.YES){
 			return;
 		}
 
 		if (!view.check_tool("polo-disk")){ return; }
-		
+
 		string cmd = "polo-disk format --device %s --fstype %s --user %s".printf(device.device, fmt, App.user_name);
-				
+
 		log_debug(cmd);
-		
+
 		this.sensitive = false;
 
 		gtk_set_busy(true, App.main_window);
@@ -140,7 +140,7 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 	public bool format_available(string fmt){
 
 		string cmd = "";
-				
+
 		switch(fmt){
 		case "btrfs":
 		case "ext2":
@@ -158,7 +158,7 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 		case "exfat":
 			cmd += "mkfs.exfat";
 			break;
-			
+
 		case "fat16":
 			cmd += "mkfs.fat";
 			break;
@@ -178,7 +178,7 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 		case "reiser4":
 			cmd += "mkfs.reiser4";
 			break;
-		
+
 		case "reiserfs":
 			cmd += "mkreiserfs";
 			break;
@@ -190,7 +190,7 @@ public class DiskFormatContextMenu : Gtk.Menu, IPaneActive {
 	public bool show_menu(Device _device, Gdk.EventButton? event) {
 
 		this.device = _device;
-		
+
 		if (event != null) {
 			this.popup_at_pointer(event);
 		}

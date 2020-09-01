@@ -36,7 +36,7 @@ public class ClamScanBox : Gtk.Box {
 
 	public Gtk.TreeView treeview;
 	private Gtk.ScrolledWindow scrolled_treeview;
-	
+
 	private Gtk.ListStore store;
 
 	private Gtk.Button btn_quarantine;
@@ -48,9 +48,9 @@ public class ClamScanBox : Gtk.Box {
 	public Gtk.TreeViewColumn col_status;
 	public Gtk.TreeViewColumn col_checksum_compare;
 	public Gtk.TreeViewColumn col_checksum;
-	
+
 	public Gee.ArrayList<string> scan_list;
-	
+
 	private bool scan_running = false;
 	private bool scan_cancelled = false;
 
@@ -69,11 +69,11 @@ public class ClamScanBox : Gtk.Box {
 	public Gtk.Label lbl_results_found;
 
 	public Gtk.Frame frame_quarantine_location;
-	
+
 	public string ui_mode = "scan";
 
 	public ClamScanTask clamav;
-	
+
 	// contructor ------------------
 
 	public ClamScanBox(FileViewTab parent_tab, string _ui_mode){
@@ -100,7 +100,7 @@ public class ClamScanBox : Gtk.Box {
 	private void init_ui(){
 
 		init_quarantine_location_panel();
-		
+
 		init_treeview();
 
 		init_progress_panel();
@@ -113,18 +113,18 @@ public class ClamScanBox : Gtk.Box {
 	}
 
 	// progress panel ------------------------------
-	
+
 	private void init_progress_panel(){
 
 		var frame = new Gtk.Frame(null);
 		frame.margin = 3;
 		add(frame);
 		frame_progress = frame;
-		
+
 		var contents = new Gtk.Box(Orientation.VERTICAL, 6);
 		contents.margin = 6;
 		frame.add(contents);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -188,29 +188,29 @@ public class ClamScanBox : Gtk.Box {
 		var frame = new Gtk.Frame(null);
 		add(frame);
 		frame_results = frame;
-		
+
 		var contents = new Gtk.Box(Orientation.VERTICAL, 6);
 		contents.margin = 6;
 		frame.add(contents);
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
 
 		// count -----------------
-		
+
 		var label = new Gtk.Label("");
 		label.set_use_markup(true);
 		label.xalign = 0.0f;
 		hbox.add(label);
 
 		lbl_results_found = label;
-		
+
 		label.hexpand = true;
 
 		// actions -------------------
 
 		// move to quarantine -----------------------------
-		
+
 		var button = new Gtk.Button.with_label(_("Move to Quarantine"));
 		//button.image = IconManager.lookup_image("dialog-apply", 16);
 		//button.always_show_image = true;
@@ -225,7 +225,7 @@ public class ClamScanBox : Gtk.Box {
 			var selected_list = new Gee.ArrayList<ClamScanResult>();
 
 			log_debug("clamav.results: %d".printf(clamav.results.size));
-			
+
 			string txt = "";
 			foreach(var res in clamav.results){
 				if (res.selected){
@@ -248,9 +248,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			cmd += "polo-clamav --scripted --quarantine-from '%s'".printf(escape_single_quote(tmp_file));
-			
+
 			log_debug(cmd);
-			
+
 			if (clamav.admin_mode){
 				string std_out, std_err;
 				(void)App.exec_admin(cmd, out std_out, out std_err);
@@ -268,9 +268,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			refresh();
-			
+
 			string ttl = _("Files Moved");
-			
+
 			string msg = "";
 
 			if (moved_count > 0){
@@ -278,7 +278,7 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			bool is_error = false;
-			
+
 			if (moved_count < selected_list.size){
 
 				ttl = _("Failed to move some files");
@@ -286,19 +286,19 @@ public class ClamScanBox : Gtk.Box {
 				if (msg.length > 0){
 					msg += "\n\n";
 				}
-				
+
 				msg += "<b>%s: %d</b>".printf(_("Access Denied"), (selected_list.size - moved_count));
 
 				msg += "\n\n" + _("Run scan as Admin to quarantine files not owned by you.");
 
 				is_error = true;
 			}
-			
+
 			gtk_messagebox(ttl, msg, window, is_error);
 		});
 
 		// restore -----------------------------
-		
+
 		button = new Gtk.Button.with_label(_("Restore"));
 		//button.image = IconManager.lookup_image("dialog-warning", 16);
 		//button.always_show_image = true;
@@ -313,7 +313,7 @@ public class ClamScanBox : Gtk.Box {
 			var selected_list = new Gee.ArrayList<ClamScanResult>();
 
 			log_debug("clamav.results: %d".printf(clamav.results.size));
-			
+
 			string txt = "";
 			foreach(var res in clamav.results){
 				if (res.selected){
@@ -336,7 +336,7 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			cmd += "polo-clamav --scripted --restore-from '%s'".printf(escape_single_quote(tmp_file));
-			
+
 			log_debug(cmd);
 
 			if (clamav.admin_mode){
@@ -356,9 +356,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			refresh();
-			
+
 			string ttl = _("Files Restored");
-			
+
 			string msg = "";
 
 			if (moved_count > 0){
@@ -366,7 +366,7 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			bool is_error = false;
-			
+
 			if (moved_count < selected_list.size){
 
 				ttl = _("Failed to restore some files");
@@ -374,19 +374,19 @@ public class ClamScanBox : Gtk.Box {
 				if (msg.length > 0){
 					msg += "\n\n";
 				}
-				
+
 				msg += "<b>%s: %d</b>".printf(_("Access Denied"), (selected_list.size - moved_count));
 
 				//msg += "\n\n" + _("Run scan as Admin to restore files not owned by you.");
 
 				is_error = true;
 			}
-			
+
 			gtk_messagebox(ttl, msg, window, is_error);
 		});
 
 		// delete -----------------------------
-		
+
 		button = new Gtk.Button.with_label(_("Delete"));
 		//button.image = IconManager.lookup_image("dialog-apply", 16);
 		//button.always_show_image = true;
@@ -401,7 +401,7 @@ public class ClamScanBox : Gtk.Box {
 			var selected_list = new Gee.ArrayList<ClamScanResult>();
 
 			log_debug("clamav.results: %d".printf(clamav.results.size));
-			
+
 			string txt = "";
 			foreach(var res in clamav.results){
 				if (res.selected){
@@ -424,9 +424,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			cmd += "polo-clamav --scripted --delete-from '%s'".printf(escape_single_quote(tmp_file));
-			
+
 			log_debug(cmd);
-			
+
 			if (clamav.admin_mode){
 				string std_out, std_err;
 				(void)App.exec_admin(cmd, out std_out, out std_err);
@@ -444,9 +444,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			refresh();
-			
+
 			string ttl = _("Files Deleted");
-			
+
 			string msg = "";
 
 			if (deleted_count > 0){
@@ -454,7 +454,7 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			bool is_error = false;
-			
+
 			if (deleted_count < selected_list.size){
 
 				ttl = _("Failed to delete some files");
@@ -462,7 +462,7 @@ public class ClamScanBox : Gtk.Box {
 				if (msg.length > 0){
 					msg += "\n\n";
 				}
-				
+
 				msg += "<b>%s: %d</b>".printf(_("Access Denied"), (selected_list.size - deleted_count));
 
 				//msg += "\n\n" + _("Run scan as Admin to restore files not owned by you.");
@@ -521,7 +521,7 @@ public class ClamScanBox : Gtk.Box {
 				gtk_set_busy(false, App.main_window);
 			}
 		});
-		
+
 		button = new Gtk.RadioButton.with_label_from_widget (button, _("System"));
 		hbox.add(button);
 		var opt_system = button;
@@ -537,9 +537,9 @@ public class ClamScanBox : Gtk.Box {
 			}
 		});
 	}
-	
+
 	// treeview -----------------------------------
-	
+
 	private void init_treeview() {
 
 		// treeview
@@ -593,7 +593,7 @@ public class ClamScanBox : Gtk.Box {
 		var cell_toggle = new Gtk.CellRendererToggle();
 		cell_toggle.activatable = true;
 		col.pack_start (cell_toggle, false);
-		
+
 		// cell icon
 		var cell_pix = new Gtk.CellRendererPixbuf();
 		col.pack_start(cell_pix, false);
@@ -605,17 +605,17 @@ public class ClamScanBox : Gtk.Box {
 
 		// toggle handler
 		cell_toggle.toggled.connect((path) => {
-			
+
 			TreeIter iter;
 			var model = (Gtk.ListStore) treeview.model;
 			model.get_iter_from_string (out iter, path);
 
 			ClamScanResult res;
 			model.get (iter, 1, out res, -1);
-			
+
 			bool selected;
 			model.get (iter, 0, out selected, -1);
-			
+
 			selected = !selected;
 			model.set (iter, 0, selected);
 
@@ -627,10 +627,10 @@ public class ClamScanBox : Gtk.Box {
 
 			bool selected;
 			model.get (iter, 0, out selected, -1);
-			
+
 			cell_toggle.active = selected;
 		});
-		
+
 		// render icon
 		col.set_cell_data_func (cell_pix, (cell_layout, cell, model, iter) => {
 
@@ -674,7 +674,7 @@ public class ClamScanBox : Gtk.Box {
 		var cell_text = new Gtk.CellRendererText ();
 		cell_text.ellipsize = Pango.EllipsizeMode.END;
 		col.pack_start (cell_text, true);
-		
+
 		// render text
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
 
@@ -705,7 +705,7 @@ public class ClamScanBox : Gtk.Box {
 		var cell_text = new Gtk.CellRendererText();
 		cell_text.ellipsize = Pango.EllipsizeMode.END;
 		col.pack_start (cell_text, true);
-		
+
 		// render text
 		col.set_cell_data_func(cell_text, (cell_layout, cell, model, iter) => {
 
@@ -741,7 +741,7 @@ public class ClamScanBox : Gtk.Box {
 		var cell_text = new Gtk.CellRendererText ();
 		cell_text.ellipsize = Pango.EllipsizeMode.END;
 		col.pack_start (cell_text, true);
-		
+
 		// render text
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
 
@@ -777,7 +777,7 @@ public class ClamScanBox : Gtk.Box {
 		var cell_text = new Gtk.CellRendererText ();
 		cell_text.ellipsize = Pango.EllipsizeMode.END;
 		col.pack_start (cell_text, true);
-		
+
 		// render text
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
 
@@ -791,7 +791,7 @@ public class ClamScanBox : Gtk.Box {
 			crt.scale = App.listview_font_scale;
 		});
 	}
-	
+
 	private void add_col_spacer() {
 
 		var col = new TreeViewColumn();
@@ -809,7 +809,7 @@ public class ClamScanBox : Gtk.Box {
 
 		//render text
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 			crt.text = "";
 		});
@@ -820,7 +820,7 @@ public class ClamScanBox : Gtk.Box {
 		log_debug("ClamScanBox: refresh()");
 
 		treeview.model = null;
-		
+
 		store = new Gtk.ListStore(2,
 			typeof(bool),
 			typeof(ClamScanResult)
@@ -836,7 +836,7 @@ public class ClamScanBox : Gtk.Box {
 
 		string txt = "%d %s".printf(clamav.results.size, _("Found"));
 		lbl_results_found.label = format_text(txt, true, false, true);
-		
+
 		log_debug("ClamScanBox: refresh(): end");
 	}
 
@@ -851,11 +851,11 @@ public class ClamScanBox : Gtk.Box {
 	}
 
 	// actions ----------------------------------------------------
-	
+
 	public void scan(Gee.ArrayList<string> _scan_list, string _scan_mode, bool _admin_mode){
 
 		log_debug("ClamScanBox: scan()");
-		
+
 		scan_list = _scan_list;
 
 		clamav.scan_mode = _scan_mode;
@@ -872,7 +872,7 @@ public class ClamScanBox : Gtk.Box {
 		lbl_status.label = "";
 		progressbar.fraction = 0.0;
 		lbl_stats.label = "";
-		
+
 		gtk_show(frame_progress);
 		gtk_hide(frame_results);
 		gtk_hide(frame_quarantine_location);
@@ -880,24 +880,24 @@ public class ClamScanBox : Gtk.Box {
 		gtk_hide(btn_restore);
 		gtk_hide(btn_delete);
 		gtk_show(btn_quarantine);
-		
+
 		refresh(); // create empty store
 
 		lbl_status.label = _("Initializing...");
 		progressbar.fraction = 0.0;
 		lbl_stats.label = "";
-		
+
 		scan_running = true;
 		scan_cancelled = false;
 
 		// add status timer ----------------------
-		
+
 		Timeout.add(500, () => {
 
 			if (clamav.found != "0"){
 				lbl_status.label = _("Scanning files...");
 			}
-			
+
 			lbl_stats.label = clamav.status_line;
 
 			if ((progressbar.fraction + 0.01) < 1.0){
@@ -909,18 +909,18 @@ public class ClamScanBox : Gtk.Box {
 			}
 
 			gtk_do_events();
-			
+
 			return clamav.is_running;
 		});
 
 		clamav.task_complete.connect(()=>{
 
 			log_debug("clamav.task_complete.connect();");
-			
+
 			Timeout.add(10, () => {
 
 				log_debug("clamav.task_complete.connect(): timeout");
-				
+
 				gtk_hide(frame_progress);
 				gtk_hide(frame_quarantine_location);
 				gtk_show(frame_results);
@@ -935,7 +935,7 @@ public class ClamScanBox : Gtk.Box {
 				gtk_messagebox(title, msg, window, true);
 
 				btn_quarantine.sensitive = (clamav.results.size > 0);
-				
+
 				return false;
 			});
 
@@ -943,16 +943,16 @@ public class ClamScanBox : Gtk.Box {
 		});
 
 		clamav.file_found.connect((res)=>{
-			
+
 			Timeout.add(10, () => {
-				
+
 				treeview_append(res);
 				return false;
 			});
 		});
 
 		// start ---------------
-		
+
 		clamav.scan(scan_list);
 	}
 
@@ -969,9 +969,7 @@ public class ClamScanBox : Gtk.Box {
 		clamav.admin_mode = _admin_mode;
 
 		clamav.list();
-		
+
 		refresh();
 	}
 }
-
-

@@ -21,7 +21,7 @@
  *
  *
  */
- 
+
 namespace TeeJee.FileSystem{
 
 	/* Convenience functions for handling files and directories */
@@ -38,9 +38,9 @@ namespace TeeJee.FileSystem{
 	public const int64 MiB = 1024 * KiB;
 	public const int64 GiB = 1024 * MiB;
 	public const int64 TiB = 1024 * GiB;
-	
+
 	// path helpers ----------------------------
-	
+
 	public string file_parent(string file_path){
 		return File.new_for_path(file_path).get_parent().get_path();
 	}
@@ -50,7 +50,7 @@ namespace TeeJee.FileSystem{
 	}
 
 	public string file_get_title(string file_path){
-		
+
 		string file_name = File.new_for_path(file_path).get_basename();
 
 		int end = file_name.length - file_get_extension(file_path).length;
@@ -58,7 +58,7 @@ namespace TeeJee.FileSystem{
 	}
 
 	public string file_get_extension(string file_path){
-		
+
 		string file_name = File.new_for_path(file_path).get_basename();
 
 		string[] parts = file_name.split(".");
@@ -67,18 +67,18 @@ namespace TeeJee.FileSystem{
 			// no extension
 			return "";
 		}
-		
+
 		if (parts.length > 2){
-			
+
 			string ext1 = parts[parts.length-2];
 			string ext2 = parts[parts.length-1];
-			
+
 			if ((ext1.length <= 4) && (ext2.length <= 4) && (ext1 == "tar")){
 				// 2-part extension
 				return ".%s.%s".printf(parts[parts.length-2], parts[parts.length-1]);
 			}
 		}
-		
+
 		if (parts.length > 1){
 			return ".%s".printf(parts[parts.length - 1]);
 		}
@@ -87,13 +87,13 @@ namespace TeeJee.FileSystem{
 	}
 
 	public string file_generate_unique_name(string file_path){
-		
+
 		string title = file_get_title(file_path);
 		string extension = file_get_extension(file_path);
 		string location = file_parent(file_path);
-		
+
 		string outpath = file_path;
-		
+
 		int index = 1;
 		while (file_exists(outpath)){
 			string new_name = "%s%s%s".printf(title, " (%d)".printf(index++), extension);
@@ -102,7 +102,7 @@ namespace TeeJee.FileSystem{
 
 		return outpath;
 	}
-	
+
 	public string path_combine(string path1, string path2){
 		return GLib.Path.build_path("/", path1, path2);
 	}
@@ -115,22 +115,22 @@ namespace TeeJee.FileSystem{
 			return path;
 		}
 	}
-	
+
 	// file helpers -----------------------------
 
 	public bool file_exists(string item_path){
-		
+
 		/* check if item exists on disk*/
 
 		var item = File.parse_name(item_path);
 		return item.query_exists();
 	}
-	
+
 	public bool file_is_dir(string file_path){
 
 		try {
 			var file = File.new_for_path (file_path);
-			
+
 			if (file.query_exists()) {
 
 				var info = file.query_info("%s".printf(FileAttribute.STANDARD_TYPE),0); // follow symlinks
@@ -143,7 +143,7 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 	        log_error (e.message);
 	    }
-	    
+
 		return false;
 	}
 
@@ -151,7 +151,7 @@ namespace TeeJee.FileSystem{
 
 		try {
 			var file = File.new_for_path (file_path);
-			
+
 			if (file.query_exists()) {
 
 				var info = file.query_info("%s".printf(FileAttribute.STANDARD_TYPE),0); // follow symlinks
@@ -164,7 +164,7 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 	        log_error (e.message);
 	    }
-	    
+
 		return false;
 	}
 
@@ -172,7 +172,7 @@ namespace TeeJee.FileSystem{
 
 		try {
 			var file = File.new_for_path (file_path);
-			
+
 			if (file.query_exists()) {
 
 				var info = file.query_info("%s".printf(FileAttribute.STANDARD_TYPE), 0); // follow symlinks
@@ -185,7 +185,7 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 	        log_error (e.message);
 	    }
-	    
+
 		return false;
 	}
 
@@ -193,7 +193,7 @@ namespace TeeJee.FileSystem{
 
 		try {
 			var file = File.new_for_path (file_path);
-			
+
 			if (file.query_exists()) {
 
 				var info = file.query_info("%s".printf(FileAttribute.STANDARD_TYPE), FileQueryInfoFlags.NOFOLLOW_SYMLINKS); // don't follow symlinks
@@ -206,7 +206,7 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 	        log_error (e.message);
 	    }
-	    
+
 		return false;
 	}
 
@@ -261,7 +261,7 @@ namespace TeeJee.FileSystem{
 		try{
 
 			dir_create(file_parent(file_path));
-			
+
 			var file = File.new_for_path (file_path);
 
 			if (file.query_exists() && overwrite_in_place){
@@ -281,13 +281,13 @@ namespace TeeJee.FileSystem{
 				if (file.query_exists()) {
 					file.delete();
 				}
-	
+
 				var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
 				var data_stream = new DataOutputStream (file_stream);
 				data_stream.put_string (contents);
 				data_stream.close();
 			}
-			
+
 			return true;
 		}
 		catch (Error e) {
@@ -297,12 +297,12 @@ namespace TeeJee.FileSystem{
 	}
 
 	public bool file_copy (string src_file, string dest_file, bool follow_symlinks){
-		
+
 		try{
 			var file_src = File.new_for_path(src_file);
-			
+
 			if (file_src.query_exists()) {
-				
+
 				var file_dest = File.new_for_path (dest_file);
 
 				var flags = FileCopyFlags.OVERWRITE;
@@ -310,7 +310,7 @@ namespace TeeJee.FileSystem{
 				if (!follow_symlinks){
 					flags = flags | FileCopyFlags.NOFOLLOW_SYMLINKS;
 				}
-				
+
 				file_src.copy(file_dest, flags, null, null);
 				return true;
 			}
@@ -326,9 +326,9 @@ namespace TeeJee.FileSystem{
 	public bool file_move (string src_file, string dest_file, bool follow_symlinks){
 		try{
 			var file_src = File.new_for_path (src_file);
-			
+
 			if (file_src.query_exists()) {
-				
+
 				var file_dest = File.new_for_path (dest_file);
 
 				var flags = FileCopyFlags.OVERWRITE;
@@ -336,7 +336,7 @@ namespace TeeJee.FileSystem{
 				if (!follow_symlinks){
 					flags = flags | FileCopyFlags.NOFOLLOW_SYMLINKS;
 				}
-				
+
 				file_src.move(file_dest, flags, null, null);
 				return true;
 			}
@@ -351,7 +351,7 @@ namespace TeeJee.FileSystem{
 	        return false;
 		}
 	}
-	
+
 	// file info -------------------------------------------
 
 	public int64 file_get_size(string file_path){
@@ -383,10 +383,10 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 			log_error (e.message);
 		}
-		
+
 		return (new DateTime.from_unix_utc(0)); //1970
 	}
-	
+
 	public string file_get_symlink_target(string file_path){
 		try{
 			FileInfo info;
@@ -399,17 +399,17 @@ namespace TeeJee.FileSystem{
 		catch (Error e) {
 			log_error (e.message);
 		}
-		
+
 		return "";
 	}
 
 	// directory helpers -------------------------------------------
-	
+
 	public bool dir_exists(string dir_path){
 
 		return file_is_dir(dir_path);
 	}
-	
+
 	public bool dir_create(string dir_path, bool show_message = false){
 
 		/* Creates a directory along with parents */
@@ -432,19 +432,19 @@ namespace TeeJee.FileSystem{
 	}
 
 	public bool dir_delete(string dir_path, bool show_message = false){
-		
+
 		/* Recursively deletes directory along with contents */
-		
+
 		if (!dir_exists(dir_path)){ return true; }
-		
+
 		string cmd = "rm -rf";
-		
+
 		if (show_message){
 			cmd += "v";
 		}
-		
+
 		cmd += " '%s'".printf(escape_single_quote(dir_path));
-		
+
 		int status = Posix.system(cmd);
 		return (status == 0);
 	}
@@ -455,18 +455,18 @@ namespace TeeJee.FileSystem{
 		int status = exec_sync(cmd, null, null);
 		return (status == 0);
 	}
-	
+
 	// misc --------------------------------------------------
 
 	public string format_file_size (uint64 size, bool binary_units = false, string unit = "", bool show_units = true, int decimals = 1){
-			
+
 		int64 unit_k = binary_units ? 1024 : 1000;
 		int64 unit_m = binary_units ? 1024 * unit_k : 1000 * unit_k;
 		int64 unit_g = binary_units ? 1024 * unit_m : 1000 * unit_m;
 		int64 unit_t = binary_units ? 1024 * unit_g : 1000 * unit_g;
 
 		string txt = "";
-		
+
 		if ((size > unit_t) && ((unit.length == 0) || (unit == "t"))){
 			txt += ("%%'0.%df".printf(decimals)).printf(size / (1.0 * unit_t));
 			if (show_units){

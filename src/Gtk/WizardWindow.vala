@@ -47,7 +47,7 @@ public class WizardWindow : Gtk.Window {
 		DUAL_LIST = 4,
 		QUAD = 5
 	}
-	
+
 	public WizardWindow() {
 
 		set_transient_for(App.main_window);
@@ -72,21 +72,21 @@ public class WizardWindow : Gtk.Window {
 	}
 
 	private void init_ui(){
-		
+
 		/*switch(mode){
 		case "":
 		case "":
 		}*/
-		
+
 		init_layout_style();
 	}
-	
+
 	private void init_layout_style(){
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		hbox.margin_bottom = 12;
 		vbox_main.add(hbox);
-		
+
 		var label = add_label_header(hbox, _("Select Layout Style"), true);
 		label.yalign = 0.5f;
 		label.margin_end = 12;
@@ -100,7 +100,7 @@ public class WizardWindow : Gtk.Window {
 		button.image = IconManager.lookup_image("go-previous-symbolic", 16);
 		button.always_show_image = true;
 		bbox.add(button);
-		
+
 		button.clicked.connect(()=>{
 			if (current_layout_option == 1){
 				current_layout_option = (LayoutStyle) 5;
@@ -115,7 +115,7 @@ public class WizardWindow : Gtk.Window {
 		button.image = IconManager.lookup_image("go-next-symbolic", 16);
 		button.always_show_image = true;
 		bbox.add(button);
-		
+
 		button.clicked.connect(()=>{
 			if (current_layout_option == 5){
 				current_layout_option = (LayoutStyle) 1;
@@ -130,7 +130,7 @@ public class WizardWindow : Gtk.Window {
 		button.image = IconManager.lookup_image("view-refresh", 16);
 		button.always_show_image = true;
 		bbox.add(button);
-		
+
 		button.clicked.connect(()=>{
 			apply_layout(current_layout_option);
 			//this.close();
@@ -144,7 +144,7 @@ public class WizardWindow : Gtk.Window {
 		button.image = IconManager.lookup_image("window-close", 16);
 		button.always_show_image = true;
 		hbox.add(button);
-		
+
 		button.clicked.connect(()=>{
 			this.close();
 		});
@@ -154,7 +154,7 @@ public class WizardWindow : Gtk.Window {
 		vbox_layout_option = vbox;
 
 		show_layout(current_layout_option);
-		
+
 		this.show_all();
 	}
 
@@ -162,28 +162,28 @@ public class WizardWindow : Gtk.Window {
 
 		string image_name = "polo_layout_single_icons";
 		string desc = _("Classic Icons (Single-Pane + SideBar + IconView)");
-		
+
 		switch(layout_style){
 		case LayoutStyle.SINGLE_ICONS:
 			image_name = "polo_layout_single_icons";
 			desc = _("Classic Icons (Single-Pane + SideBar + IconView)");
 			break;
-			
+
 		case LayoutStyle.SINGLE_LIST:
 			image_name = "polo_layout_single_list";
 			desc = _("Classic List (Single-Pane + SideBar + ListView)");
 			break;
-			
+
 		case LayoutStyle.DUAL_ICONS:
 			image_name = "polo_layout_dual_icons";
 			desc = _("Commander Icons (Dual-Pane + IconView)");
 			break;
-			
+
 		case LayoutStyle.DUAL_LIST:
 			image_name = "polo_layout_dual_list";
 			desc = _("Commander List (Dual-Pane + ListView)");
 			break;
-			
+
 		case LayoutStyle.QUAD:
 			image_name = "polo_layout_quad";
 			desc = _("Extreme (Quad-Pane + ListView + Global Pathbar + Global Statusbar)");
@@ -198,11 +198,11 @@ public class WizardWindow : Gtk.Window {
 		label.xalign = 0.5f;
 
 		var img = new Gtk.Image.from_pixbuf(IconManager.lookup(image_name, 800));
-		
+
 		var ebox = new Gtk.EventBox();
 		ebox.add(img);
 		vbox.add(ebox);
-		
+
 		set_pointer_cursor_for_eventbox(ebox);
 
 		this.show_all();
@@ -221,7 +221,7 @@ public class WizardWindow : Gtk.Window {
 			App.main_window.layout_box.set_panel_layout(PanelLayout.SINGLE);
 			App.main_window.layout_box.panel1.pane.view.set_view_mode(ViewMode.ICONS);
 			break;
-			
+
 		case LayoutStyle.SINGLE_LIST:
 			App.statusbar_unified = false;
 			App.pathbar_unified = false;
@@ -232,7 +232,7 @@ public class WizardWindow : Gtk.Window {
 			App.view_mode = ViewMode.LIST;
 			App.main_window.layout_box.panel1.pane.view.set_view_mode(ViewMode.LIST);
 			break;
-			
+
 		case LayoutStyle.DUAL_ICONS:
 			App.statusbar_unified = false;
 			App.pathbar_unified = false;
@@ -243,7 +243,7 @@ public class WizardWindow : Gtk.Window {
 			App.main_window.layout_box.panel1.pane.view.set_view_mode(ViewMode.ICONS);
 			App.main_window.layout_box.panel2.pane.view.set_view_mode(ViewMode.ICONS);
 			break;
-			
+
 		case LayoutStyle.DUAL_LIST:
 			App.statusbar_unified = false;
 			App.pathbar_unified = false;
@@ -254,7 +254,7 @@ public class WizardWindow : Gtk.Window {
 			App.main_window.layout_box.panel1.pane.view.set_view_mode(ViewMode.LIST);
 			App.main_window.layout_box.panel2.pane.view.set_view_mode(ViewMode.LIST);
 			break;
-			
+
 		case LayoutStyle.QUAD:
 			App.statusbar_unified = true;
 			App.pathbar_unified = true;
@@ -271,12 +271,12 @@ public class WizardWindow : Gtk.Window {
 
 		App.main_window.refresh_pathbars();
 		App.main_window.refresh_statusbars();
-	
+
 		App.toolbar_dark = true;
 		App.main_window.toolbar.refresh_style();
 
 		App.sidebar_dark = true;
-		
+
 		App.main_window.sidebar.refresh();
 		App.main_window.propbar.refresh();
 
@@ -284,18 +284,18 @@ public class WizardWindow : Gtk.Window {
 
 		App.save_app_config();
 	}
-	
+
 	/*private Gtk.EventBox add_layout_option(Gtk.Box hbox, Gdk.Pixbuf pix, string label){
 
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
 		hbox.add(vbox);
 
 		var img = new Gtk.Image.from_pixbuf(pix);
-		
+
 		var ebox = new Gtk.EventBox();
 		ebox.add(img);
 		vbox.add(ebox);
-		
+
 		ebox.set_tooltip_text(_("Click to select"));
 
 		set_pointer_cursor_for_eventbox(ebox);
@@ -308,7 +308,7 @@ public class WizardWindow : Gtk.Window {
 	//private void init_pathbar_style(){
 
 		/*gtk_container_remove_children(vbox_main);
-		
+
 		add_label_header(vbox_main, _("Select Pathbar Style"), true);
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 12);
@@ -317,47 +317,47 @@ public class WizardWindow : Gtk.Window {
 		// classic sidebar icons
 		var ebox = add_layout_option(vbox, IconManager.lookup("polo_pathbar_links", 400), _("Links"));
 		ebox.button_press_event.connect((event)=>{
-			
+
 			App.pathbar_use_buttons = false;
 			App.save_app_config();
-			
+
 			foreach(var pn in App.main_window.panes){
 				pn.pathbar.refresh();
 			}
 			App.main_window.pathbar.refresh();
-			
+
 			this.close();
 			return true;
 		});
 
 		ebox = add_layout_option(vbox, IconManager.lookup("polo_pathbar_buttons", 400), _("Buttons"));
 		ebox.button_press_event.connect((event)=>{
-			
+
 			App.pathbar_use_buttons = true;
 			App.pathbar_flat_buttons = false;
 			App.save_app_config();
-			
+
 			foreach(var pn in App.main_window.panes){
 				pn.pathbar.refresh();
 			}
 			App.main_window.pathbar.refresh();
-			
+
 			this.close();
 			return true;
 		});
 
 		ebox = add_layout_option(vbox, IconManager.lookup("polo_pathbar_buttons_flat", 400), _("Flat Buttons"));
 		ebox.button_press_event.connect((event)=>{
-			
+
 			App.pathbar_use_buttons = true;
 			App.pathbar_flat_buttons = true;
 			App.save_app_config();
-			
+
 			foreach(var pn in App.main_window.panes){
 				pn.pathbar.refresh();
 			}
 			App.main_window.pathbar.refresh();
-			
+
 			this.close();
 			return true;
 		});
@@ -365,5 +365,3 @@ public class WizardWindow : Gtk.Window {
 		this.show_all();*/
 	//}
 }
-
-

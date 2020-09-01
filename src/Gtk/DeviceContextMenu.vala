@@ -40,16 +40,16 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 
 	public Device device;
 	public Gtk.Popover? parent_popup;
-	
+
 	public DeviceContextMenu(Device _device, Gtk.Popover? _parent_popup){
-		
+
 		margin = 0;
 
 		log_debug("DeviceContextMenu()");
 
 		device = _device;
 		parent_popup = _parent_popup;
-		
+
 		if (device.pkname.length == 0){
 			build_menu_for_drive();
 		}
@@ -77,13 +77,13 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		add_mount();
 
 		add_unmount();
-		
+
 		gtk_menu_add_separator(this);
-		
+
 		if (App.tool_exists("gnome-disks")) {
-			
+
 			add_manage();
-		
+
 			//add_format();
 		}
 
@@ -101,7 +101,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 	}
 
 	private void build_menu_for_drive(){
-		
+
 		log_debug("DeviceContextMenu: build_menu_for_drive()");
 
 		Gdk.RGBA gray = Gdk.RGBA();
@@ -110,11 +110,11 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		this.reserve_toggle_size = false;
 
 		//add_eject();
-		
+
 		if (App.tool_exists("gnome-disks")) {
-			
+
 			add_manage();
-		
+
 			//add_format();
 		}
 
@@ -139,7 +139,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 
 		gtk_menu_add_separator(this);
 	}
-	
+
 	private void add_open(){
 
 		log_debug("DeviceContextMenu: add_open()");
@@ -257,7 +257,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 
 		item.sensitive = (device.type == "disk");
 	}*/
-	
+
 	private void add_manage(){
 
 		log_debug("DeviceContextMenu: add_manage()");
@@ -281,7 +281,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 
 		item.sensitive = (device.type != "loop");
 	}
-	
+
 	private void add_properties(){
 
 		log_debug("DeviceContextMenu: add_properties()");
@@ -365,7 +365,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		log_debug("DeviceContextMenu: unmount_device()");
 
 		Device dev = _device;
-		
+
 		if (dev.is_system_device){
 			string txt = _("System Device");
 			string msg = _("System devices cannot be changed while system is running");
@@ -396,7 +396,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		log_debug("DeviceContextMenu: unmount_device()");
 
 		Device dev = _device;
-		
+
 		if (dev.is_system_device){
 			string txt = _("System Device");
 			string msg = _("System devices cannot be changed while system is running");
@@ -404,7 +404,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 			msg += "\n\n▰ %s".printf(dev.description_friendly());
 			return false;
 		}
-		
+
 		gtk_set_busy(true, window);
 
 		if (dev.is_mounted){
@@ -425,7 +425,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 	public static bool mount_device(Device _device, FileViewPane pane, MainWindow window){
 
 		log_debug("DeviceContextMenu: mount_device(): %s".printf(_device.device));
-		
+
 		gtk_set_busy(true, window);
 
 		Device dev = _device;
@@ -483,7 +483,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 			else{
 				dev = dev.children[0];
 			}
-			
+
 			dev.automount(window);
 			DeviceMonitor.notify_change(); // workaround for GLib.VolumeMonitor not detecting some mount events
 		}
@@ -501,7 +501,7 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		log_debug("DeviceContextMenu: lock_device(): %s".printf(_device.device));
 
 		Device dev = _device;
-		
+
 		if (dev.is_system_device){
 			string txt = _("System Device");
 			string msg = _("System devices cannot be changed while system is running");
@@ -509,20 +509,20 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 			gtk_messagebox(txt, msg, window, true);
 			return false;
 		}
-		
+
 		gtk_set_busy(true, window);
 
 		bool ok = true;
 		string mpath = "";
 
 		// unmount if mounted, and save the mount path
-		
+
 		if (dev.is_mounted){
-			
+
 			mpath = dev.mount_points[0].mount_point;
-			
+
 			if (!dev.unmount(window)){
-				
+
 				log_debug("device is still mounted!");
 				mpath = "";
 			}
@@ -535,15 +535,15 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		}
 
 		// lock the device's parent if device is unmounted and encrypted
-		
+
 		if (dev.is_on_encrypted_partition){
-			
+
 			log_debug("locking device...");
-			
+
 			ok = dev.parent.lock_device(window);
 
 			Thread.usleep(100);
-			
+
 			if (ok){
 				string title =  _("Device Locked");
 				OSDNotify.notify_send(title, "", 1000, "low", "info");
@@ -566,13 +566,13 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 	}
 
 	public static void manage_disk(Device _device, FileViewPane pane, MainWindow window){
-	
+
 		log_debug("DeviceContextMenu: manage_disk(): %s".printf(_device.device));
 
 		if (App.tool_exists("gnome-disks")){
-			
+
 			string cmd = "gnome-disks --block-device %s".printf(_device.device);
-			
+
 			exec_process_new_session(cmd);
 		}
 		else{
@@ -582,7 +582,3 @@ public class DeviceContextMenu : Gtk.Menu, IPaneActive {
 		}
 	}
 }
-
-
-
-

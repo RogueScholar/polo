@@ -40,7 +40,7 @@ public class MediaBar : Gtk.Box {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	protected FileViewPane pane;
 
 	protected FileViewList view {
@@ -55,7 +55,7 @@ public class MediaBar : Gtk.Box {
 
 	private Gtk.Label label_folders;
 	private Gtk.Label label_other_files;
-	
+
 	public MediaBar(FileViewPane parent_pane){
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		Object(orientation: Gtk.Orientation.HORIZONTAL, spacing: 6); // work-around
@@ -85,11 +85,11 @@ public class MediaBar : Gtk.Box {
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		// actions ------------------------------
-		
+
 		add_show_other_files_button();
 
 		add_hide_folders_button();
-		
+
 		add_ignore_button();
 
 		add_exit_button();
@@ -104,12 +104,12 @@ public class MediaBar : Gtk.Box {
 		ebox.add(label);
 
 		label_other_files = label;
-		
+
 		var css = " color: #ffffff; ";
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		ebox.button_press_event.connect((event) => {
-			
+
 			gtk_set_busy(true, window);
 			gtk_do_events();
 
@@ -117,7 +117,7 @@ public class MediaBar : Gtk.Box {
 			view.refilter();
 
 			refresh();
-			
+
 			gtk_set_busy(false, window);
 			return false;
 		});
@@ -149,7 +149,7 @@ public class MediaBar : Gtk.Box {
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		ebox.button_press_event.connect((event) => {
-			
+
 			gtk_set_busy(true, window);
 			gtk_do_events();
 
@@ -157,7 +157,7 @@ public class MediaBar : Gtk.Box {
 			view.refilter();
 
 			refresh();
-			
+
 			gtk_set_busy(false, window);
 			return false;
 		});
@@ -191,7 +191,7 @@ public class MediaBar : Gtk.Box {
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		ebox.button_press_event.connect((event) => {
-			
+
 			gtk_set_busy(true, window);
 			gtk_do_events();
 
@@ -242,12 +242,12 @@ public class MediaBar : Gtk.Box {
 		gtk_apply_css(new Gtk.Widget[] { label }, css);
 
 		ebox.button_press_event.connect((event) => {
-			
+
 			gtk_set_busy(true, window);
 			gtk_do_events();
 
 			view.set_view_mode_user();
-			
+
 			refresh();
 
 			gtk_set_busy(false, window);
@@ -297,4 +297,3 @@ public class MediaBar : Gtk.Box {
 	}
 
 }
-

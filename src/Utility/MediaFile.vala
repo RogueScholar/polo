@@ -35,12 +35,12 @@ public class MediaFile : GLib.Object{
 	public double StartPos = 0.0;
 	public double EndPos = 0.0;
 	public Gee.ArrayList<MediaClip> clip_list;
-	
+
 	public Gee.ArrayList<MediaStream> stream_list;
 	public Gee.ArrayList<AudioStream> audio_list;
 	public Gee.ArrayList<VideoStream> video_list;
 	public Gee.ArrayList<TextStream> text_list;
-	
+
 	//public FileStatus Status = FileStatus.PENDING;
 	public bool IsValid;
 	public string ProgressText = _("Queued");
@@ -48,7 +48,7 @@ public class MediaFile : GLib.Object{
 
 	public string InfoText = "";
 	public string InfoTextFormatted = "";
-	
+
 	public string FileFormat = "";
 	public string VideoFormat = "";
 	public string AudioFormat = "";
@@ -67,7 +67,7 @@ public class MediaFile : GLib.Object{
 	public string OutputFilePath = "";
 	public long OutputFrameCount = 0;
 
-	public static int ThumbnailWidth = 80; 
+	public static int ThumbnailWidth = 80;
 	public static int ThumbnailHeight= 64;
 
 	public MediaFile(string filePath){
@@ -79,7 +79,7 @@ public class MediaFile : GLib.Object{
 		audio_list = new Gee.ArrayList<AudioStream>();
 		video_list = new Gee.ArrayList<VideoStream>();
 		text_list = new Gee.ArrayList<TextStream>();
-		
+
 		// set file properties ------------
 
 		File f = File.new_for_path (filePath);
@@ -150,19 +150,19 @@ public class MediaFile : GLib.Object{
 	                	stream.SubExt = stream.SubFile[stream.SubFile.last_index_of(".",0):stream.SubFile.length].down();
 	                	stream.StreamSize = fileInfo.get_size();
 	                	stream.get_character_encoding();
-					
+
 	                	// try to parse language info from subtitle file name
 
 	                	var SubtitleTitle = stream.SubName[0: stream.SubName.last_index_of(".",0)];
 	                	//log_msg("sub=%s".printf(SubtitleTitle));
-	                	
+
 	                	if (SubtitleTitle.length > Title.length){
 							string lang = SubtitleTitle.down();
 							lang = lang[Title.length:SubtitleTitle.length];
 							lang = lang.replace("_","").replace("-","").strip();
 
 							//log_msg("lang='%s',length=%d".printf(lang,lang.length));
-							
+
 							if (lang.length == 2){
 								if (LanguageCodes.map_2_to_3.has_key(lang)){
 									stream.LangCode = lang;
@@ -187,7 +187,7 @@ public class MediaFile : GLib.Object{
 	    }
 
 		log_debug("streams=%d, video=%d, audio=%d".printf(stream_list.size, video_list.size, audio_list.size));
-		
+
 	    // get thumbnail ---------
 
 	    //generate_thumbnail();
@@ -204,7 +204,7 @@ public class MediaFile : GLib.Object{
 
 		string sectionType = "";
 		MediaStream stream = null;
-		
+
 		foreach (string line in InfoText.split ("\n")){
 			if (line == null || line.length == 0) { continue; }
 
@@ -217,7 +217,7 @@ public class MediaFile : GLib.Object{
 					var audio = stream as AudioStream;
 					audio_list.add(audio);
 					audio.TypeIndex = audio_list.index_of(audio);
-					
+
 					sectionType = "audio";
 					//HasAudio = true;
 				}
@@ -247,7 +247,7 @@ public class MediaFile : GLib.Object{
 					var text = stream as TextStream;
 					text_list.add(text);
 					text.TypeIndex = text_list.index_of(text);
-					
+
 					sectionType = "text";
 					//HasSubs = true;
 				}
@@ -396,7 +396,7 @@ public class MediaFile : GLib.Object{
 
 		//set derived properties
 		foreach(var st in stream_list){
-			if (st is VideoStream){				
+			if (st is VideoStream){
 				var video = st as VideoStream;
 				if ((video.StreamSize == 0) && (video.Duration > 0) && (video.BitRate > 0)){
 					video.StreamSize = (int64) ((video.Duration / 1000.0) * video.BitRate * 1000.0 / 8);
@@ -414,7 +414,7 @@ public class MediaFile : GLib.Object{
 	}
 
 	public void query_mediainfo_formatted(){
-		
+
 		InfoTextFormatted = get_mediainfo (Path, false);
 
 		string ext = Extension.down();
@@ -449,7 +449,7 @@ public class MediaFile : GLib.Object{
 
 		return std_out;
 	}
-	
+
 	public long parse_duration(string txt){
 		long dur = 0;
 		foreach(string p in txt.split(" ")){
@@ -465,7 +465,7 @@ public class MediaFile : GLib.Object{
 		}
 		return dur;
 	}
-	
+
 	public void prepare (string baseTempDir){
 		TempDirectory = baseTempDir + "/" + timestamp_for_path() + " - " + Title;
 		LogFile = TempDirectory + "/" + "log.txt";
@@ -483,12 +483,12 @@ public class MediaFile : GLib.Object{
 	}
 
 	public void generate_thumbnail(){
-		
+
 		if (HasVideo){
-			
+
 			ThumbnailImagePath = get_temp_file_path() + ".png";
 			string std_out, std_err;
-			
+
 			exec_sync("%s -ss 1 -i \"%s\" -y -f image2 -vframes 1 -r 1 -s %dx%d \"%s\"".printf(
 				"ffmpeg",Path,ThumbnailWidth,ThumbnailHeight,ThumbnailImagePath), out std_out, out std_err);
 
@@ -539,11 +539,11 @@ public class MediaFile : GLib.Object{
 			return has;
 		}
 	}
-	
+
 	//cropping --------------------
-	
+
 	public bool crop_detect(){
-		
+
 		if (HasVideo == false) {
 			AutoCropError = true;
 			return false;
@@ -633,11 +633,11 @@ public abstract class MediaStream : GLib.Object{
     public int TypeIndex = -1;
     public string Description = "";
 	public bool IsSelected = true;
-	
+
 	protected MediaStream(MediaStreamType _type){
 		Type = _type;
 	}
-	
+
     public enum MediaStreamType{
 		UNKNOWN,
 		GENERAL,
@@ -673,7 +673,7 @@ public class VideoStream : MediaStream {
 	public int BitRate = 0;
 	public int64 StreamSize = 0;
 	public long Duration = 0;
-	
+
 	public VideoStream(){
 		base(MediaStreamType.VIDEO);
 	}
@@ -715,7 +715,7 @@ public class AudioStream : MediaStream {
 	public int BitRate = 0;
 	public int64 StreamSize = 0;
 	public long Duration = 0;
-	
+
 	public AudioStream(){
 		base(MediaStreamType.AUDIO);
 	}
@@ -760,12 +760,12 @@ public class TextStream : MediaStream {
 	public string LangCode = "";
 	public string Title = "";
 	public int64 StreamSize = 0;
-	
+
 	public string SubName = "";
 	public string SubExt = "";
 	public string SubFile = "";
 	public string CharacterEncoding = "";
-	
+
 	public TextStream(){
 		base(MediaStreamType.TEXT);
 	}
@@ -792,7 +792,7 @@ public class TextStream : MediaStream {
 					s += "(%s)".printf(LangCode);
 				}
 				s += ", '%s'".printf(SubName);
-			}	
+			}
 			else{
 				if (Format.length > 0){
 					s += "%s".printf(Format);
@@ -810,7 +810,7 @@ public class TextStream : MediaStream {
 					s += "(%s)".printf(LangCode);
 				}
 			}
-			
+
 			return s;
 		}
     }
@@ -842,7 +842,7 @@ public class LanguageCodes : GLib.Object{
 	public static Gee.HashMap<string,string> map_3_to_Name;
 
 	public static Gee.ArrayList<Language> lang_list;
-	
+
 	private static void initialize(){
 		lang_list = new Gee.ArrayList<Language>();
 		map_2_to_3 = new Gee.HashMap<string,string>();
@@ -850,7 +850,7 @@ public class LanguageCodes : GLib.Object{
 		map_2_to_Name = new Gee.HashMap<string,string>();
 		map_3_to_Name = new Gee.HashMap<string,string>();
 	}
-	
+
 	public class Language : GLib.Object{
 		public string Name = "";
 		public string Code2 = "";
@@ -871,7 +871,7 @@ public class LanguageCodes : GLib.Object{
 
 	public static void build_maps(){
 		initialize();
-		
+
 		string stdout, stderr;
 		exec_sync("LC_ALL=C mkvmerge --list-languages", out stdout, out stderr);
 		foreach(string line in stdout.split("\n")){
@@ -891,5 +891,3 @@ public class LanguageCodes : GLib.Object{
 		lang_list.sort((owned)func);
 	}
 }
-
-

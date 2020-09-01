@@ -40,7 +40,7 @@ public class Statusbar : Gtk.Box {
 	private MainWindow window{
 		get { return App.main_window; }
 	}
-	
+
 	FileViewPane _pane;
 	private FileViewPane? pane {
 		get{
@@ -58,7 +58,7 @@ public class Statusbar : Gtk.Box {
 	}
 
 	// -------------------------------
-	
+
 	private Gtk.Label lbl_file_count;
 	private Gtk.Label lbl_dir_count;
 	private Gtk.Label lbl_size;
@@ -74,7 +74,7 @@ public class Statusbar : Gtk.Box {
 	private Gtk.EventBox ebox_left_toggle;
 	private Gtk.EventBox ebox_filter;
 	private Gtk.EventBox ebox_terminal;
-	
+
 	//private double fs_bar_value = 0;
 
 	private bool is_global{
@@ -126,7 +126,7 @@ public class Statusbar : Gtk.Box {
 		//add_dual_pane_toggle();
 
 		add_filter_toggle();
-		
+
 		add_terminal_toggle();
 
 		add_properties_toggle();
@@ -138,10 +138,10 @@ public class Statusbar : Gtk.Box {
 
 		var separator = new Gtk.Separator(Gtk.Orientation.VERTICAL);
 		add(separator);
-		
+
 		var img = gtk_image_from_pixbuf(IconManager.generic_icon_directory(16));
 		add(img);
-		
+
 		var label = new Gtk.Label ("");
 		label.xalign = 0.0f;
 		add(label);
@@ -158,13 +158,13 @@ public class Statusbar : Gtk.Box {
 	}
 
 	private void add_file_count(){
-		
+
 		var separator = new Gtk.Separator(Gtk.Orientation.VERTICAL);
 		add(separator);
 
 		var img = gtk_image_from_pixbuf(IconManager.generic_icon_file(16));
 		add(img);
-		
+
 		var label = new Gtk.Label ("");
 		label.xalign = 0.0f;
 		add(label);
@@ -189,7 +189,7 @@ public class Statusbar : Gtk.Box {
 		label.xalign = 0.0f;
 		label.set_use_markup(true);
 		lbl_hidden_count = label;
-		
+
 		var ebox = new Gtk.EventBox();
 		ebox.add(lbl_hidden_count);
 		add(ebox);
@@ -201,7 +201,7 @@ public class Statusbar : Gtk.Box {
 		label.set_use_markup(true);
 		add(label);
 		lbl_hidden = label;
-		
+
 		lbl_hidden_count.notify["visible"].connect(()=>{
 			label.visible = lbl_hidden_count.visible;
 			separator.visible = lbl_hidden_count.visible;
@@ -456,7 +456,7 @@ public class Statusbar : Gtk.Box {
 		ebox.add(img);
 		add(ebox);
 		ebox_terminal = ebox;
-		
+
 		set_pointer_cursor_for_eventbox(ebox);
 
 		ebox.button_press_event.connect((event)=>{
@@ -478,7 +478,7 @@ public class Statusbar : Gtk.Box {
 		ebox.add(img);
 		add(ebox);
 		ebox_terminal = ebox;
-		
+
 		set_pointer_cursor_for_eventbox(ebox);
 
 		ebox.button_press_event.connect((event)=>{
@@ -499,8 +499,8 @@ public class Statusbar : Gtk.Box {
 		var ebox = new Gtk.EventBox();
 		ebox.add(img);
 		add(ebox);
-		ebox_filter = ebox;	
-		
+		ebox_filter = ebox;
+
 		set_pointer_cursor_for_eventbox(ebox);
 
 		ebox.button_press_event.connect((event)=>{
@@ -609,7 +609,7 @@ public class Statusbar : Gtk.Box {
 			lbl_hidden_count.label = "<span weight=\"bold\">%'ld</span>".printf(view.current_item.hidden_count);
 			//lbl_hidden.label = "<span weight=\"bold\">%s</span>".printf(_("hidden"));
 		}
-		
+
 		//lbl_hidden_count.visible = (view.current_item.hidden_count > 0);
 
 		if (view.current_item.is_trash){
@@ -624,7 +624,7 @@ public class Statusbar : Gtk.Box {
 		lbl_fs_free.visible = (view.current_item.filesystem_free > 0);
 
 		var dev = view.current_item.get_device();
-		
+
 		if (dev != null){
 			log_debug("file_item is on device: %s".printf(dev.device));
 
@@ -643,7 +643,7 @@ public class Statusbar : Gtk.Box {
 				lbl_fs_type.label = "";
 			}
 		}
-		
+
 		lbl_fs_type.visible = (lbl_fs_type.label.length > 0);
 
 		lbl_fs_read_only.label = "%s".printf(view.current_item.filesystem_read_only ? "ReadOnly" : "");
@@ -651,7 +651,7 @@ public class Statusbar : Gtk.Box {
 
 		ebox_filter.visible = view.current_item.is_local;
 		ebox_terminal.visible = view.current_item.is_local;
-		
+
 		//lbl_fs_read_only
 
 		/*if (pane.view.current_item.is_archive){
@@ -691,8 +691,8 @@ public class Statusbar : Gtk.Box {
 		lbl_fs_read_only.visible = false;
 		ebox_filter.visible = false;
 		ebox_terminal.visible = false;
-	}	
-	
+	}
+
 	public void refresh_selection_counts(){
 
 		if ((view == null) || (view.current_item == null)){
@@ -705,7 +705,7 @@ public class Statusbar : Gtk.Box {
 		/*if (view.current_item.is_virtual){
 
 			lbl_dir_count.label = "%'ld".printf(view.current_item.dir_count);
-			
+
 			lbl_file_count.label = "%'ld".printf(view.current_item.file_count);
 		}
 		else{*/
@@ -714,11 +714,11 @@ public class Statusbar : Gtk.Box {
 			view.get_selected_counts(out files, out dirs);
 
 			lbl_dir_count.label = "%'ld/%'ld".printf(dirs, view.current_item.dir_count);
-			
+
 			lbl_file_count.label = "%'ld/%'ld".printf(files, view.current_item.file_count);
 		//}
 	}
-	
+
 	private void refresh_usage_bar() {
 		fs_bar.queue_draw_area(0, 0, fs_bar.get_allocated_width(), fs_bar.get_allocated_height());
 	}
@@ -733,7 +733,3 @@ public class Statusbar : Gtk.Box {
 		gtk_hide(lbl_progress);
 	}
 }
-
-
-
-

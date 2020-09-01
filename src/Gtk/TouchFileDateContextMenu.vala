@@ -59,7 +59,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 		entry = _entry;
 
 		reserve_toggle_size = false;
-		
+
 		add_item_touch();
 
 		add_item_touch_recursive();
@@ -76,7 +76,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 		string tt = "%s.".printf(
 				_("Update timestamp to current date and time")
 			);
-			
+
 		var item = gtk_menu_add_item(
 			this,
 			_("Touch"),
@@ -98,7 +98,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 				_("Update timestamp to current date and time"),
 				_("Update recursively for all items inside the folder")
 			);
-				
+
 		var item = gtk_menu_add_item(
 			this,
 			_("Touch Recursive"),
@@ -121,7 +121,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 				_("Update recursively for all items inside the folder"),
 				_("Follow into symlinked subfolders")
 			);
-			
+
 		var item = gtk_menu_add_item(
 			this,
 			_("Touch Recursive (Follow Symlinks)"),
@@ -141,7 +141,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 
 		recurse = _recurse;
 		follow_links = _follow_links;
-		
+
 		try {
 			task_is_running = true;
 			new Thread<void>.try ("TouchFileDateContextMenu::touch_file_item_thread", touch_file_item_thread);
@@ -157,13 +157,13 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 			entry.progress_pulse();
 			gtk_do_events();
 		}
-		
+
 		entry.set_progress_fraction(0.0);
 		gtk_do_events();
 	}
 
 	private void touch_file_item_thread(){
-		
+
 		task_is_running = true;
 
 		entry.progress_pulse_step = 0.2;
@@ -171,7 +171,7 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 		touch(file_item.file_path, touch_accessed, touch_modified, recurse, follow_links, window);
 		file_item.query_file_info();
 		file_touched();
-		
+
 		task_is_running = false;
 	}
 
@@ -191,5 +191,3 @@ public class TouchFileDateContextMenu : Gtk.Menu {
 		return true;
 	}
 }
-
-

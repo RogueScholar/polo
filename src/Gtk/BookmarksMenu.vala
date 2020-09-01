@@ -37,14 +37,14 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 	public BookmarksMenu(){
 
 		reserve_toggle_size = false;
-		
+
 		build_menu();
 	}
 
 	public void build_menu(){
 
 		log_debug("BookmarksMenu: build_menu()");
-		
+
 		// menu_item
 		var menu_item = new Gtk.MenuItem();
 		this.append(menu_item);
@@ -53,10 +53,10 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 		menu_item.add(box);
 
 		if (view.current_item != null){
-			
+
 			var path = view.current_item.file_path;
 			var uri =  view.current_item.file_uri;
-			
+
 			if (GtkBookmark.is_bookmarked(uri)){
 				var lbl = new Gtk.Label(_("Remove Bookmark"));
 				lbl.xalign = 0.0f;
@@ -159,5 +159,3 @@ public class BookmarksMenu : Gtk.Menu, IPaneActive {
 		this.popdown();
 	}
 }
-
-

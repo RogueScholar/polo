@@ -40,7 +40,7 @@ public class Pathbar : Gtk.Box {
 	private MainWindow window{
 		get { return App.main_window; }
 	}
-	
+
 	FileViewPane _pane;
 	private FileViewPane? pane {
 		get{
@@ -58,7 +58,7 @@ public class Pathbar : Gtk.Box {
 	}
 
 	// -------------------------------
-	
+
 	private Gtk.Box scrolled_box;
 	private Gtk.Box link_box;
 	private Gtk.EventBox ebox_edit_buffer;
@@ -176,7 +176,7 @@ public class Pathbar : Gtk.Box {
 		set_pointer_cursor_for_eventbox(ebox);
 
 		popup_bm = new PlacesPopover(ebox, pane);
-		
+
 		ebox.button_press_event.connect((event)=>{
 			popup_bm.show_popup();
 			return false;
@@ -220,7 +220,7 @@ public class Pathbar : Gtk.Box {
 		});*/
 
 		dev_popup = new DevicePopover(ebox, pane);
-		
+
 		ebox.button_press_event.connect((event)=>{
 			dev_popup.show_popup();
 			return false;
@@ -298,7 +298,7 @@ public class Pathbar : Gtk.Box {
 			return false;
 		});
 		*/
-		
+
 		txt.set_no_show_all(true);
 	}
 
@@ -358,10 +358,10 @@ public class Pathbar : Gtk.Box {
 
 		log_debug("Pathbar: refresh_visibility()");
 
-		
+
 		if ((!App.headerbar_enabled || App.headerbar_show_pathbars)
 			&& ((this.is_global && App.pathbar_unified) || (!this.is_global && !App.pathbar_unified))){
-				
+
 			this.set_no_show_all(false);
 			this.show_all();
 		}
@@ -542,7 +542,7 @@ public class Pathbar : Gtk.Box {
 		case PathbarStyle.FLAT_BUTTONS:
 			link_box.spacing = 0;
 			break;
-			
+
 		case PathbarStyle.ARROWS:
 		case PathbarStyle.BUTTONS:
 			link_box.spacing = 3;
@@ -553,25 +553,25 @@ public class Pathbar : Gtk.Box {
 		string item_path = "";
 		int index = -1;
 		bool is_first_part = true;
-		
+
 		foreach(var part in parts){
 			index++;
 			if (part.length == 0){ continue; }
 
 			// crumb ----------------
-			
+
 			if ((item_path.length > 0) && !item_path.has_suffix("/")){
 				item_path += "/";
 			}
-			
+
 			item_path += part;
 
 			add_crumb(link_box, part, item_path, is_first_part);
-			
+
 			is_first_part = false;
-			
+
 			// separator ------------
-			
+
 			bool add_separator = false;
 			switch (App.pathbar_style){
 			case PathbarStyle.COMPACT:
@@ -595,20 +595,20 @@ public class Pathbar : Gtk.Box {
 
 		log_debug("Pathbar: update_crumbs():exit");
 	}
-	
+
 	public static Gee.ArrayList<string> split_path_components(string file_uri){
-		
+
 		var list = new Gee.ArrayList<string>();
 		string basepath = "";
-		
+
 		var info = regex_match("""^((file|trash):\/\/\/*)""", file_uri);
 		if (info != null){
 			basepath = info.fetch(1); // file:///  trash:///
 			list.add(basepath);
 		}
-		
+
 		if (basepath.length == 0){
-			
+
 			// ftp://user:password@192.168.43.140:3721/sss
 			info = regex_match("""^((ftp|sftp|ssh):*\/*\/*.*[0-9.]*:*[0-9.]*\/*)""", file_uri);
 			if (info != null){
@@ -616,9 +616,9 @@ public class Pathbar : Gtk.Box {
 				list.add(basepath);
 			}
 		}
-		
+
 		if (basepath.length == 0){
-			
+
 			// mtp://[usb:002,010]/sss
 			info = regex_match("""^(mtp:\/\/\[usb:[0-9]+,[0-9]+\]\/*)""", file_uri);
 			if (info != null){
@@ -626,9 +626,9 @@ public class Pathbar : Gtk.Box {
 				list.add(basepath);
 			}
 		}
-		
+
 		if (basepath.length == 0){
-			
+
 			// smb://DATA/share1
 			info = regex_match("""^(smb:\/\/.*\/*.*)""", file_uri);
 			if (info != null){
@@ -638,7 +638,7 @@ public class Pathbar : Gtk.Box {
 		}
 
 		if (basepath.length == 0){
-			
+
 			// hubic:default/
 			info = regex_match("""^([^ \/]+:[^ \/]+\/*)""", file_uri);
 			if (info != null){
@@ -646,9 +646,9 @@ public class Pathbar : Gtk.Box {
 				list.add(basepath);
 			}
 		}
-		
+
 		if (basepath.length == 0){
-			
+
 			// dropbox:/test
 			info = regex_match("""^([^ \/]+:\/*)""", file_uri);
 			if (info != null){
@@ -658,7 +658,7 @@ public class Pathbar : Gtk.Box {
 		}
 
 		if (basepath.length == 0){
-			
+
 			// everything else
 			if (file_uri.has_prefix("/")){
 				basepath = "/"; // /bin
@@ -669,32 +669,32 @@ public class Pathbar : Gtk.Box {
 				// ignore
 			}
 		}
-		
+
 		//log_debug("basepath: %s".printf(basepath));
-		
+
 		if (file_uri.length > basepath.length){
-			
+
 			var arr = file_uri[basepath.length : file_uri.length].split("/");
-			
+
 			foreach(var part in arr){
 				list.add(part);
 			}
 		}
-		
+
 		// print the list
 		//foreach(var str in list){
 			//log_debug("parts: %s".printf(str));
 		//}
-		
+
 		return list;
 	}
-	
+
 	private void add_crumb(Gtk.Box box, string part, string link_path, bool is_first_part){
 
 		//log_debug("add_crumb: %s, %s".printf(part, link_path));
-		
+
 		string text = part;
-		
+
 		// remove trailing /
 		if (text.has_suffix("/") && (text.length > 1)){
 			text = text[0:text.length - 1];
@@ -707,9 +707,9 @@ public class Pathbar : Gtk.Box {
 			add_crumb_label(box, text, link_path);
 		}
 	}
-	
+
 	private void add_crumb_label(Gtk.Box box, string text, string link_path){
-		
+
 		var label = new Gtk.Label(text);
 		label.set_use_markup(true);
 		label.margin = 0;
@@ -718,10 +718,10 @@ public class Pathbar : Gtk.Box {
 		label.set_tooltip_text(link_path);
 
 		//gtk_apply_css( { label }, "padding-top: 0px; padding-bottom: 0px; margin-top: 0px; margin-bottom: 0px;");
-		
+
 		var ebox = gtk_add_event_box(box);
 		ebox.add(label);
-		
+
 		ebox.button_press_event.connect((event) => {
 			view.set_view_path(label.get_data<string>("link"));
 			return true;
@@ -763,7 +763,7 @@ public class Pathbar : Gtk.Box {
 		else{
 			button.relief = Gtk.ReliefStyle.NORMAL;
 		}
-		
+
 		var label = new Gtk.Label(text);
 		label.margin = 0;
 		label.margin_start = label.margin_end = 0;
@@ -772,7 +772,7 @@ public class Pathbar : Gtk.Box {
 		if ((App.pathbar_style == PathbarStyle.FLAT_BUTTONS) && !is_first_part){
 			label.label = "➤ " + text;
 		}
-		
+
 		button.clicked.connect(() => {
 			if (view == null) { return; };
 			view.set_view_path(button.get_data<string>("link"));
@@ -788,22 +788,22 @@ public class Pathbar : Gtk.Box {
 		case PathbarStyle.COMPACT:
 			separator = "/";
 			break;
-			
+
 		case PathbarStyle.ARROWS:
 			separator = "➤";
 			break;
-			
+
 		case PathbarStyle.BUTTONS:
 		case PathbarStyle.FLAT_BUTTONS:
 			// pad with space
 			separator = "%s ".printf(separator);
 			break;
 		}
-		
+
 		var label = new Gtk.Label(separator);
 		box.add(label);
 	}
-	
+
 	// navigation buttons
 
 	private void add_item_back(Gtk.Box box){
@@ -854,7 +854,7 @@ public class Pathbar : Gtk.Box {
 		ebox.button_press_event.connect((event)=>{
 
 			if (event.button != 1) { return false; }
-			
+
 			if (view == null) { return true; };
 
 			var path = view.history_go_forward();
@@ -884,7 +884,7 @@ public class Pathbar : Gtk.Box {
 		ebox.button_press_event.connect((event)=>{
 
 			if (event.button != 1) { return false; }
-			
+
 			if (view == null) { return true; };
 
 			var path = view.get_location_up();
@@ -914,7 +914,7 @@ public class Pathbar : Gtk.Box {
 		ebox.button_press_event.connect((event)=>{
 
 			if (event.button != 1) { return false; }
-			
+
 			if (view == null) { return true; };
 			view.set_view_path(App.user_home, true); // update_history
 
@@ -989,7 +989,7 @@ public class Pathbar : Gtk.Box {
 		ebox.set_tooltip_text(tt);
 
 		ebox.button_press_event.connect((event)=>{
-			
+
 			if (event.button != 1) { return false; }
 
 			if (!view.check_tool("polo-disk")){ return false; }
@@ -1003,13 +1003,13 @@ public class Pathbar : Gtk.Box {
 			var dev = Device.get_device_by_path(path1);
 
 			if (dev == null){ return false; }
-			
+
 			while (dev.has_parent()){
 				dev = dev.parent;
 			}
 
 			string txt, msg;
-			
+
 			if (dev.is_system_device){
 				txt = _("System Device");
 				msg = _("System devices cannot be ejected while system is running") + "\n\n" + dev.description_disk_friendly();
@@ -1029,11 +1029,11 @@ public class Pathbar : Gtk.Box {
 			if (resp != Gtk.ResponseType.YES){
 				return false;
 			}
-			
+
 			string disk = (dev.pkname_toplevel.length > 0) ? dev.pkname_toplevel : dev.kname;
 
 			string cmd = "polo-disk eject --device /dev/%s".printf(disk);
-			
+
 			gtk_set_busy(true, window);
 
 			string std_out, std_err;
@@ -1042,9 +1042,9 @@ public class Pathbar : Gtk.Box {
 			gtk_set_busy(false, window);
 
 			var list = Device.get_block_devices();
-			
+
 			if (Device.get_device_by_name(dev.device, list) == null){
-				
+
 				txt = _("Device Ejected");
 				msg = dev.description_friendly();
 				gtk_messagebox(txt, msg, window, false);
@@ -1054,7 +1054,7 @@ public class Pathbar : Gtk.Box {
 				msg = _("Device may be non-removable, or in-use by another process") + "\n\n" + std_err;
 				gtk_messagebox(txt, msg, App.main_window, true);
 			}
-			
+
 			return true;
 		});
 	}
@@ -1118,7 +1118,7 @@ public class Pathbar : Gtk.Box {
 		txt_path.activate.disconnect(txt_path_activate);
 
 		bool handled = false;
-		
+
 		if (GvfsMounts.is_gvfs_uri(txt_path.text)){
 			var file = File.new_for_uri(txt_path.text);
 			if (file.query_exists()){

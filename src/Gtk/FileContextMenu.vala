@@ -40,7 +40,7 @@ public class FileContextMenu : Gtk.Menu {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	protected FileViewPane pane;
 
 	protected FileViewList view {
@@ -52,14 +52,14 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	// -------------------------------
-	
+
 	private Gee.ArrayList<FileItem> selected_items;
 	private FileItem? selected_item = null;
 	private bool is_trash = false;
 	private bool is_archive = false;
 
 	public FileContextMenu(FileViewPane parent_pane){
-		
+
 		log_debug("FileContextMenu()");
 
 		margin = 0;
@@ -93,7 +93,7 @@ public class FileContextMenu : Gtk.Menu {
 		log_trace("build_file_menu()");
 		var timer = timer_start();
 		var subtimer = timer_start();
-		
+
 		Gdk.RGBA gray = Gdk.RGBA();
 		gray.parse("rgba(200,200,200,1)");
 
@@ -111,7 +111,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		log_trace("context menu created: open: %s".printf(timer_elapsed_string(subtimer)));
 		timer_restart(subtimer);
-		
+
 		add_new(this, sg_icon, sg_label);
 
 		log_trace("context menu created: new: %s".printf(timer_elapsed_string(subtimer)));
@@ -120,7 +120,7 @@ public class FileContextMenu : Gtk.Menu {
 		gtk_menu_add_separator(this); //---------------------------
 
 		add_cut(this, sg_icon, sg_label);
-		
+
 		add_copy(this, sg_icon, sg_label);
 
 		add_paste_into_folder(this, sg_icon, sg_label);
@@ -138,15 +138,15 @@ public class FileContextMenu : Gtk.Menu {
 		gtk_menu_add_separator(this); //----------------------
 
 		add_clamav_actions(this, sg_icon, sg_label);
-		
+
 		add_disk_usage(this, sg_icon, sg_label);
 
 		add_dir_size_calculate(this, sg_icon, sg_label);
 
 		add_file_compare(this, sg_icon, sg_label);
-		
+
 		add_archive_actions(this, sg_icon, sg_label);
-		
+
 		add_image_actions(this, sg_icon, sg_label);
 
 		add_iso_actions(this, sg_icon, sg_label);
@@ -164,12 +164,12 @@ public class FileContextMenu : Gtk.Menu {
 		add_properties(this, sg_icon, sg_label);
 
 		log_trace("context menu created: %s".printf(timer_elapsed_string(timer)));
-		 
+
 		show_all();
 	}
 
 	private void build_file_menu_for_trash(){
-		
+
 		log_debug("FileContextMenu: build_file_menu_for_trash()");
 
 		Gdk.RGBA gray = Gdk.RGBA();
@@ -209,7 +209,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void build_file_menu_for_archive(){
-		
+
 		log_debug("FileContextMenu: build_file_menu_for_archive()");
 
 		Gdk.RGBA gray = Gdk.RGBA();
@@ -226,9 +226,9 @@ public class FileContextMenu : Gtk.Menu {
 		}
 
 		add_extract_to(this, sg_icon, sg_label);
-		
+
 		add_extract_across(this, sg_icon, sg_label);
-	
+
 		add_extract_here(this, sg_icon, sg_label);
 
 		show_all();
@@ -271,7 +271,7 @@ public class FileContextMenu : Gtk.Menu {
 		add_open_new_admin_window(sub_menu, sg_icon, sg_label);
 
 		gtk_menu_add_separator(sub_menu);
-		
+
 		add_open_with(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_set_default_app(sub_menu, sg_icon_sub, sg_label_sub);
@@ -324,13 +324,13 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_items.size > 0);
 	}
 
-	
+
 	private void add_open_with(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("FileContextMenu: add_open_with()");
 
 		if (selected_item == null){ return; }
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Open With"),
@@ -342,7 +342,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_items.size > 0);
 
 		// sub menu ------------------------------------------
-		
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -356,7 +356,7 @@ public class FileContextMenu : Gtk.Menu {
 		if (selected_item.content_type.has_prefix("text/")
 			|| selected_item.content_type.contains("shellscript")
 			|| selected_item.content_type.contains("application/x-desktop")){
-				
+
 			supported_apps = DesktopApp.text_editors;
 		}
 
@@ -389,7 +389,7 @@ public class FileContextMenu : Gtk.Menu {
 		log_debug("FileContextMenu: add_open_with_others()");
 
 		if (selected_item == null){ return; }
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Other"),
@@ -412,26 +412,26 @@ public class FileContextMenu : Gtk.Menu {
 	private DesktopApp? choose_app(FileItem file_item){
 
 		var file = File.new_for_path(file_item.file_path);
-		
+
 		var dialog = new Gtk.AppChooserDialog(window, Gtk.DialogFlags.MODAL, file);
 
 		string desktop_file_name = "";
-		
+
 		if (dialog.run() == Gtk.ResponseType.OK) {
-			
+
 			var info = dialog.get_app_info();
-			
+
 			if (info != null) {
 				desktop_file_name = info.get_id();
 			}
 		}
-		
+
 		dialog.close();
 
 		if (DesktopApp.applist.has_key(desktop_file_name)){
 			return DesktopApp.applist[desktop_file_name];
 		}
-		
+
 		return null;
 	}
 
@@ -468,7 +468,7 @@ public class FileContextMenu : Gtk.Menu {
 			|| selected_item.content_type.contains("shellscript")){
 			supported_apps = DesktopApp.text_editors;
 		}
-		
+
 		foreach(var supported_app in supported_apps){
 
 			//log_debug("supported_app: %s".printf(supported_app.name));
@@ -609,17 +609,17 @@ public class FileContextMenu : Gtk.Menu {
 		add_new_file(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_new_folder(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_new_from_template(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); // --------------------
 
 		add_new_tab(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_new_window(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_new_admin_window(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_new_terminal(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); // --------------------
@@ -748,7 +748,7 @@ public class FileContextMenu : Gtk.Menu {
 		log_debug("FileContextMenu: add_new_from_template()");
 
 		var sep = gtk_menu_add_separator(menu); // --------------------
-		
+
 		string templates_path = "/usr/share/templates/.source";
 		bool ok1 = add_templates_from_folder(menu, sg_icon, sg_label, templates_path);
 
@@ -776,7 +776,7 @@ public class FileContextMenu : Gtk.Menu {
 			if (template_file.file_extension == ".desktop"){
 				continue;
 			}
-			
+
 			var menu_item = gtk_menu_add_item(
 				menu,
 				template_file.file_title,
@@ -798,7 +798,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_open_templates_folder(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Open Templates Folder"),
@@ -837,7 +837,7 @@ public class FileContextMenu : Gtk.Menu {
 			menu_item.sensitive = false;
 		}
 	}
-	
+
 	private void add_copy(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("FileContextMenu: add_copy()");
@@ -870,7 +870,7 @@ public class FileContextMenu : Gtk.Menu {
 		if ((window.pending_action == null) || (selected_items.size != 1) || !selected_items[0].is_directory || (url.length == 0)){
 			return;
 		}
-		
+
 		// paste --------------------------------
 
 		var menu_item = gtk_menu_add_item(
@@ -893,14 +893,14 @@ public class FileContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = ((window.pending_action != null) || (url.length > 0)) && (selected_items.size == 1) && selected_items[0].is_directory;
 	}
-	
+
 	private void add_paste(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("FileContextMenu: add_paste()");
 
 		string txt = get_clipboard_text();
 		string url = txt.has_prefix("http") ? txt : "";
-		
+
 		// paste --------------------------------
 
 		var menu_item = gtk_menu_add_item(
@@ -932,7 +932,7 @@ public class FileContextMenu : Gtk.Menu {
 			return txt;
 		}
 		return "";
-	}	
+	}
 
 	private void add_rename(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
@@ -1027,7 +1027,7 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_trash_open_original_location(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (selected_item == null){ return; }
-		
+
 		log_debug("FileContextMenu: add_trash_open_original_location()");
 
 		// open in new tab ----------------------------
@@ -1106,7 +1106,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		add_file_compare_select_second(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_file_compare_opposite(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("FileContextMenu: add_file_compare_opposite()");
@@ -1171,19 +1171,19 @@ public class FileContextMenu : Gtk.Menu {
 		// items ------------------------------
 
 		add_copy_to(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_copy_across(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
 
 		add_move_to(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_move_across(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
 
 		add_paste_symlinks_auto(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_paste_symlinks_relative(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_paste_hardlinks(sub_menu, sg_icon_sub, sg_label_sub);
@@ -1200,7 +1200,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_copy_to(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Copy To..."),
@@ -1218,7 +1218,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_move_to(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-	
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Move To..."),
@@ -1240,7 +1240,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_copy_across(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Copy Across"),
@@ -1333,7 +1333,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = (window.pending_action != null);
 	}
-	
+
 	private void add_hide(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (selected_items.size == 0) { return; }
@@ -1363,7 +1363,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		if (selected_items.size == 0) { return; }
 		if (!view.is_normal_directory) { return; }
-		
+
 		log_debug("FileContextMenu: add_unhide()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1449,11 +1449,11 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_archive_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_archive) { return; }
-		
+
 		if (view.current_item is FileItemCloud){ return; }
 
 		if (selected_items.size == 0){ return; }
-		
+
 		log_debug("FileContextMenu: add_archive_actions()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1463,29 +1463,29 @@ public class FileContextMenu : Gtk.Menu {
 			IconManager.lookup_image("package-x-generic",16),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
 
 		var sg_icon_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_compress(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_browse_archive(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_extract_to(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_extract_across(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_extract_here(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_compress(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (view.current_item is FileItemCloud){ return; }
-		
+
 		log_debug("FileContextMenu: add_compress()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1507,7 +1507,7 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_browse_archive(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		//if (!can_extract){ return; }
-		
+
 		log_debug("FileContextMenu: add_browse_archive()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1526,11 +1526,11 @@ public class FileContextMenu : Gtk.Menu {
 			&& FileItem.is_archive_by_extension(selected_item.file_path) // check file
 			; // check destination
 	}
-	
+
 	private void add_extract_to(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		//if (!can_extract){ return; }
-		
+
 		log_debug("FileContextMenu: add_extract_to()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1553,7 +1553,7 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_extract_across(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		//if (!can_extract){ return; }
-		
+
 		log_debug("FileContextMenu: add_extract_across()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1602,7 +1602,7 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_disk_usage(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_disk_usage) { return; }
-		
+
 		if (!view.is_normal_directory){ return; }
 
 		log_debug("FileContextMenu: add_disk_usage()");
@@ -1630,11 +1630,11 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_dir_size_calculate(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_disk_usage) { return; }
-		
+
 		if (!view.is_normal_directory){ return; }
 
 		if ((selected_item != null) && !selected_item.is_directory){ return; }
-		
+
 		log_debug("FileContextMenu: add_dir_size_calculate()");
 
 		var menu_item = gtk_menu_add_item(
@@ -1656,9 +1656,9 @@ public class FileContextMenu : Gtk.Menu {
 		if (selected_item == null){ return; }
 
 		if (!selected_item.is_disk_image){ return; }
-		
+
 		log_debug("FileContextMenu: add_iso_actions()");
-	
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Disk Image"),
@@ -1666,23 +1666,23 @@ public class FileContextMenu : Gtk.Menu {
 			gtk_image_from_pixbuf(IconManager.generic_icon_iso(16)),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		//sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
 
 		var sg_icon_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_mount_iso(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_boot_iso(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_write_iso(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_mount_iso(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		if (!selected_item.is_disk_image){ return; }
@@ -1703,7 +1703,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_boot_iso(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		if (!selected_item.file_name.has_suffix(".iso")){ return; }
@@ -1724,7 +1724,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_write_iso(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		if (!selected_item.is_iso){ return; }
@@ -1751,15 +1751,15 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		var list = Main.get_devices();
-		
+
 		bool devices_available = false;
-		
+
 		foreach(var dev in list){
-		
+
 			if (dev.pkname.length > 0){ continue; }
 			if (!dev.removable){ continue; }
 			if (dev.size_bytes > 100 * GB){ continue; }
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				dev.description_simple(),
@@ -1776,7 +1776,7 @@ public class FileContextMenu : Gtk.Menu {
 		}
 
 		if (!devices_available){
-			
+
 			var sub_menu_item2 = gtk_menu_add_item(
 				sub_menu,
 				_("No USB devices found"),
@@ -1784,7 +1784,7 @@ public class FileContextMenu : Gtk.Menu {
 				null,
 				sg_icon_sub,
 				sg_label_sub);
-				
+
 			sub_menu_item2.sensitive = false;
 		}
 	}
@@ -1793,13 +1793,13 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_clamav_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_clamav) { return; }
-		
+
 		if (!view.is_normal_directory){ return; }
-		
+
 		if (!App.tool_exists("polo-clamav")) { return; }
-		
+
 		log_debug("FileContextMenu: add_clamav_actions()");
-	
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Scan for Malware"),
@@ -1814,7 +1814,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		var sg_icon_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_scan_mode_fast(sub_menu, sg_icon_sub, sg_label_sub, false);
 
 		add_scan_mode_deep(sub_menu, sg_icon_sub, sg_label_sub, false);
@@ -1822,7 +1822,7 @@ public class FileContextMenu : Gtk.Menu {
 		// admin sub-menu -------------------------
 
 		gtk_menu_add_separator(sub_menu);
-		
+
 		menu_item = gtk_menu_add_item(
 			sub_menu,
 			_("As Admin"),
@@ -1830,7 +1830,7 @@ public class FileContextMenu : Gtk.Menu {
 			null,
 			sg_icon,
 			sg_label);
-			
+
 		sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -1840,7 +1840,7 @@ public class FileContextMenu : Gtk.Menu {
 
 		add_scan_mode_fast(sub_menu, sg_icon_sub, sg_label_sub, true);
 
-		add_scan_mode_deep(sub_menu, sg_icon_sub, sg_label_sub, true);	
+		add_scan_mode_deep(sub_menu, sg_icon_sub, sg_label_sub, true);
 	}
 
 	private void add_scan_mode_fast(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label, bool as_admin){
@@ -1869,7 +1869,7 @@ public class FileContextMenu : Gtk.Menu {
 			foreach(var item in selected_items){
 				list.add(item.file_path);
 			}
-			
+
 			tab.pane.view_clamav.scan(list, "fast", as_admin);
 		});
 	}
@@ -1891,7 +1891,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.activate.connect (() => {
 
 			if (!view.check_clamav()) { return; }
-			
+
 			var tab = panel.add_tab();
 			tab.select_tab();
 			tab.pane.show_clamav_view("scan");
@@ -1900,20 +1900,20 @@ public class FileContextMenu : Gtk.Menu {
 			foreach(var item in selected_items){
 				list.add(item.file_path);
 			}
-			
+
 			tab.pane.view_clamav.scan(list, "deep", as_admin);
 		});
 	}
 
-	
+
 	private void add_checksum_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_checksum) { return; }
-		
+
 		if (selected_item == null){ return; }
 
 		log_debug("FileContextMenu: add_checksum_actions()");
-	
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("Checksum"),
@@ -1921,14 +1921,14 @@ public class FileContextMenu : Gtk.Menu {
 			IconManager.lookup_image("hash", 16),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
 
 		var sg_icon_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_generate_md5(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_generate_sha1(sub_menu, sg_icon_sub, sg_label_sub);
@@ -1937,9 +1937,9 @@ public class FileContextMenu : Gtk.Menu {
 
 		add_generate_sha512(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_generate_md5(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		log_debug("FileContextMenu: add_generate_md5()");
@@ -1956,13 +1956,13 @@ public class FileContextMenu : Gtk.Menu {
 			var tab = panel.add_tab();
 			tab.select_tab();
 			tab.pane.show_checksum_view();
-		
+
 			tab.pane.view_checksum.generate(selected_items, ChecksumType.MD5);
 		});
 	}
 
 	private void add_generate_sha1(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		log_debug("FileContextMenu: add_generate_sha1()");
@@ -1985,7 +1985,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_generate_sha256(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		log_debug("FileContextMenu: add_generate_sha256()");
@@ -2008,7 +2008,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_generate_sha512(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		if (selected_item == null){ return; }
 
 		log_debug("FileContextMenu: add_generate_sha512()");
@@ -2030,7 +2030,7 @@ public class FileContextMenu : Gtk.Menu {
 		});
 	}
 
-	
+
 	private void add_kvm_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (!App.show_context_menu_kvm) { return; }
@@ -2038,7 +2038,7 @@ public class FileContextMenu : Gtk.Menu {
 		if (view.current_item is FileItemCloud){ return; }
 
 		log_debug("FileContextMenu: add_kvm_actions()");
-		
+
 		var menu_item = gtk_menu_add_item(
 			menu,
 			_("KVM"),
@@ -2046,7 +2046,7 @@ public class FileContextMenu : Gtk.Menu {
 			IconManager.lookup_image("kvm",16),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2057,13 +2057,13 @@ public class FileContextMenu : Gtk.Menu {
 		add_boot_disk(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
-		
+
 		add_create_disk(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_create_disk_derived(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_create_disk_merged(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_mount_disk(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_install_disk(sub_menu, sg_icon_sub, sg_label_sub);
@@ -2072,9 +2072,9 @@ public class FileContextMenu : Gtk.Menu {
 
 		//add_write_iso(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_create_disk(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_create_disk()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2091,7 +2091,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_create_disk_derived(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_create_disk_derived()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2111,7 +2111,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_create_disk_merged(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_create_disk_derived()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2131,7 +2131,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_boot_disk(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_boot_disk()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2151,7 +2151,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_mount_disk(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_mount_disk()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2171,7 +2171,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_install_disk(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_install_disk()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2206,7 +2206,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2215,7 +2215,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		var formats = new Gee.ArrayList<string>();
-		
+
 		switch(selected_item.file_extension.down()){
 		case ".vmdk":
 		case ".vhd":
@@ -2243,9 +2243,9 @@ public class FileContextMenu : Gtk.Menu {
 			menu_item.sensitive = false;
 			return;
 		}
-		
+
 		foreach(string format in formats){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				format,
@@ -2264,13 +2264,13 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_pdf_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (view.current_item is FileItemCloud){ return; }
-		
+
 		if (selected_item == null){ return; }
 
 		if (!selected_item.is_pdf){ return; }
 
 		if (!App.tool_exists("polo-pdf")) { return; }
-		
+
 		log_debug("FileContextMenu: add_pdf_actions()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2280,7 +2280,7 @@ public class FileContextMenu : Gtk.Menu {
 			gtk_image_from_pixbuf(IconManager.generic_icon_pdf(16)),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2293,11 +2293,11 @@ public class FileContextMenu : Gtk.Menu {
 		add_pdf_merge(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
-		
+
 		add_pdf_protect(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_pdf_unprotect(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		gtk_menu_add_separator(sub_menu); //--------------------------------
 
 		add_pdf_compress(sub_menu, sg_icon_sub, sg_label_sub);
@@ -2305,16 +2305,16 @@ public class FileContextMenu : Gtk.Menu {
 		add_pdf_uncompress(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
-		
+
 		add_pdf_grayscale(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_pdf_rotate(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_pdf_optimize(sub_menu, sg_icon_sub, sg_label_sub);
 	}
-	
+
 	private void add_pdf_split(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_split()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2331,7 +2331,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_merge(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_merge()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2348,7 +2348,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_protect(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_protect()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2365,7 +2365,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_unprotect(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_unprotect()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2382,7 +2382,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_grayscale(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_grayscale()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2399,7 +2399,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_uncompress(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_uncompress()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2416,7 +2416,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_pdf_compress(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_pdf_compress()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2447,7 +2447,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2456,7 +2456,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string format in new string[] { "Default", "Screen (72 dpi)", "EBook (150 dpi)", "Printer (300 dpi)", "PrePress" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				format,
@@ -2486,7 +2486,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2495,7 +2495,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string direction in new string[] { "Left", "Right", "Flip Upside Down" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				direction,
@@ -2514,13 +2514,13 @@ public class FileContextMenu : Gtk.Menu {
 	private void add_image_actions(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		if (view.current_item is FileItemCloud){ return; }
-		
+
 		if (selected_item == null){ return; }
 
 		if (!selected_item.is_image){ return; }
 
 		if (!App.tool_exists("polo-image")) { return; }
-		
+
 		log_debug("FileContextMenu: add_image_actions()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2530,7 +2530,7 @@ public class FileContextMenu : Gtk.Menu {
 			gtk_image_from_pixbuf(IconManager.generic_icon_image(16)),
 			sg_icon,
 			sg_label);
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2543,7 +2543,7 @@ public class FileContextMenu : Gtk.Menu {
 		add_image_reduce_jpeg(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
-		
+
 		add_image_decolor(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_image_reduce_color(sub_menu, sg_icon_sub, sg_label_sub);
@@ -2553,18 +2553,18 @@ public class FileContextMenu : Gtk.Menu {
 		gtk_menu_add_separator(sub_menu); //--------------------------------
 
 		add_image_set_wallpaper(sub_menu, sg_icon_sub, sg_label_sub);
-		
+
 		add_image_rotate(sub_menu, sg_icon_sub, sg_label_sub);
 
 		gtk_menu_add_separator(sub_menu); //--------------------------------
-		
+
 		add_image_resize(sub_menu, sg_icon_sub, sg_label_sub);
 
 		add_image_convert(sub_menu, sg_icon_sub, sg_label_sub);
 	}
 
 	private void add_image_set_wallpaper(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_set_wallpaper()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2581,9 +2581,9 @@ public class FileContextMenu : Gtk.Menu {
 
 		menu_item.sensitive = false;
 	}
-	
+
 	private void add_image_optimize_png(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_optimize_png()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2600,7 +2600,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_image_reduce_jpeg(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_reduce_jpeg()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2617,7 +2617,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_image_decolor(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_decolor()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2634,7 +2634,7 @@ public class FileContextMenu : Gtk.Menu {
 	}
 
 	private void add_image_reduce_color(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_reduce_color()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2648,7 +2648,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2657,7 +2657,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string level in new string[] { "Light", "Medium", "Strong" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				level,
@@ -2671,9 +2671,9 @@ public class FileContextMenu : Gtk.Menu {
 			});
 		}
 	}
-	
+
 	private void add_image_boost_color(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
-		
+
 		log_debug("FileContextMenu: add_image_boost_color()");
 
 		var menu_item = gtk_menu_add_item(
@@ -2687,7 +2687,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2696,7 +2696,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string level in new string[] { "Light", "Medium", "Strong" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				level,
@@ -2726,7 +2726,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2735,7 +2735,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string direction in new string[] { "240p", "320p", "480p", "640p", "720p", "960p", "1080p" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				direction,
@@ -2749,7 +2749,7 @@ public class FileContextMenu : Gtk.Menu {
 			});
 		}
 	}
-	
+
 	private void add_image_rotate(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		log_debug("FileContextMenu: add_image_rotate()");
@@ -2765,7 +2765,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2774,7 +2774,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string direction in new string[] { "Left", "Right", "Flip Upside Down" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				direction,
@@ -2804,7 +2804,7 @@ public class FileContextMenu : Gtk.Menu {
 		menu_item.sensitive = (selected_item != null);
 
 		if (selected_item == null){ return; }
-			
+
 		var sub_menu = new Gtk.Menu();
 		sub_menu.reserve_toggle_size = false;
 		menu_item.submenu = sub_menu;
@@ -2813,7 +2813,7 @@ public class FileContextMenu : Gtk.Menu {
 		var sg_label_sub = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(string format in new string[] { "PNG", "JPEG", "TIFF", "ICO", "BMP" }){
-			
+
 			var sub_menu_item = gtk_menu_add_item(
 				sub_menu,
 				format,
@@ -2827,8 +2827,8 @@ public class FileContextMenu : Gtk.Menu {
 			});
 		}
 	}
-	
-	
+
+
 	private void add_sort_column(Gtk.Menu menu, Gtk.SizeGroup sg_icon, Gtk.SizeGroup sg_label){
 
 		var menu_item = gtk_menu_add_item(
@@ -2875,7 +2875,7 @@ public class FileContextMenu : Gtk.Menu {
 			return false;
 		}
 	}
-	
+
 	public bool show_menu(Gdk.EventButton? event) {
 
 		if (event != null) {

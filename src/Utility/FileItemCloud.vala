@@ -38,7 +38,7 @@ public class FileItemCloud : FileItem {
 
 	public string remote_name = "";
 	public string type = "";
-	
+
 	public static string cache_dir;
 	public DateTime? cached_date = null;
 	public string error_msg = "";
@@ -49,14 +49,14 @@ public class FileItemCloud : FileItem {
 			if (_local_path.length == 0){
 				return "";
 			}
-			
+
 			if (file_exists(_local_path)){
 				var ctl_file = _local_path + ".%lld".printf(modified_unix_time);
 				if (file_exists(ctl_file)){
 					return _local_path;
 				}
 			}
-			
+
 			_local_path = "";
 			return _local_path;
 		}
@@ -74,11 +74,11 @@ public class FileItemCloud : FileItem {
 		file_type = _file_type;
 		object_count++;
 	}
-	
+
 	private void resolve_file_path(string _file_path){
 
 		GLib.File file;
-		
+
 		if (_file_path.contains("://")){
 			file_uri = _file_path;
 			file = File.new_for_uri(file_uri);
@@ -95,7 +95,7 @@ public class FileItemCloud : FileItem {
 		file_uri_scheme = file.get_uri_scheme(); // will be 'file'
 
 		remote_name = _file_path.split(":/")[0];
-		
+
 		//log_debug("");
 		//log_debug("file_path      : %s".printf(file_path));
 		//log_debug("file.get_path(): %s".printf(file.get_path()));
@@ -112,22 +112,22 @@ public class FileItemCloud : FileItem {
 		}
 		return false;
 	}
-	
+
 	// properties ------------------------------------------------
-	
+
 	public string cached_file_path {
 		owned get {
 			return path_combine(App.rclone.rclone_cache, thumb_key);
 		}
 	}
-	
+
 	// actions ---------------------------------------------------
 
 	public override void query_file_info() {
 		// ignore
 		return;
 	}
-	
+
 	public override void query_children(int depth, bool follow_symlinks) {
 
 		/* Queries the file item's children using the file_path
@@ -142,7 +142,7 @@ public class FileItemCloud : FileItem {
 		if (query_children_running) { return; }
 
 		// check if directory and continue -------------------
-		
+
 		if (!is_directory) {
 			//query_file_info();
 			query_children_running = false;
@@ -155,9 +155,9 @@ public class FileItemCloud : FileItem {
 		log_debug("FileItemCloud: query_children(%d): %s".printf(depth, file_path), true);
 
 		query_children_follow_symlinks = follow_symlinks;
-		
+
 		query_children_running = true;
-		
+
 		//mutex_children.lock();
 
 		if (depth < 0){
@@ -165,9 +165,9 @@ public class FileItemCloud : FileItem {
 		}
 
 		// query immediate children ---------------
-		
+
 		save_to_cache(depth);
-			
+
 		read_children_from_cache(depth);
 
 		// recurse children -----------------------
@@ -189,11 +189,11 @@ public class FileItemCloud : FileItem {
 	public bool is_fresh{
 		get {
 			if (file_exists(cached_file_path)){
-				
+
 				var file_date = file_get_modified_date(cached_file_path);
-				
+
 				var now = new GLib.DateTime.now_local();
-				
+
 				if (file_date.add_hours(24).compare(now) > 0){
 					return true;
 				}
@@ -207,13 +207,13 @@ public class FileItemCloud : FileItem {
 			if (parent != null) {
 
 				var parent_item = (FileItemCloud) parent;
-				
+
 				if (file_exists(cached_file_path) && file_exists(parent_item.cached_file_path)){
-					
+
 					var file_date = file_get_modified_date(cached_file_path);
-					
+
 					var file_date_parent = file_get_modified_date(parent_item.cached_file_path);
-					
+
 					if (file_date_parent.compare(file_date) > 0){
 
 						//log_debug("FileItemCloud: older_than_parent");
@@ -227,38 +227,38 @@ public class FileItemCloud : FileItem {
 	}
 
 	private void save_to_cache(int depth = -1){
-		
+
 		if (is_fresh && !older_than_parent){ // parent if any must be fresh
 			log_debug("FileItemCloud: save_to_cache(): skipped");
 			return;
 		}
 
 		//log_debug("FileItemCloud: save_to_cache()");
-		
+
 		error_msg = "";
-		
+
 		string cmd, std_out, std_err;
-			
+
 		cmd = "rclone lsjson --max-depth %d '%s'".printf(depth, escape_single_quote(file_path));
-		
+
 		log_debug(cmd);
-		
+
 		exec_sync(cmd, out std_out, out std_err);
-		
+
 		if (std_err.length > 0){
 			error_msg = std_err;
 			log_error("std_err:\n%s\n".printf(std_err));
 		}
 
 		file_write(cached_file_path, std_out);
-		
+
 		log_debug("save_cache: %s".printf(cached_file_path));
 	}
-	
+
 	private void read_children_from_cache(int depth = -1){
 
 		if (!file_exists(cached_file_path)){ return; }
-		
+
 		var file_date = file_get_modified_date(cached_file_path);
 		if (dates_are_equal(cached_date, file_date)){
 			log_debug("FileItemCloud: read_children_from_cache(): skipped");
@@ -268,7 +268,7 @@ public class FileItemCloud : FileItem {
 		//log_debug("FileItemCloud: read_children_from_cache()");
 
 		// mark existing children as stale -------------------
-		
+
 		foreach(var child in children.values){
 			child.is_stale = true;
 		}
@@ -278,9 +278,9 @@ public class FileItemCloud : FileItem {
 		item_count = 0;
 		file_count = 0;
 		dir_count = 0;
-		
+
 		// load children from cached file ------------------------
-		
+
 		var f = File.new_for_path(cached_file_path);
 		if (!f.query_exists()) {
 			return;
@@ -298,7 +298,7 @@ public class FileItemCloud : FileItem {
 		var arr = node.get_array();
 
 		foreach(var node_child in arr.get_elements()){
-			
+
 			var obj_child = node_child.get_object();
 			//string path = json_get_string(obj_child, "Path", "");
 			string name = json_get_string(obj_child, "Name", "");
@@ -313,10 +313,10 @@ public class FileItemCloud : FileItem {
 			if (CloudAccount.account_is_bucket_based(type) && (parent == null)){
 				child_path = file_path + child_name; // "remote-name:bucket"
 			}
-			
+
 			var child_type = isdir ? FileType.DIRECTORY : FileType.REGULAR;
 			var child_modified = parse_date_time(modtime, true);
-			
+
 			var child = (FileItemCloud) this.add_child(child_path, child_type, size, 0, false);
 			child.set_properties();
 			child.modified = child_modified;
@@ -334,7 +334,7 @@ public class FileItemCloud : FileItem {
 		}
 
 		// remove stale children ----------------------------
-		
+
 		var list = new Gee.ArrayList<string>();
 		foreach(var key in children.keys){
 			if (children[key].is_stale){
@@ -369,7 +369,7 @@ public class FileItemCloud : FileItem {
 		log_debug("FileItemCloud: query_children_async(): %s".printf(file_path));
 
 		query_children_follow_symlinks = follow_symlinks;
-		
+
 		query_children_async_is_running = true;
 		query_children_aborted = false;
 
@@ -389,8 +389,8 @@ public class FileItemCloud : FileItem {
 		query_children_async_is_running = false;
 		//query_children_aborted = false; // reset
 	}
-	
-	public override FileItem add_child(string item_file_path, FileType item_file_type, int64 item_size, 
+
+	public override FileItem add_child(string item_file_path, FileType item_file_type, int64 item_size,
 		int64 item_size_compressed, bool item_query_file_info){
 
 		// create new item ------------------------------
@@ -406,7 +406,7 @@ public class FileItemCloud : FileItem {
 		bool existing_file = false;
 
 		string item_name = file_basename(item_file_path);
-		
+
 		if (children.has_key(item_name) && (children[item_name].file_name == item_name)){
 
 			existing_file = true;
@@ -415,7 +415,7 @@ public class FileItemCloud : FileItem {
 			//log_debug("existing child, queried: %s".printf(item.fileinfo_queried.to_string()));
 		}
 		/*else if (cache.has_key(item_file_path) && (cache[item_file_path].file_path == item_file_path)){
-			
+
 			item = (FileItemCloud) cache[item_file_path];
 
 			// set relationships
@@ -427,7 +427,7 @@ public class FileItemCloud : FileItem {
 			if (item == null){
 				item = new FileItemCloud.from_path_and_type(item_file_path, item_file_type);
 			}
-			
+
 			// set relationships
 			item.parent = this;
 			this.children[item.file_name] = item;
@@ -460,7 +460,7 @@ public class FileItemCloud : FileItem {
 	public void remove_cached_file(){
 		file_delete(cached_file_path);
 	}
-	
+
 	protected void set_properties(){
 
 		set_content_type_from_extension();
@@ -468,7 +468,7 @@ public class FileItemCloud : FileItem {
 		can_read = true;
 		can_write = true;
 		can_execute = false;
-		
+
 		can_trash = false;
 		can_delete = true;
 		can_rename = true;
@@ -476,5 +476,5 @@ public class FileItemCloud : FileItem {
 		owner_user = App.user_name;
 		owner_group = App.user_name;
 	}
-	
+
 }

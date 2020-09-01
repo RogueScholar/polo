@@ -12,7 +12,7 @@ namespace TeeJee.GtkHelper{
 	using Gtk;
 
 	// messages -----------
-	
+
 	public void show_err_log(Gtk.Window parent, bool disable_log = true){
 		if ((err_log != null) && (err_log.length > 0)){
 			gtk_messagebox(_("Error"), err_log, parent, true);
@@ -22,7 +22,7 @@ namespace TeeJee.GtkHelper{
 			err_log_disable();
 		}
 	}
-	
+
 	public void gtk_do_events (){
 
 		/* Do pending events */
@@ -60,7 +60,7 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public void set_pointer_cursor_for_eventbox(Gtk.EventBox ebox){
-		
+
 		var cursor = new Gdk.Cursor.from_name(Gdk.Display.get_default(), "pointer");
 
 		if (ebox.get_realized()){
@@ -72,7 +72,7 @@ namespace TeeJee.GtkHelper{
 			});
 		}
 	}
-	
+
 	public void gtk_messagebox(
 		string title, string message, Gtk.Window? parent_win, bool is_error = false){
 
@@ -137,7 +137,7 @@ namespace TeeJee.GtkHelper{
 		txt_input.margin_top = 3;
 		txt_input.set_visibility(!mask_password);
 		txt_input.text = default_text;
-		
+
 		//create dialog
 		var dlg = new Gtk.Dialog.with_buttons(title, parent_win, DialogFlags.MODAL);
 		dlg.title = title;
@@ -153,12 +153,12 @@ namespace TeeJee.GtkHelper{
 		vbox_main.pack_start (txt_input, false, true, 0);
 		content.add(vbox_main);
 		content.margin = 6;
-		
+
 		//add buttons
 		dlg.add_button(_("OK"),Gtk.ResponseType.OK);
 		dlg.add_button(_("Cancel"),Gtk.ResponseType.CANCEL);
 		dlg.set_margin_top(12);
-		
+
 		//keyboard shortcuts
 		txt_input.key_press_event.connect ((w, event) => {
 			if (event.keyval == 65293) {
@@ -203,7 +203,7 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public void gtk_suppress_context_menu(Gtk.Widget widget){
-		
+
 		// connect signal for shift+F10
         widget.popup_menu.connect(() => {
 			return true; // suppress right-click menu
@@ -217,11 +217,11 @@ namespace TeeJee.GtkHelper{
 			return false;
 		});
 	}
-	
+
 	public TreeIter gtk_get_iter_next (Gtk.TreeModel model, Gtk.TreeIter iter_find){
 
 		bool return_next = false;
-		
+
 		TreeIter iter;
 		bool iterExists = model.get_iter_first (out iter);
 		while (iterExists){
@@ -240,7 +240,7 @@ namespace TeeJee.GtkHelper{
 	public TreeIter gtk_get_iter_prev (Gtk.TreeModel model, Gtk.TreeIter iter_find){
 
 		TreeIter iter_prev = iter_find;
-		
+
 		TreeIter iter;
 		bool iterExists = model.get_iter_first (out iter);
 		while (iterExists){
@@ -253,9 +253,9 @@ namespace TeeJee.GtkHelper{
 
 		return iter_find;
 	}
-	
+
 	// combo ---------
-	
+
 	public bool gtk_combobox_set_value (ComboBox combo, int index, string val){
 
 		/* Conveniance function to set combobox value */
@@ -309,7 +309,7 @@ namespace TeeJee.GtkHelper{
 
 		return val;
 	}
-	
+
 	public int gtk_combobox_get_value_enum (ComboBox combo, int index, int default_value){
 
 		/* Conveniance function to get combobox value */
@@ -326,9 +326,9 @@ namespace TeeJee.GtkHelper{
 	}
 
 	// icon -------
-	
+
 	public Gdk.Pixbuf? get_app_icon(int icon_size, string format = ".png"){
-		
+
 		var img_icon = get_shared_icon(AppShortName, AppShortName + format,icon_size,"pixmaps");
 		if (img_icon != null){
 			return img_icon.pixbuf;
@@ -343,19 +343,19 @@ namespace TeeJee.GtkHelper{
 		string fallback_icon_file_name,
 		int icon_size,
 		string icon_directory = AppShortName + "/images"){
-		
+
 		Gdk.Pixbuf pix_icon = null;
 		Gtk.Image img_icon = null;
 
 		if ((icon_name.length == 0) && (fallback_icon_file_name.length == 0)){
 			return null;
 		}
-		
+
 		try {
 			if (icon_name.length > 0) {
-				
+
 				Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-				
+
 				pix_icon = icon_theme.load_icon_for_scale (
 					icon_name, Gtk.IconSize.MENU, icon_size, Gtk.IconLookupFlags.FORCE_SIZE);
 			}
@@ -365,7 +365,7 @@ namespace TeeJee.GtkHelper{
 		}
 
 		if (fallback_icon_file_name.length == 0){ return null; }
-		
+
 		string fallback_icon_file_path = "/usr/share/%s/%s".printf(icon_directory, fallback_icon_file_name);
 
 		if (pix_icon == null){
@@ -387,15 +387,15 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public Gdk.Pixbuf? get_gicon(GLib.Icon gicon, int icon_size){
-			
+
 		Gdk.Pixbuf pix_icon = null;
 
 		try {
 			Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
-			
+
 			pix_icon = icon_theme.lookup_by_gicon (
 				gicon,icon_size , Gtk.IconLookupFlags.FORCE_SIZE).load_icon();
-				
+
 		} catch (Error e) {
 			//log_error (e.message);
 		}
@@ -405,14 +405,14 @@ namespace TeeJee.GtkHelper{
 
 	public Gdk.Pixbuf? get_shared_icon_pixbuf(string icon_name, string fallback_file_name, int icon_size,
 		string icon_directory = AppShortName + "/images"){
-			
+
 		var img = get_shared_icon(icon_name, fallback_file_name, icon_size, icon_directory);
 		var pixbuf = (img == null) ? null : img.pixbuf;
 		return pixbuf;
 	}
 
     public Gtk.Image? gtk_image_from_pixbuf(Gdk.Pixbuf? pixbuf) {
-		
+
 		if (pixbuf != null){
 			return new Gtk.Image.from_pixbuf(pixbuf);
 		}
@@ -420,9 +420,9 @@ namespace TeeJee.GtkHelper{
 			return null;
 		}
     }
-    
+
 	public int gtk_icon_size_to_index(Gtk.IconSize icon_size){
-		
+
 		switch(icon_size){
 		case Gtk.IconSize.MENU:
 		case Gtk.IconSize.BUTTON:
@@ -440,7 +440,7 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public Gtk.IconSize gtk_index_to_icon_size(int icon_size_index){
-		
+
 		switch(icon_size_index){
 		case 1:
 			return Gtk.IconSize.SMALL_TOOLBAR;
@@ -493,20 +493,20 @@ namespace TeeJee.GtkHelper{
         }
 
         foreach(var widget in widgets){
-			
+
 			widget.get_style_context().add_provider(
 				css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-				
+
 			widget.get_style_context().add_class("style_%d".printf(CSS_AUTO_CLASS_INDEX));
 		}
 
 		/*
 		css_style sample format:
-		
+
 		padding-left: 1px; padding-right: 1px;
 
 		https://developer.gnome.org/gtk3/stable/chap-css-overview.html
-		
+
         */
 	}
 
@@ -520,22 +520,22 @@ namespace TeeJee.GtkHelper{
 		catch (GLib.Error e) {
             warning(e.message);
         }
-        
+
         var screen = Gdk.Screen.get_default();
         Gtk.StyleContext.add_provider_for_screen(screen, provider, STYLE_PROVIDER_PRIORITY_USER);
-        
+
 		/*
 		css_style sample format:
-		
+
 		GtkLinkButton { padding-left: 1px; padding-right: 1px;}
 
 		https://developer.gnome.org/gtk3/stable/chap-css-overview.html
-		
+
         */
 	}
-	
+
 	// treeview -----------------
-	
+
 	public int gtk_treeview_model_count(TreeModel model){
 		int count = 0;
 		TreeIter iter;
@@ -564,14 +564,14 @@ namespace TeeJee.GtkHelper{
 		treeview.model = null;
 		treeview.model = model;
 	}
-	
+
 	// menu
-	
+
 	public Gtk.SeparatorMenuItem gtk_menu_add_separator(Gtk.Menu menu){
-		
+
 		Gdk.RGBA gray = Gdk.RGBA();
 		gray.parse ("rgba(200,200,200,1)");
-		
+
 		// separator
 		var menu_item = new Gtk.SeparatorMenuItem();
 		//menu_item.override_color (StateFlags.NORMAL, gray);
@@ -585,7 +585,7 @@ namespace TeeJee.GtkHelper{
 		Gtk.Image? icon_image, Gtk.SizeGroup? sg_icon = null, Gtk.SizeGroup? sg_label = null){
 
 		//log_debug("gtk_menu_add_item()");
-		
+
 		var menu_item = new Gtk.MenuItem();
 
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
@@ -607,9 +607,9 @@ namespace TeeJee.GtkHelper{
 				sg_icon.add_widget(icon_image);
 			}
 		}
-		
+
 		// add label
-		
+
 		var lbl = new Gtk.Label(label);
 		lbl.xalign = 0.0f;
 		lbl.set_use_markup(true);
@@ -623,7 +623,7 @@ namespace TeeJee.GtkHelper{
 
 		menu_item.add(box);
 		menu.append(menu_item);
-		
+
 		menu_item.show_all();
 
 		//log_debug("gtk_menu_add_item(): done");
@@ -661,7 +661,7 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public Gtk.Box gtk_add_scrolled_box(Gtk.Box box){
-		
+
 		var scrolled = new Gtk.ScrolledWindow(null, null);
 		scrolled.set_shadow_type (ShadowType.ETCHED_IN);
 		scrolled.hscrollbar_policy = PolicyType.NEVER;
@@ -675,12 +675,12 @@ namespace TeeJee.GtkHelper{
 	}
 
 	public Gtk.EventBox gtk_add_event_box(Gtk.Box box){
-		
+
 		var ebox = new Gtk.EventBox();
 		box.add(ebox);
 
 		set_pointer_cursor_for_eventbox(ebox);
-		
+
 		/*
 		var tt = _("Edit Path");
 		img.set_tooltip_text(tt);
@@ -696,9 +696,9 @@ namespace TeeJee.GtkHelper{
 
 		return ebox;
 	}
-	
+
 	// misc
-	
+
 	public bool gtk_container_has_child(Gtk.Container container, Gtk.Widget widget){
 		foreach(var child in container.get_children()){
 			if (child == widget){
@@ -733,7 +733,7 @@ namespace TeeJee.GtkHelper{
 
 
 		/* Example:
-		
+
 		var filters = new Gee.ArrayList<Gtk.FileFilter>();
 		var filter = create_file_filter("All Files", { "*" });
 		filters.add(filter);
@@ -744,7 +744,7 @@ namespace TeeJee.GtkHelper{
 		var selected_files = gtk_select_files(dummy_window, true, false, filters, default_filter);
 		string iso_file = (selected_files.size > 0) ? selected_files[0] : "";
 		*/
-		
+
 		Gtk.FileChooserDialog chooser = null;
 
 		if (select_files){
@@ -774,7 +774,7 @@ namespace TeeJee.GtkHelper{
 		}
 
 		var list = new Gee.ArrayList<string>();
-		
+
  		if (chooser.run() == Gtk.ResponseType.ACCEPT){
 			//get file list
 			foreach (string item_path in chooser.get_filenames()){
@@ -788,8 +788,8 @@ namespace TeeJee.GtkHelper{
 
 		return list;
 	}
-	
-		
+
+
 	public Gtk.FileFilter create_file_filter(string group_name, string[] patterns) {
 		var filter = new Gtk.FileFilter ();
 		filter.set_filter_name(group_name);
@@ -805,15 +805,15 @@ namespace TeeJee.GtkHelper{
 	/*
 	private Gtk.Notebook add_notebook(
 		Gtk.Box box, bool show_tabs = true, bool show_border = true){
-			
+
         // notebook
 		var book = new Gtk.Notebook();
 		book.margin = 0;
 		book.show_tabs = show_tabs;
 		book.show_border = show_border;
-		
+
 		box.pack_start(book, true, true, 0);
-		
+
 		return book;
 	}*/
 
@@ -821,7 +821,7 @@ namespace TeeJee.GtkHelper{
 	/*
 	private Gtk.Box add_tab(
 		Gtk.Notebook book, string title, int margin = 12, int spacing = 6){
-			
+
 		// label
 		var label = new Gtk.Label(title);
 
@@ -837,7 +837,7 @@ namespace TeeJee.GtkHelper{
 	/*
 	private Gtk.TreeView add_treeview(Gtk.Box box,
 		Gtk.SelectionMode selection_mode = Gtk.SelectionMode.SINGLE){
-			
+
 		// TreeView
 		var treeview = new Gtk.TreeView();
 		treeview.get_selection().mode = selection_mode;
@@ -859,16 +859,16 @@ namespace TeeJee.GtkHelper{
 	/*
 	private Gtk.TreeViewColumn add_column_text(
 		Gtk.TreeView treeview, string title, out Gtk.CellRendererText cell){
-			
+
 		// TreeViewColumn
 		var col = new Gtk.TreeViewColumn();
 		col.title = title;
-		
+
 		cell = new Gtk.CellRendererText();
 		cell.xalign = 0.0f;
 		col.pack_start (cell, false);
 		treeview.append_column(col);
-		
+
 		return col;
 	}*/
 
@@ -876,13 +876,13 @@ namespace TeeJee.GtkHelper{
 	private Gtk.Label add_label(
 		Gtk.Box box, string text, bool bold = false,
 		bool italic = false, bool large = false){
-			
+
 		string msg = "<span%s%s%s>%s</span>".printf(
 			(bold ? " weight=\"bold\"" : ""),
 			(italic ? " style=\"italic\"" : ""),
 			(large ? " size=\"x-large\"" : ""),
 			text);
-			
+
 		var label = new Gtk.Label(msg);
 		label.set_use_markup(true);
 		label.xalign = 0.0f;
@@ -895,30 +895,30 @@ namespace TeeJee.GtkHelper{
 	private string format_text(
 		string text,
 		bool bold = false, bool italic = false, bool large = false){
-			
+
 		string msg = "<span%s%s%s>%s</span>".printf(
 			(bold ? " weight=\"bold\"" : ""),
 			(italic ? " style=\"italic\"" : ""),
 			(large ? " size=\"x-large\"" : ""),
 			escape_html(text));
-			
+
 		return msg;
 	}
 
 	// add_label_header
 	private Gtk.Label add_label_header(
 		Gtk.Box box, string text, bool large_heading = false){
-		
+
 		var label = add_label(box, escape_html(text), true, false, large_heading);
 		label.margin_bottom = 12;
 		return label;
 	}
-	
+
 	// add_directory_chooser
 	/*
 	private Gtk.Entry add_directory_chooser(
 		Gtk.Box box, string selected_directory, Gtk.Window parent_window){
-			
+
 		// Entry
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
@@ -959,4 +959,3 @@ namespace TeeJee.GtkHelper{
 		return entry;
 	}*/
 }
-

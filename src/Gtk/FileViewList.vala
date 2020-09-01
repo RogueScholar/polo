@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public interface IFileViewList{
-	
+
 }
 
 public class FileViewList : Gtk.Box, IFileViewList {
@@ -42,10 +42,10 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private Gtk.Overlay overlay;
 	private Gtk.Label? lbl_overlay;
 	private Gtk.Box? box_overlay;
-	 
+
 	private Gtk.Box active_indicator_top;
 	//private Gtk.Box active_indicator_bottom;
-	
+
 	public ExtendedTreeView treeview;
 	private Gtk.ScrolledWindow scrolled_treeview;
 	private TreeViewColumnManager tv_manager;
@@ -96,9 +96,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 	public string filter_pattern = "";
 	public bool filter_pattern_match_start = false;
-	
+
 	public int query_items_delay = 0;
-	
+
 	public Gee.ArrayList<FileItemMonitor> monitors = new Gee.ArrayList<FileItemMonitor>();
 
 	// parents
@@ -162,7 +162,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("view_mode = App.view_mode; %s".printf(view_mode.to_string()));
 
 		init_active_indicator_top();
-		
+
 		init_overlay();
 
 		init_treeview();
@@ -174,7 +174,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		connect_key_press_handler();
 
 		connect_file_context_menu();
-		
+
 		show_all();
 	}
 
@@ -185,16 +185,16 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		                                                        |--> TreeView
 		                             > add_overlay(hbox) (Box)
 		*/
-		
-		overlay = new Gtk.Overlay(); 
+
+		overlay = new Gtk.Overlay();
 		this.add(overlay);
-    
+
 		contents = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		overlay.add(contents);
 	}
 
 	private void connect_file_context_menu(){
-		
+
 		/*// connect signal for shift+F10
         contents.popup_menu.connect(() => {
 			if (current_item == null) {
@@ -223,9 +223,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.button_press_event.connect(treeview_button_press_event);
 
 	}
-	
+
 	// treeview -----------------------------------
-	
+
 	private void init_treeview() {
 
 		// treeview
@@ -295,7 +295,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.get_selection().changed.connect(on_selection_changed);
 
 		// context menu will be connected in connect_file_context_menu()
-		
+
 		// tooltip
 		treeview.has_tooltip = true;
 		treeview.query_tooltip.connect(treeview_query_tooltip);
@@ -306,7 +306,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.drag_data_get.connect(on_drag_data_get);
 
 		treeview.enable_search = false;
-		
+
 		//treeview.button_press_event.connect(on_button_press_event);
 		//treeview.button_release_event.connect(on_button_release_event);
 
@@ -429,10 +429,10 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private bool treeview_button_press_event(Gtk.Widget w, Gdk.EventButton event){
 
 		log_debug("FileViewList: treeview_button_press_event()");
-		
+
 		window.active_pane = pane;
 		window.update_accelerators_for_active_pane();
-		
+
 		pane.selection_bar.close_panel(false);
 
 		pane.pathbar.finish_editing();
@@ -442,12 +442,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			if (current_item == null) { return false; }
 
 			//log_debug("FileViewList: treeview_button_press_event(): right_click_select");
-			
+
 			TreePath? path;
 			TreeViewColumn? column;
 			int cell_x, cell_y;
 			treeview.get_path_at_pos((int) event.x, (int) event.y, out path, out column, out cell_x, out cell_y);
-			
+
 			var sel = treeview.get_selection();
 			if (!sel.path_is_selected(path)){
 				clear_selections();
@@ -455,7 +455,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			}
 
 			//log_debug("FileViewList: treeview_button_press_event(): right_click_select: exit");
-			
+
 			menu_file = new FileContextMenu(pane);
 			return menu_file.show_menu(event);
 		}
@@ -474,7 +474,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		TreeIter iter0;
 		treefilter.convert_iter_to_child_iter(out iter0, iter);
-		
+
 		FileItem item;
 		store.get (iter0, FileViewColumn.ITEM, out item, -1);
 
@@ -482,9 +482,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			&& FileItem.is_archive_by_extension(item.file_path) && !FileItem.is_package_by_extension(item.file_path)){
 
 			if (item is FileItemArchive == false){
-				
+
 				FileItemArchive? arch = FileItemArchive.convert_file_item(item);
-				
+
 				if (arch != null){
 					item = arch;
 					FileItem.add_to_cache(item); // add archive as directory to cache
@@ -501,14 +501,14 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private void treeview_row_expanded(TreeIter iter, TreePath path){
 
 		log_debug("FileViewList: treeview_row_expanded()");
-		
+
 		gtk_set_busy(true, window);
 
 		treeview.row_expanded.disconnect(treeview_row_expanded);
-		
+
 		TreeIter iter0;
 		treefilter.convert_iter_to_child_iter(out iter0, iter);
-		
+
 		FileItem item0, item1;
 		store.get (iter0, 0, out item0, -1);
 
@@ -524,7 +524,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.expand_row(path, false);
 		treeview.queue_draw();
 		gtk_do_events();
-		
+
 		TreeIter iter1;
 		bool iterExists = store.iter_children (out iter1, iter0);
 		while (iterExists) {
@@ -542,9 +542,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		treeview.queue_draw();
 		gtk_do_events();
-		
+
 		treeview.row_expanded.connect(treeview_row_expanded);
-	
+
 		add_monitor(item0);
 
 		gtk_set_busy(false, window);
@@ -553,28 +553,28 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private void treeview_row_collapsed(TreeIter iter, TreePath path){
 
 		log_debug("FileViewList: treeview_row_collapsed()");
-		
+
 		treeview.row_collapsed.disconnect(treeview_row_collapsed);
 
 		TreeIter iter0;
 		treefilter.convert_iter_to_child_iter(out iter0, iter);
-		
+
 		FileItem item0;
 		store.get (iter0, 0, out item0, -1);
-		
+
 		remove_monitor(item0);
-		
+
 		treeview.row_collapsed.connect(treeview_row_collapsed);
 	}
 
 	//private string propbar_last_folder_path = "";
-	
+
 	private void on_selection_changed(){
-		
+
 		pane.statusbar.refresh_selection_counts();
-		
+
 		if (App.main_window.propbar.visible){
-			
+
 			var selected_items = get_selected_items();
 			if (selected_items.size == 0){ return; }
 
@@ -583,16 +583,16 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				propbar_last_folder_path = current_location;
 				query_size = false;
 			}*/
-			
+
 			Timeout.add(10, ()=>{
 				App.main_window.propbar.show_properties_for_file(selected_items[0], false);
 				return false;
 			});
 		}
 	}
-	
+
 	// iconview -----------------------------------
-	
+
 	public void init_iconview(){
 
 		// iconview
@@ -631,7 +631,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		iconview.button_press_event.connect(iconview_button_press_event);
 
 		iconview.selection_changed.connect(on_selection_changed);
-		
+
 		// tooltip
 		iconview.has_tooltip = true;
 		iconview.query_tooltip.connect(iconview_query_tooltip);
@@ -654,12 +654,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			//TreeViewColumn? column;
 			//int cell_x, cell_y;
 			path = iconview.get_path_at_pos((int) event.x, (int) event.y);
-			
+
 			if (!iconview.path_is_selected(path)){
 				clear_selections();
 				iconview.select_path(path);
 			}
-			
+
 			menu_file = new FileContextMenu(pane);
 			return menu_file.show_menu(event);
 		}
@@ -668,7 +668,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// treeview columns -----------------------------------
-	
+
 	private void add_col_name() {
 
 		// column
@@ -800,15 +800,15 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 			FileItem item;
 			model.get (iter, FileViewColumn.ITEM, out item, -1);
-			
+
 			cspin.visible = item.is_directory && item.query_children_pending;
 			cspin.active = cspin.visible;
 			cspin.pulse = cspin.pulse + 1;
 		});
 		*/
-		
+
 		// cell_text -------------------------------------
-		
+
 		var cell_text = new CellRendererText ();
 		cell_text.xalign = 1.0f;
 		col.pack_start (cell_text, false);
@@ -822,7 +822,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			model.get (iter, FileViewColumn.LV_SIZE, out lv_size, -1);
 
 			crt.text = lv_size;
-	
+
 			crt.scale = listview_font_scale;
 		});
 	}
@@ -864,7 +864,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.modified.format ("%Y-%m-%d %H:%M");
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -950,7 +950,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.owner_user;
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1079,7 +1079,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.access_flags;
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1208,7 +1208,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.checksum_md5;
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1251,7 +1251,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.symlink_target;
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1294,7 +1294,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.trash_original_path;
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1337,7 +1337,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				crt.text = item.trash_deletion_date.format ("%Y-%m-%d %H:%M");
 			}
-			
+
 			crt.scale = listview_font_scale;
 		});
 
@@ -1376,52 +1376,52 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		// set column names
 		col_name.set_data<string>("name", "name");
 		col_name.set_data<FileViewColumn>("index", FileViewColumn.NAME);
-		
+
 		col_indicator.set_data<string>("name", "indicator");
 		col_indicator.set_data<FileViewColumn>("index", FileViewColumn.UNSORTABLE);
-		
+
 		col_size.set_data<string>("name", "size");
 		col_size.set_data<FileViewColumn>("index", FileViewColumn.SIZE);
-		
+
 		col_modified.set_data<string>("name", "modified");
 		col_modified.set_data<FileViewColumn>("index", FileViewColumn.MODIFIED);
-		
+
 		col_compressed.set_data<string>("name", "compressed");
 		col_compressed.set_data<FileViewColumn>("index", FileViewColumn.PACKED_SIZE);
-		
+
 		col_permissions.set_data<string>("name", "permissions");
 		col_permissions.set_data<FileViewColumn>("index", FileViewColumn.PERMISSIONS);
-		
+
 		col_owner.set_data<string>("name", "user");
 		col_owner.set_data<FileViewColumn>("index", FileViewColumn.OWNER);
-		
+
 		col_group.set_data<string>("name", "group");
 		col_group.set_data<FileViewColumn>("index", FileViewColumn.GROUP);
-		
+
 		col_access.set_data<string>("name", "access");
 		col_access.set_data<FileViewColumn>("index", FileViewColumn.ACCESS);
-		
+
 		col_mimetype.set_data<string>("name", "mimetype");
 		col_mimetype.set_data<FileViewColumn>("index", FileViewColumn.MIMETYPE);
-		
+
 		col_filetype.set_data<string>("name", "filetype");
 		col_filetype.set_data<FileViewColumn>("index", FileViewColumn.FILETYPE);
-		
+
 		col_md5.set_data<string>("name", "md5");
 		col_md5.set_data<FileViewColumn>("index", FileViewColumn.HASH_MD5);
-		
+
 		col_symlink_target.set_data<string>("name", "symlink_target");
 		col_symlink_target.set_data<FileViewColumn>("index", FileViewColumn.SYMLINK_TARGET);
-		
+
 		col_original_path.set_data<string>("name", "original_path");
 		col_original_path.set_data<FileViewColumn>("index", FileViewColumn.ORIGINAL_PATH);
-		
+
 		col_deletion_date.set_data<string>("name", "deletion_date");
 		col_deletion_date.set_data<FileViewColumn>("index", FileViewColumn.DELETION_DATE);
-		
+
 		col_spacer.set_data<string>("name", "spacer");
-		col_spacer.set_data<FileViewColumn>("index", FileViewColumn.UNSORTABLE); 
-		
+		col_spacer.set_data<FileViewColumn>("index", FileViewColumn.UNSORTABLE);
+
 		// load default columns
 		tv_manager = new TreeViewColumnManager((Gtk.TreeView) treeview, Main.REQUIRED_COLUMNS, Main.REQUIRED_COLUMNS_END, Main.DEFAULT_COLUMNS, Main.DEFAULT_COLUMN_ORDER);
 
@@ -1435,7 +1435,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		switch (sort_column_index) {
 		case FileViewColumn.NAME:
 			list.sort((a, b) => {
-				
+
 				if (a.file_type != b.file_type){
 					if (a.file_type == FileType.DIRECTORY) {
 						return -1;
@@ -1444,7 +1444,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * a.compare_to(b);
 				}
@@ -1465,7 +1465,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * ((int)(a.file_size - b.file_size));
 				}
@@ -1486,7 +1486,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * ((int)(a.size_compressed - b.size_compressed));
 				}
@@ -1507,7 +1507,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * a.modified.compare(b.modified);
 				}
@@ -1537,7 +1537,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.permissions, b.permissions);
 				}
@@ -1567,7 +1567,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.owner_user, b.owner_user);
 				}
@@ -1597,7 +1597,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.owner_group, b.owner_group);
 				}
@@ -1627,7 +1627,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.access_flags, b.access_flags);
 				}
@@ -1657,7 +1657,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.content_type, b.content_type);
 				}
@@ -1678,7 +1678,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (a.content_type_desc == b.content_type_desc){
 					if (sort_column_desc) {
 						return -1 * a.compare_to(b);
@@ -1687,7 +1687,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return a.compare_to(b);
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.content_type_desc.down(), b.content_type_desc.down());
 				}
@@ -1699,7 +1699,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		case FileViewColumn.SYMLINK_TARGET:
 			list.sort((a, b) => {
-				
+
 				if (a.file_type != b.file_type){
 					if (a.file_type == FileType.DIRECTORY) {
 						return -1;
@@ -1708,7 +1708,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.symlink_target, b.symlink_target);
 				}
@@ -1720,7 +1720,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		case FileViewColumn.ORIGINAL_PATH:
 			list.sort((a, b) => {
-				
+
 				if (a.file_type != b.file_type){
 					if (a.file_type == FileType.DIRECTORY) {
 						return -1;
@@ -1729,7 +1729,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * strcmp(a.trash_original_path, b.trash_original_path);
 				}
@@ -1750,7 +1750,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						return +1;
 					}
 				}
-				
+
 				if (sort_column_desc) {
 					return -1 * a.trash_deletion_date.compare(b.trash_deletion_date);
 				}
@@ -1768,14 +1768,14 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		update_column_headers();
 		refresh(false, false);
 	}
-	
+
 	private void tv_header_clicked(Gtk.TreeViewColumn tv_column){
 
 		var col_index = tv_column.get_data<FileViewColumn>("index");
 
 		log_debug("sort_column_previous: %d".printf(sort_column_index));
 		log_debug("sort_column_order: %s".printf(sort_column_desc ? "desc" : "asc"));
-		
+
 		if (sort_column_index == col_index) {
 			sort_column_desc = !sort_column_desc;
 		}
@@ -1822,7 +1822,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		foreach(var col in tv_manager.get_all_columns()){
 
 			var col_index = col.get_data<FileViewColumn>("index");
-			
+
 			if (col_index == sort_column_index) {
 				var txt = col.title.replace("↓","").replace("↑","").strip();
 				if (sort_column_desc){
@@ -1866,13 +1866,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// active pane indicators ------------------------
-	
+
 	private void init_active_indicator_top(){
 
 		active_indicator_top = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		active_indicator_top.set_size_request(-1,2);
 		add(active_indicator_top);
-		
+
 		string css = " background-color: #2196F3; ";
 		gtk_apply_css(new Gtk.Widget[] { active_indicator_top }, css);
 
@@ -1899,7 +1899,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		treeview.key_press_event.disconnect(on_key_press_event);
 		iconview.key_press_event.disconnect(on_key_press_event);
 	}*/
-	
+
 	private bool on_key_press_event(Gdk.EventKey event){
 
 		log_debug("key_name: %s, state: %s".printf(Gdk.keyval_name(event.keyval), event.state.to_string()));
@@ -1918,14 +1918,14 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		string key_name = Gdk.keyval_name(event.keyval);
 		string key_string = event.str;
-		
+
 		log_debug("key_string: %s, key_name: %s".printf(key_string, key_name));
 
 		if (key_name.down() == "backspace"){
 			go_back();
 			return false;
 		}
-		
+
 		if (key_name.down().length > 1){
 			return false;
 		}
@@ -1934,7 +1934,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			pane.selection_bar.open_panel(key_string, false);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -2183,17 +2183,17 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void set_view_mode_user(){
-		
+
 		view_mode = view_mode_user;
 		media_view_exited = true;
 		log_debug("set_view_mode_user(): %s".printf(view_mode.to_string()));
 		refresh(false, false);
 	}
-	
+
 	private void set_view_mode_for_location(){
 
 		if (current_item == null){ return; }
-		
+
 		log_debug("media=%s, photos=%d, videos=%d".printf(
 			current_item.is_media_directory.to_string(), current_item.count_photos, current_item.count_videos));
 
@@ -2213,7 +2213,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		//log_debug("view_mode: %s, %s".printf(view_mode.to_string(), view_mode_user.to_string()));
 	}
 
-	
+
 	// change current directory ----------------------------------
 
 	public FileItem? set_view_path(string path, bool update_history = true){
@@ -2228,9 +2228,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (pane.tab.locked_path.length > 0){
-			
+
 			if (!path.has_prefix(pane.tab.locked_path)){
-				
+
 				open_in_new_tab(path);
 
 				return null;
@@ -2256,15 +2256,15 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		log_debug("current_location: %s".printf(current_location));
-		
+
 		FileItem item = FileItem.find_in_cache(current_location);
-		
+
 		if (item != null){
 			log_debug("cache: found: %s".printf(current_location), true);
 		}
 		else{
 			log_debug("cache: not found: %s".printf(current_location), true);
-			
+
 			if (current_location.down().has_prefix("trash://")){
 				//App.trash.query_items(); //will be queried by set_view_item()
 				item = App.trashcan;
@@ -2296,7 +2296,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_trace("view_changed: %s".printf(item.file_path));
 
 		FileItem.add_to_cache(item);
-		
+
 		//var previous_item = current_item;
 		current_item = item;
 		current_location = current_item.display_path;
@@ -2317,13 +2317,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		pane.messages.clear();
-		
+
 		pane.pathbar.refresh(); // update pathbar before starting async query
 
 		media_view_exited = false;
-		
+
 		//query_items();
-		
+
 		//log_debug("FileViewList: set_view_item(): query_items(): done");
 
 		//set_view_mode_for_location();
@@ -2340,12 +2340,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		log_debug("FileViewList: set_view_item(): done");
 		log_debug(string.nfill(80,'-'));
-		
+
 		return current_item;
 	}
 
 	private void set_columns_for_special_locations(){
-		
+
 		if (current_item.is_trash){
 			set_columns("name,size,deletion_date,original_path");
 		}
@@ -2353,9 +2353,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			set_columns(App.selected_columns);
 		}
 	}
-	
+
 	// refresh  ---------------------------------------
-	
+
 	public void refresh(bool requery, bool requery_subfolders) {
 
 		log_debug("FileViewList: refresh(): %s".printf(requery.to_string()));
@@ -2381,23 +2381,23 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		pane.mediabar.refresh();
 
 		if (current_item == null){ return; }
-		
+
 		add_monitor(current_item);
 
 		// add overlay --------------------------------------
-		
+
 		if (current_item is FileItemCloud){
-			
+
 			var cloud_item = (FileItemCloud) current_item;
-			
+
 			// check error
 			if ((cloud_item.children.keys.size == 0) && (cloud_item.error_msg.length > 0)){
 				//et_overlay_on_error(cloud_item.error_msg);
-				
+
 				string txt = _("Error Connecting to Server");
 				string msg = cloud_item.error_msg + "\n\n" + _("Check if internet connection is active");
 				gtk_messagebox(txt, msg, window, true);
-				
+
 				//string title =  _("Error");
 				//OSDNotify.notify_send("Error", std_err, 1000, "low", "warning");
 			}
@@ -2415,7 +2415,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		changed(); //informs FileViewPane to update other components like statusbar, etc
 
-		if (requery_subfolders){ 
+		if (requery_subfolders){
 			query_subfolders();
 		}
 	}
@@ -2431,7 +2431,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		var selections = get_selected_file_paths();
 
 		// set model
-		
+
 		store = new Gtk.TreeStore(6,
 			typeof(FileItem),
 			typeof(Gdk.Pixbuf), // ICON
@@ -2440,7 +2440,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			typeof(ThumbTask?), // THUMBKEY
 			typeof(string) // size
 		);
-		
+
 		if (current_item == null){
 			treeview.set_model(store);
 			treeview.columns_autosize();
@@ -2503,7 +2503,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if ((view_mode == ViewMode.ICONS) || (view_mode == ViewMode.TILES) || (view_mode == ViewMode.MEDIA)){
 			refresh_iconview();
 		}
-  
+
 		window.layout_box.restore_pane_positions();
 
 		if (thumbnail_update_is_required && window.window_is_ready){
@@ -2597,9 +2597,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// ------------------------------------------
-	
+
 	private bool query_items_thread_running = false;
-	
+
 	private void query_items(){
 
 		log_debug("FileViewList: query_items(): enter");
@@ -2608,7 +2608,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			log_debug("FileViewList: query_items(): current_item is NULL");
 			return;
 		}
-		
+
 		try {
 			//log_debug("FileViewList: query_items(): create thread");
 			query_items_thread_running = true;
@@ -2641,9 +2641,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		log_debug("FileViewList: query_items(): exit");
 	}
-	
+
 	private void query_items_thread(){
-		
+
 		log_debug("FileViewList: query_items_thread(): enter");
 
 		if (current_item == null){
@@ -2654,7 +2654,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		sleep(query_items_delay);
 		query_items_delay = 0;
-		
+
 		//var cached = TreeModelCache.find_file_item(current_item.file_path);
 
 		//if (cached == null){
@@ -2671,7 +2671,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				var arch = (FileItemArchive) current_item;
 
 				//query_items_thread_list_archive();
-				
+
 				if (!arch.is_archived_item){
 					log_debug("FileViewList: query_items_thread(): FileItemArchive");
 					arch.query_children(-1, true); // TODO:2: skip if file date not changed
@@ -2697,21 +2697,21 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// ------------------------------------------
-	
+
 	private bool query_subfolders_thread_running = false;
 	private bool query_subfolders_thread_cancelled = false;
-	
+
 	private void query_subfolders(){
 
 		//return;
-		
+
 		if (current_item == null){ return; }
 		if (pane.file_operations.size > 0){ return; }
 
 		if (!App.query_subfolders) { return; }
 
 		log_debug("FileViewList: query_subfolders(): enter");
-		
+
 		// cancel running thread
 		if (query_subfolders_thread_running){
 			log_debug("FileViewList: query_subfolders(): cancel_running_thread");
@@ -2736,23 +2736,23 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			log_error (e.message);
 		}
 	}
-	
+
 	private void query_subfolders_thread(){
-		
+
 		log_debug("FileViewList: query_subfolders_thread()");
 
 		//var timer = timer_start();
 
 		bool count_changed = false;
-		
+
 		if ((current_item != null) && !current_item.is_trash && (current_item is FileItemArchive == false)){
 
 			Timeout.add (1000, () => {
 				return refresh_listview_size_column();
 			});
-			
+
 			// statusbar  -----------------------
-		
+
 			string msg = _("Counting items...");
 			pane.statusbar.show_spinner(msg);
 			window.statusbar.show_spinner(msg);
@@ -2760,15 +2760,15 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			// query subfolders --------------------
 
 			var list = current_item.children.values;
-			
+
 			foreach(var subitem in list){
-				
+
 				if (query_subfolders_thread_cancelled) { break; }
-				
+
 				if (subitem.is_directory){
 
 					if ((subitem is FileItemCloud) && (subitem.children.size > 0)){ continue; } // performance hack for cloud folders
-					
+
 					int count_before = subitem.children.size;
 					subitem.query_children(1, false);
 					int count_after = subitem.children.size;
@@ -2779,7 +2779,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			}
 
 			pane.statusbar.hide_spinner();
-			window.statusbar.hide_spinner();	
+			window.statusbar.hide_spinner();
 		}
 
 		//log_trace("FileViewList: query_subfolders_thread(): %s".printf(timer_elapsed_string(timer)));
@@ -2802,15 +2802,15 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// ------------------------------------------
-	
+
 	// used by select_none() to cancel task
 	private bool calculate_dirsize_running = false;
 	private FileTask calculate_dirsize_task = null;
-	
+
 	public void calculate_directory_sizes(){
 
 		if ((current_item == null) || current_item.is_trash || (current_item is FileItemArchive)){ return; } // (current_item is FileItemCloud);
-		
+
 		var selected_items = get_selected_items().to_array();
 
 		bool some_folders_selected = false;
@@ -2820,7 +2820,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				break;
 			}
 		}
-		
+
 		if ((selected_items.length == 0) || !some_folders_selected){
 			selected_items = current_item.children.values.to_array();
 		}
@@ -2828,27 +2828,27 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("FileViewList: calculate_directory_sizes()");
 
 		// statusbar  -----------------------
-		
+
 		string msg = _("Calculating dir size...");
 		pane.statusbar.show_spinner(msg);
 		window.statusbar.show_spinner(msg);
 
 		// start task ------------------------
-		
+
 		var task = new FileTask();
-		
+
 		task.complete.connect(()=>{
-			
+
 			calculate_dirsize_running = false;
-			
+
 			pane.statusbar.hide_spinner();
 			window.statusbar.hide_spinner();
 
 			refresh_size_column();
 		});
-		
+
 		calculate_dirsize_task = task;
-		
+
 		// execute
 		task.calculate_dirsize_async(selected_items);
 
@@ -2869,7 +2869,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				return false;
 			});
 			break;
-		
+
 		case ViewMode.TILES:
 			store.foreach ((model, path, iter) => {
 				FileItem item;
@@ -2878,7 +2878,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				return false;
 			});
 			break;
-			
+
 		case ViewMode.ICONS:
 		case ViewMode.MEDIA:
 			// not needed
@@ -2915,12 +2915,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		//log_debug("set_iter_from_item: %s".printf(item.file_path));
 
 		//log_debug("%s, %s, %s".printf(item.file_path,item.file_title, item.file_extension), true);
-		
+
 		Gdk.Pixbuf pixbuf = null;
 		ThumbTask task = null;
-		
+
 		if (load_icon){
-			
+
 			pixbuf = item.get_image(treemodel_icon_size,
 				load_thumb && use_thumbs && !current_location_is_virtual,
 				use_transparency, use_emblems, out task);
@@ -3012,7 +3012,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (store == null){ return true; }
 
 		bool found = false;
-		
+
 		TreeIter iter1;
 		bool iterExists = store.iter_children(out iter1, iter0);
 		while (iterExists) {
@@ -3029,7 +3029,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 			found = remove_iter_by_file_path(file_path, iter1);
 			if (found) { break; }
-		
+
 			iterExists = store.iter_next (ref iter1);
 		}
 
@@ -3090,7 +3090,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (view_mode == ViewMode.MEDIA){
-			
+
 			if (item.is_directory){
 				if (!show_folders_in_media_view){
 					display = false;
@@ -3100,7 +3100,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				display = false;
 			}
 		}
-		
+
 		return display;
 	}
 
@@ -3140,12 +3140,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				return;
 			}
 		}
-		
+
 		var mon = new FileItemMonitor();
 		monitors.add(mon);
 
 		log_debug("monitor added: %s".printf(item.file_path));
-		
+
 		mon.file_item = item;
 		mon.monitor = mon.file_item.monitor_for_changes(out mon.cancellable);
 		mon.monitor.changed.connect(directory_changed);
@@ -3155,7 +3155,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private void remove_monitor(FileItem item){
 
 		if (item == null) { return; }
-		
+
 		FileItemMonitor obj = null;
 		foreach (var mon in monitors){
 			if (mon.file_item.file_path == item.file_path){
@@ -3178,7 +3178,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			monitors = new Gee.ArrayList<FileItemMonitor>();
 			return;
 		}
-		
+
 		foreach (var mon in monitors){
 			if (mon.cancellable != null){
 				mon.cancellable.cancel();
@@ -3187,7 +3187,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			log_debug("monitor disconnected: %s".printf(mon.file_item.file_path));
 			log_debug("monitor removed: %s".printf(mon.file_item.file_path));
 		}
-		
+
 		monitors.clear();
 	}
 
@@ -3201,49 +3201,49 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		switch (event){
 		case FileMonitorEvent.RENAMED:
-		
+
 			if ((current_item != null) && (dest != null)){
-				
+
 				current_item.rename_child(file_basename(src.get_path()), file_basename(dest.get_path()));
 				refresh_iter_by_file_path(dest.get_path());
 			}
 			break;
-			
+
 		case FileMonitorEvent.CHANGES_DONE_HINT:
-		
+
 			refresh_delayed_add(true, false);
 			break;
-			
+
 		case FileMonitorEvent.DELETED:
 		case FileMonitorEvent.MOVED_OUT:
-		
+
 			if (current_item != null){
-				
+
 				current_item.remove_child(file_basename(src.get_path()));
 				remove_iter_by_file_path(src.get_path());
-				
+
 				if (current_item.children.size == 0){
 					set_overlay_on_empty();
 				}
 			}
 			break;
-			
+
 		case FileMonitorEvent.UNMOUNTED:
 			set_overlay_on_unmount();
 			break;
-			
+
 		case FileMonitorEvent.CREATED:
 		case FileMonitorEvent.MOVED_IN:
-		
+
 			if((current_item != null) && !current_item.has_child(file_basename(src.get_path()))){
-				
+
 				append_item_to_treeview_by_file_path(src.get_path());
 				remove_overlay();
 			}
-			
+
 			remove_overlay();
 			break;
-			
+
 		case FileMonitorEvent.CHANGED:
 			//if(!current_item.has_child(file_basename(src.get_path()))){
 			refresh_iter_by_file_path(src.get_path());
@@ -3271,7 +3271,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private uint tmr_refresh_delayed = 0;
 	private bool refresh_delayed_requery = true;
 	private bool refresh_delayed_requery_subfolders = true;
-	
+
 	private void refresh_delayed_add(bool requery = true, bool requery_subfolders = true){
 		refresh_delayed_clear();
 		refresh_delayed_requery = requery;
@@ -3285,7 +3285,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			tmr_refresh_delayed = 0;
 		}
 	}
-	
+
 	private bool refresh_delayed_execute(){
 
 		refresh_delayed_clear();
@@ -3293,18 +3293,18 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("refresh_delayed()");
 
 		refresh(refresh_delayed_requery, refresh_delayed_requery_subfolders);
-		
+
 		return false;
 	}
 
 	// overlay messages ------------
-	
+
 	private void clear_views(){
 		store = null;
 		treeview.set_model(null);
 		iconview.set_model(null);
 	}
-	
+
 	private void add_overlay(string msg, bool clear_view, bool show_spinner = false){
 
 		remove_overlay(); // remove existing
@@ -3312,9 +3312,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if ((treeview == null) || (iconview == null)){ return; }
 
 		log_debug("add_overlay()");
-		
+
 		//cancel_monitors();
-		
+
 		if (clear_view){
 			store = null;
 			//current_item = null;
@@ -3327,7 +3327,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		hbox.margin_start = 24;
 		hbox.margin_top = 48;
 		box_overlay = hbox;
-		
+
 		if (show_spinner){
 			var spinner = new Gtk.Spinner();
 			spinner.halign = Gtk.Align.START;
@@ -3346,23 +3346,23 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		label.wrap_mode = Pango.WrapMode.WORD_CHAR;
 		hbox.add(label);
 		lbl_overlay = label;
-		
+
 		overlay.add_overlay(hbox);
 		overlay.set_overlay_pass_through(hbox, true);
 		overlay.set_overlay_pass_through(label, true);
 		//overlay.set_overlay_pass_through(hbox, true);
-		
+
 		hbox.show_all();
 
 		//changed();
 	}
 
 	private void remove_overlay(){
-		
+
 		if ((overlay != null) && (box_overlay != null)){
 
 			log_debug("remove_overlay()");
-			
+
 			overlay.remove(box_overlay);
 			box_overlay = null;
 			treeview.headers_visible = true;
@@ -3414,7 +3414,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		//pane.statusbar.refresh(); // not needed
 		//cancel_monitors();// do not cancel
 	}
-	
+
 	public void set_overlay_on_error(string msg){
 		log_debug("set_overlay_on_error()");
 		add_overlay(msg, false);
@@ -3659,7 +3659,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		log_debug("history_go_back(): index: %d".printf(history_index));
 		print_history_list();
-		
+
 		var index = history_index - 1;
 
 		if ((index >= 0) && (index < visited_locations.size)){
@@ -3671,7 +3671,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			return "";
 		}
 	}
-	
+
 	private void print_history_list(){
 		int index = 0;
 		foreach(var path in visited_locations){
@@ -3688,7 +3688,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		log_debug("history_go_forward(): index: %d".printf(history_index));
 		print_history_list();
-		
+
 		var index = history_index + 1;
 
 		if ((index >= 0) && (index < visited_locations.size)){
@@ -3700,9 +3700,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			return "";
 		}
 	}
-	
+
 	public void history_add(FileItem item){
-		
+
 		string path = item.display_path;
 
 		if (path.length > 0){
@@ -3724,9 +3724,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public string get_location_up(){
-		
+
 		//log_debug("get_location_up(): %s".printf(current_item.file_path));
-		
+
 		if (current_item != null){
 			var path = file_parent(current_item.file_path);
 			//log_debug("file_parent: %s".printf(path));
@@ -3823,7 +3823,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 		return list;
 	}
-	
+
 
 	public void get_selected_counts(out int files, out int dirs){
 
@@ -3889,7 +3889,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		select_items_by_file_path(list);
 	}
-	
+
 	public void select_items_by_file_path(Gee.ArrayList<string> items){
 
 		Gtk.TreeModel model;
@@ -3921,7 +3921,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void clear_selections(){
-		
+
 		if (view_mode == ViewMode.LIST){
 			treeview.get_selection().unselect_all();
 		}
@@ -3951,7 +3951,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			iterExists = model.iter_next (ref iter);
 		}
 	}
-	
+
 	// context actions -----------------------------------------
 
 	public void open(FileItem _item, DesktopApp? app){
@@ -3961,9 +3961,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		FileItem item = _item;
 
 		if ((item is FileItemCloud) && !item.is_directory){
-			
+
 			var cloud_item = (FileItemCloud) item;
-			
+
 			if (cloud_item.local_path.length > 0){
 				item = new FileItem.from_path_and_type(cloud_item.local_path, FileType.REGULAR, true);
 				// continue
@@ -3979,7 +3979,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			if (!FileItem.is_archive_by_extension(item.file_path)){ return; }
 
 			var arch = (FileItemArchive) item;
-			
+
 			if (arch.children.size == 0){
 
 				open_archive_item(arch);
@@ -3989,22 +3989,22 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				// continue
 			}
 		}
-		
+
 		if (app != null){
 			app.execute(item.file_path);
 			return;
 		}
 
 		if (item.file_type == FileType.DIRECTORY){
-				
+
 			set_view_item(item);
 		}
 		else if (item.content_type.contains("executable") || item.content_type.contains("sharedlib")){
-			
+
 			run_in_terminal();
 		}
 		else if (item.is_file_hash){
-			
+
 			verify_checksums();
 		}
 		else {
@@ -4029,12 +4029,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		pane.file_operations.add(action);
 
 		action.task_complete.connect(()=>{
-			
+
 			//gtk_set_busy(false, window);
 			string dest_file = path_combine(tempdir, item.file_name);
-			
+
 			if (file_exists(dest_file)){
-				
+
 				item.local_path = dest_file;
 				var dest_item = new FileItem.from_path_and_type(dest_file, FileType.REGULAR, true);
 				open(dest_item, app);
@@ -4054,59 +4054,59 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		//action.task_complete.connect(() => { open_archive_item_finish(item); });
 		action.task_complete.connect(()=>{
-			
-			//string outpath = item.extraction_path; 
+
+			//string outpath = item.extraction_path;
 			log_debug("outpath: %s".printf(outpath));
-			
+
 			string extracted_item_path = path_combine(outpath, item.file_path);
 			log_debug("extracted_item_path: %s".printf(extracted_item_path));
 
 			if (file_exists(extracted_item_path)){
 
-				// set the display_path and change file_path to point to extracted_item_path 
+				// set the display_path and change file_path to point to extracted_item_path
 				item.display_path = item.display_path;
 				log_debug("item.display_pat: %s".printf(item.display_path));
-				
-				item.file_path = extracted_item_path; 
+
+				item.file_path = extracted_item_path;
 				log_debug("item.file_path: %s".printf(item.file_path));
-				
-				//item.archive_base_item = item; 
-				// list the item 
+
+				//item.archive_base_item = item;
+				// list the item
 				//if (list_archive(item)){
 
 				item.file_type = FileType.DIRECTORY;
-				
-				set_view_item(item); 
-				//} 
+
+				set_view_item(item);
+				//}
 			}
 		});
 	}
 
 	/*private void open_archive_item_finish(FileItemArchive item){
-		
-		string outpath = item.extraction_path; 
+
+		string outpath = item.extraction_path;
 		log_debug("outpath: %s".printf(outpath));
-		
+
 		string extracted_item_path = path_combine(outpath, item.file_path);
 		log_debug("extracted_item_path: %s".printf(extracted_item_path));
 
 		if (file_exists(extracted_item_path)){
 
-			// set the display_path and change file_path to point to extracted_item_path 
+			// set the display_path and change file_path to point to extracted_item_path
 			item.display_path = item.display_path;
 			log_debug("item.display_pat: %s".printf(item.display_path));
-			
-			item.file_path = extracted_item_path; 
+
+			item.file_path = extracted_item_path;
 			log_debug("item.file_path: %s".printf(item.file_path));
-			
-			//item.archive_base_item = item; 
-			// list the item 
-			//if (list_archive(item)){ 
-			set_view_item(item); 
-			//} 
+
+			//item.archive_base_item = item;
+			// list the item
+			//if (list_archive(item)){
+			set_view_item(item);
+			//}
 		}
 	}*/
-	
+
 	public void set_default_app(FileItem item, DesktopApp? app){
 
 		log_debug("FileViewList: set_default_app(): %s ----------".printf(item.display_path), true);
@@ -4116,21 +4116,21 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			log_debug("setting default app: %s, mimetype: %s".printf(app.name, item.content_type));
 		}
 	}
-	
+
 	public void open_first_selected_item(){
 
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
 		log_debug("action.open_first_selected_item()");
-		
+
 		open(selected_items[0], null);
 	}
 
 	public void cut(){
 
 		if (!can_cut){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
@@ -4145,7 +4145,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void copy(){
 
 		if (!can_copy){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
@@ -4172,7 +4172,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void paste(){
 
 		if (!can_paste){ return; }
-		
+
 		if (window.pending_action == null) { return; }
 
 		log_debug("action.paste()");
@@ -4207,7 +4207,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void paste_into_folder(){
 
 		if (!can_paste){ return; }
-		
+
 		if (window.pending_action == null) { return; }
 
 		var selected_items = get_selected_items();
@@ -4246,13 +4246,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void paste_url(string url){
 
 		if (!can_paste){ return; }
-		
+
 		if (url.length == 0) { return; }
-		
+
 		if (!check_youtube_dl()){ return; }
 
 		if (!check_plugin("yt")){ return; }
-		
+
 		log_debug("action.paste_url()");
 
 		// create
@@ -4268,13 +4268,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void paste_url_into_folder(string url){
 
 		if (!can_paste){ return; }
-		
+
 		if (url.length == 0) { return; }
 
 		var selected_items = get_selected_items();
 		if (selected_items.size != 1){ return; }
 		if (!selected_items[0].is_directory){ return; }
-		
+
 		if (!check_youtube_dl()){ return; }
 
 		if (!check_plugin("yt")){ return; }
@@ -4458,7 +4458,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void trash(){
 
 		if (!can_trash){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
@@ -4481,7 +4481,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void delete_items(bool delete_all = false){
 
 		if (!can_delete){ return; }
-		
+
 		log_debug("action.delete_items()");
 
 		var list = new Gee.ArrayList<FileItem>();
@@ -4489,7 +4489,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		var action_type = FileActionType.DELETE;
 
 		int selected_count = 0;
-		
+
 		if (current_item.is_trash){
 
 			action_type = FileActionType.DELETE_TRASHED;
@@ -4504,7 +4504,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			}
 
 			selected_count = selected.size;
-			
+
 			foreach(var item in selected){
 
 				if (file_exists(item.trash_info_file)){
@@ -4513,7 +4513,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 						list.add(file_info);
 					}
 				}
-				
+
 				var file_data = new FileItem.from_path(item.trash_data_file);
 				if (file_data.can_delete){
 					list.add(file_data);
@@ -4562,7 +4562,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void rename(){
 
 		if (!can_rename){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size != 1){ return; }
 
@@ -4641,7 +4641,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		string? new_name = _("New Folder");
 		string file_path_new = file_generate_unique_name(path_combine(current_item.file_path, new_name));
 		new_name = file_basename(file_path_new);
-		
+
 		do {
 			new_name = gtk_inputbox(_("Create Directory"),_("Enter directory name"), window, false, new_name);
 			if ((new_name == null) || (new_name.length == 0)){
@@ -4675,7 +4675,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		string? new_name = _("New File");
 		string file_path_new = file_generate_unique_name(path_combine(current_item.file_path, new_name));
 		new_name = file_basename(file_path_new);
-		
+
 		do {
 			new_name = gtk_inputbox(_("Create File"),_("Enter file name"), window, false, new_name);
 			if ((new_name == null) || (new_name.length == 0)){
@@ -4707,11 +4707,11 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("action.create_file_from_template()");
 
 		FileItem template = new FileItem.from_path(template_path);
-		
+
 		string? new_name = "New %s".printf(template.file_name);
 		string  new_file_path = file_generate_unique_name(path_combine(current_item.file_path, new_name));
 		new_name = file_basename(new_file_path);
-		
+
 		do {
 			new_name = gtk_inputbox(_("Create File"),_("Enter file name"), window, false, new_name);
 			if ((new_name == null) || (new_name.length == 0)){
@@ -4721,9 +4721,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			if (!new_name.has_suffix(template.file_extension)){
 				new_name += template.file_extension;
 			}
-			
+
 			new_file_path = path_combine(current_item.file_path, new_name);
-			
+
 			if (file_or_dir_exists(new_file_path)){
 				gtk_messagebox(_("File exists"), _("Enter another name"), window, true);
 			}
@@ -4754,7 +4754,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void run_in_terminal(){
-		
+
 		var selected = get_selected_items()[0];
 
 		log_debug("action.run_in_terminal()");
@@ -4764,7 +4764,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		pane.terminal.feed_command("'%s'".printf(escape_single_quote(selected.file_path)));
-		
+
 		//open_terminal_window("", current_item.file_path, selected_items[0].file_path, false);
 	}
 
@@ -4773,7 +4773,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("action.analyze_disk_usage()");
 
 		var baobab = DesktopApp.get_app_by_filename("org.gnome.baobab.desktop");
-		
+
 		if (baobab == null){
 			baobab = DesktopApp.get_app_by_filename("mate-disk-usage-analyzer.desktop");
 		}
@@ -4790,7 +4790,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public FileViewTab? open_in_new_tab(string folder_path = "", bool use_existing = true, bool init_views = false){
-		
+
 		var selected_items = get_selected_items();
 		if ((folder_path.length == 0) && (selected_items.size != 1)){ return null; }
 
@@ -4811,7 +4811,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				}
 			}
 		}
-		
+
 		var tab = panel.add_tab(init_views);
 		tab.pane.view.set_view_path(path_to_open);
 		return tab;
@@ -4853,7 +4853,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void select_none(){
-		
+
 		log_debug("action.select_none()");
 		treeview.get_selection().unselect_all();
 
@@ -4864,14 +4864,14 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 	public void reload(){
 		log_debug("action.reload()");
-		
+
 		if ((current_item != null) && (current_item is FileItemCloud)){
 			var cloud_item = (FileItemCloud) current_item;
 			cloud_item.remove_cached_file();
 		}
 
 		clear_selections();
-		
+
 		refresh(true, true);
 	}
 
@@ -4888,7 +4888,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		else {
 			window.layout_box.set_panel_layout(PanelLayout.SINGLE);
 		}
-		
+
 		window.layout_box.reset_pane_positions();
 	}
 
@@ -4969,7 +4969,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 		var item = selected_items[0];
-		
+
 		string target_path = item.resolve_symlink_target();
 		log_debug("resolved target path: %s".printf(target_path));
 		set_view_path(file_parent(target_path));
@@ -4981,7 +4981,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			}
 		}
 	}
-	
+
 	public void open_original_location(){
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
@@ -4997,7 +4997,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void open_trash_dir(){
 
 		log_debug("FileViewList: open_trash_dir()");
-		
+
 		var selected_items = get_selected_items();
 		log_debug("count: %d".printf(selected_items.size));
 		if (selected_items.size == 0){ return; }
@@ -5017,18 +5017,18 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void compare_files_opposite(){
 
 		log_debug("FileViewList: compare_files_opposite()");
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
 		err_log_clear();
 
 		var view2 = panel.opposite_pane.view;
-		
+
 		var file1 = selected_items[0];
 
 		if (view2.current_item.children.has_key(file1.file_name)){
-			
+
 			var file2 = view2.current_item.children[file1.file_name];
 
 			compare_files(file1, file2);
@@ -5044,7 +5044,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void compare_files_select_second(){
 
 		log_debug("FileViewList: compare_files_select_second()");
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
@@ -5056,18 +5056,18 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (list.size == 0){ return; }
 
 		var file2 = new FileItem.from_path(list[0]);
-		
+
 		compare_files(file1, file2);
 	}
-	
+
 	public void compare_files(FileItem file1, FileItem file2){
 
 		log_debug("FileViewList: compare_files()");
-		
+
 		string txt, msg, cmd;
-		
+
 		if (!file_is_regular(file1.file_path)){
-			
+
 			txt = _("Not Supported");
 			msg = "%s:\n\n> %s".printf(_("Selected item is not a text file"), file1.file_name);
 			gtk_messagebox(txt, msg, window, true);
@@ -5097,17 +5097,17 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		check_diffuse(); // show message for installing diffuse
 	}
-	
+
 	// ISO ---------------------------------------
-	
+
 	public void mount_iso(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 		var item = selected_items[0];
-		
+
 		var loop_dev = Device.automount_udisks_iso(item.file_path, window);
 
 		if (err_log.length > 0){
@@ -5126,25 +5126,25 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		OSDNotify.notify_send(title, msg, 2000, "normal", "info");
 
 		if (loop_dev.has_children){
-			
+
 			// get first iso9660 partition ------------------------
-			
+
 			var list = Device.get_block_devices_using_lsblk();
-			
+
 			foreach(var dev in list){
-				
+
 				if ((dev.pkname == loop_dev.device.replace("/dev/","")) && (dev.fstype == "iso9660")){
-					
+
 					loop_dev = dev;
 					break;
 				}
 			}
 		}
-			
+
 		// browse --------------------
-		
+
 		if (loop_dev.mount_points.size > 0){
-			
+
 			var mp = loop_dev.mount_points[0];
 			set_view_path(mp.mount_point);
 		}
@@ -5154,7 +5154,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void boot_iso(){
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 		var item = selected_items[0];
@@ -5164,7 +5164,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void write_iso(Device dev){
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 		var item = selected_items[0];
@@ -5185,16 +5185,16 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	// KVM ---------------------------------------
-	
+
 	public void kvm_create_disk(){
-		
+
 		err_log_clear();
 
 		new KvmCreateDiskWindow(KvmTaskType.CREATE_DISK, window, current_item.file_path, "", "", "");
 	}
 
 	public void kvm_create_derived_disk(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
@@ -5205,7 +5205,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void kvm_create_merged_disk(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
@@ -5216,18 +5216,18 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void kvm_convert_disk(string disk_format){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 		var item = selected_items[0];
-		
+
 		new KvmCreateDiskWindow(KvmTaskType.CONVERT_DISK, window, current_item.file_path, item.file_path, "", disk_format);
 	}
-	
+
 	public void kvm_boot_disk(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
@@ -5244,7 +5244,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void kvm_mount_disk(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
@@ -5256,7 +5256,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void kvm_install_iso(){
-		
+
 		err_log_clear();
 
 		var selected_items = get_selected_items();
@@ -5285,9 +5285,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public Gee.ArrayList<string> selected_pdfs(){
 
 		var files = new Gee.ArrayList<string>();
-		
+
 		var selected_items = get_selected_items();
-		
+
 		if (selected_items.size == 0){
 			return files;
 		}
@@ -5297,7 +5297,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				files.add(file.file_path);
 			}
 		}
-		
+
 		files.sort((a,b)=> {
 			return strcmp(a,b);
 		});
@@ -5313,26 +5313,26 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_pdftk()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
 		task.split(files, App.overwrite_pdf_split);
-		
+
 		var action = new ProgressPanelPdfTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
 	}
 
 	public void pdf_merge(){
-		
+
 		var files = selected_pdfs();
 		if (files.size == 0){ return; }
 
 		if (!check_pdftk()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5344,7 +5344,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void pdf_protect(){
-		
+
 		var files = selected_pdfs();
 		if (files.size == 0){ return; }
 
@@ -5354,7 +5354,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		string pass = prompt_for_pdf_password(false);
 		if (pass.length == 0) { return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5366,7 +5366,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public void pdf_unprotect(){
-		
+
 		var files = selected_pdfs();
 		if (files.size == 0){ return; }
 
@@ -5376,7 +5376,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		string pass = prompt_for_pdf_password(false);
 		if (pass.length == 0) { return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5395,7 +5395,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_ghostscript()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5414,7 +5414,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_pdftk()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5424,7 +5424,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		pane.file_operations.add(action);
 		action.execute();
 	}
-	
+
 	public void pdf_grayscale(){
 
 		var files = selected_pdfs();
@@ -5433,7 +5433,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_ghostscript()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5452,7 +5452,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_ghostscript()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5471,7 +5471,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_pdftk()){ return; }
 
 		if (!check_plugin("pdf")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new PdfTask();
@@ -5481,7 +5481,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		pane.file_operations.add(action);
 		action.execute();
 	}
-	
+
 	public static string prompt_for_pdf_password(bool confirm){
 
 		log_debug("FileViewList: prompt_for_pdf_password()");
@@ -5489,7 +5489,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		string msg = "";
 
 		msg += _("Enter password for PDF document") + ":";
-		
+
 		string password = PasswordDialog.prompt_user((Gtk.Window) App.main_window, confirm, "", msg);
 
 		return password;
@@ -5500,9 +5500,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public Gee.ArrayList<string> selected_pngs(){
 
 		var files = new Gee.ArrayList<string>();
-		
+
 		var selected_items = get_selected_items();
-		
+
 		if (selected_items.size == 0){
 			return files;
 		}
@@ -5512,7 +5512,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				files.add(file.file_path);
 			}
 		}
-		
+
 		files.sort((a,b)=> {
 			return strcmp(a,b);
 		});
@@ -5523,9 +5523,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public Gee.ArrayList<string> selected_jpegs(){
 
 		var files = new Gee.ArrayList<string>();
-		
+
 		var selected_items = get_selected_items();
-		
+
 		if (selected_items.size == 0){
 			return files;
 		}
@@ -5535,7 +5535,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				files.add(file.file_path);
 			}
 		}
-		
+
 		files.sort((a,b)=> {
 			return strcmp(a,b);
 		});
@@ -5546,9 +5546,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public Gee.ArrayList<string> selected_images(){
 
 		var files = new Gee.ArrayList<string>();
-		
+
 		var selected_items = get_selected_items();
-		
+
 		if (selected_items.size == 0){
 			return files;
 		}
@@ -5558,7 +5558,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				files.add(file.file_path);
 			}
 		}
-		
+
 		files.sort((a,b)=> {
 			return strcmp(a,b);
 		});
@@ -5577,12 +5577,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		if (!check_pngcrush()){ return; }
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.optimize_png(files, App.overwrite_image_optimize_png);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5597,12 +5597,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.reduce_jpeg(files, App.overwrite_image_reduce_jpeg);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5617,12 +5617,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.decolor(files, App.overwrite_image_decolor);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5637,12 +5637,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.boost_color(files, level, App.overwrite_image_boost_color);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5657,12 +5657,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.reduce_color(files, level, App.overwrite_image_reduce_color);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5677,12 +5677,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.resize(files, width, height, App.overwrite_image_resize);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5697,12 +5697,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.rotate(files, direction, App.overwrite_image_rotate);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5717,12 +5717,12 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		if (!check_plugin("image")){ return; }
-		
+
 		err_log_clear();
 
 		var task = new ImageTask();
 		task.convert(files, format, 90, App.overwrite_image_convert);
-		
+
 		var action = new ProgressPanelImageTask(pane, task);
 		pane.file_operations.add(action);
 		action.execute();
@@ -5734,20 +5734,20 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		var selected = get_selected_items()[0];
 
 		if (!selected.is_file_hash){ return; }
-		
+
 		var tab = panel.add_tab();
 		tab.select_tab();
 		tab.pane.show_checksum_view();
-	
+
 		tab.pane.view_checksum.verify(selected);
 	}
-	
+
 	// common
 
 	private bool check_pngcrush(){
 		return check_tool("pngcrush");
 	}
-	
+
 	private bool check_pdftk(){
 		return check_tool("pdftk");
 	}
@@ -5767,7 +5767,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private bool check_ghostscript(){
 		return check_tool("gs");
 	}
-	
+
 	/*private bool check_imagemagick(){
 		return check_tool("convert");
 	}*/
@@ -5775,64 +5775,64 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	private bool check_youtube_dl(){
 		return check_tool("youtube-dl");
 	}
-	
+
 	public bool check_tool(string tool_cmd){
-		
+
 		var tool = App.tools[tool_cmd];
-		
+
 		if (!tool.available){
-			
+
 			string txt = _("Missing Dependency") + ": %s".printf(tool.name);
 			string msg = _("Install required packages and try again") + "\n\n▰ %s".printf(tool.name);
 			gtk_messagebox(txt, msg, window, true);
-			
+
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	public bool check_plugin(string name){
-		
+
 		var plug = App.plugins[name];
 
 		if (!plug.check_version()){
-			
+
 			plug.check_availablity(); // check again
 		}
-		
+
 		if (!plug.available){
-			
+
 			string txt = _("Missing Plugin");
 			string msg = _("Install required packages and try again") + ":\n\n▰ %s %s".printf(plug.name, "(polo-donation-plugins)");
 			gtk_messagebox(txt, msg, window, true);
-			
+
 			return false;
 		}
 		else if (!plug.check_version()){
-			
+
 			string txt = _("Outdated Plugin");
 			string msg = _("Update required packages and try again") + ":\n\n▰ %s %s".printf(plug.name, "(polo-donation-plugins)");
 			gtk_messagebox(txt, msg, window, true);
-			
+
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	// hidden --------------------------------
-	
+
 	public void hide_selected(){
 
 		if (!is_normal_directory){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
 		foreach(var item in selected_items){
 			if (item.is_hidden) { continue; }
-			item.hide_item();	
+			item.hide_item();
 		}
 
 		refilter();
@@ -5842,14 +5842,14 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void unhide_selected(){
 
 		if (!is_normal_directory){ return; }
-		
+
 		var selected_items = get_selected_items();
 		if (selected_items.size == 0){ return; }
 
 		foreach(var item in selected_items){
 			if (!item.is_hidden) { continue; }
 			if (item.file_name.has_prefix(".")) { continue; }
-			item.unhide_item();	
+			item.unhide_item();
 		}
 
 		refilter();
@@ -5884,7 +5884,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			return is_normal_directory;
 		}
 	}
-	
+
 	public bool can_copy {
 		get {
 			return  (current_item != null) && !(current_item is FileItemArchive);
@@ -5899,7 +5899,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				//&& !(current_item is FileItemCloud); // allow paste
 		}
 	}
-		
+
 	public bool can_rename {
 		get {
 			return (current_item != null)
@@ -5914,7 +5914,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			return is_normal_directory;
 		}
 	}
-	
+
 	public bool can_delete {
 		get {
 			return  (current_item != null)
@@ -5924,7 +5924,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				//&& !(current_item is FileItemCloud); // allow delete
 		}
 	}
-	
+
 	// go
 
 	public void go_back(){
@@ -5963,7 +5963,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	public void browse_archive(){
 
 		log_debug("FileViewList: extract_selected_items_to_same_location()");
-		
+
 		var selected = get_selected_items();
 		if (selected.size == 0) { return; }
 
@@ -5980,7 +5980,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			else{
 				set_view_item(arch);
 			}
-		} 
+		}
 	}
 
 	public void extract_selected_items_to_same_location(){
@@ -5988,18 +5988,18 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("FileViewList: extract_selected_items_to_same_location()");
 
 		// check destination ----------------
-		
+
 		if ((current_item is FileItemArchive) || ((current_item is FileItemCloud))){
 			log_debug("Cannot extract inside archive or cloud location");
 			return;
 		}
 
 		// set destination path ----------------------
-		
+
 		string outpath = current_item.file_path;
 
 		// --------------------
-		
+
 		extract_selected_items_to_selected_location(outpath, true);
 	}
 
@@ -6008,7 +6008,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		log_debug("FileViewList: extract_selected_items_to_another_location()");
 
 		// set destination path ----------------------
-		
+
 		string default_path = App.user_home;
 		if (current_item != null){
 			default_path = current_item.file_path;
@@ -6026,16 +6026,16 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		// --------------------
-		
+
 		extract_selected_items_to_selected_location(outpath, false);
 	}
 
 	public void extract_selected_items_to_opposite_location(){
 
 		log_debug("FileViewList: extract_selected_items_to_opposite_location()");
-		
+
 		// set destination path ----------------------
-		
+
 		var opp_item = panel.opposite_pane.view.current_item;
 		string outpath = "";
 		if ((opp_item != null) && (dir_exists(opp_item.file_path))){
@@ -6048,7 +6048,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 
 		// --------------------
-		
+
 		extract_selected_items_to_selected_location(outpath, false);
 	}
 
@@ -6056,13 +6056,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		var selected = get_selected_items();
 		if (selected.size == 0) { return; }
-		
+
 		var list = new Gee.ArrayList<FileItem>();
-		
+
 		if (current_item is FileItemArchive){
 
 			var arch = ((FileItemArchive) current_item).archive_base_item;
-			
+
 			if (!file_exists(arch.file_path)) {
 				log_error("FileViewList: base_archive file_not_found");
 				return;
@@ -6074,9 +6074,9 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				gtk_messagebox(txt, msg, window, true);
 				return;
 			}
-			
+
 			arch.extraction_path = path_combine(outpath, "." + random_string());
-			
+
 			arch.extract_list.clear();
 			foreach(var item in selected){
 				arch.extract_list.add(item.file_path);
@@ -6086,15 +6086,15 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		}
 		else{
 			foreach(var item in selected){
-				
+
 				if (FileItem.is_archive_by_extension(item.file_path)){
-					
+
 					FileItemArchive? arch = FileItemArchive.convert_file_item(item);
 					if (arch == null) {
 						log_error("extract_selected_items_to_selected_location(): selected_item_not_archive");
 						continue;
 					}
-			
+
 					arch.extract_list.clear();
 					// unique path will be generated before execution in FileTask()
 					arch.extraction_path = path_combine(outpath, arch.file_title);
@@ -6118,13 +6118,13 @@ public class FileViewList : Gtk.Box, IFileViewList {
 				//var arch = ((FileItemArchive) current_item).archive_base_item;
 
 				//string src_path = path_combine(arch.extraction_path, current_item.file_path);
-				
+
 			});
 		}
 	}
 
 	public ProgressPanelArchiveTask? extract_selected_item_to_temp_location(FileItemArchive item, out string outpath){
-		
+
 		outpath = get_temp_file_path();
 
 		var arch = item;
@@ -6135,7 +6135,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 
 		var list = new Gee.ArrayList<FileItem>();
 		list.add(arch);
-		
+
 		// create action
 		var action = new ProgressPanelArchiveTask(pane, list, FileActionType.EXTRACT, true);
 		pane.file_operations.add(action);
@@ -6146,7 +6146,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 	}
 
 	public ProgressPanelArchiveTask? extract_selected_items_to_selected_location_temp(Gee.ArrayList<FileItem> items, out string outpath){
-		
+
 		outpath = get_temp_file_path();
 
 		var arch = ((FileItemArchive) current_item).archive_base_item;
@@ -6161,7 +6161,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		foreach(var item in items){
 			arch.extract_list.add(item.file_path);
 		}
-		
+
 		// create action
 		var action = new ProgressPanelArchiveTask(pane, list, FileActionType.EXTRACT, true);
 		pane.file_operations.add(action);
@@ -6179,7 +6179,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 			gtk_messagebox(_("No Files Selected"), _("There are no files selected for compression"), window, true);
 			return;
 		}
-		
+
 		if (current_item is FileItemArchive){
 			gtk_messagebox(_("Cannot create archive in this location"),_("Destination path is inside an archive (!)"), window, false);
 			return;
@@ -6189,7 +6189,7 @@ public class FileViewList : Gtk.Box, IFileViewList {
 		var response = dlg.run();
 
 		if (response == Gtk.ResponseType.ACCEPT){
-		
+
 			// create action
 			var action = new ProgressPanelArchiveTask(pane, selected, FileActionType.COMPRESS, true);
 			pane.file_operations.add(action);

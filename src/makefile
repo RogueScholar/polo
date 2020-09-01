@@ -44,7 +44,7 @@ endif
 
 define_symbols=$(shell { echo "${vte_symbol} ${gtk3_symbol}"; } )
 
-all: app-gtk app-translations app-util-disk app-util-gtk3 
+all: app-gtk app-translations app-util-disk app-util-gtk3
 
 app-gtk:
 
@@ -90,9 +90,9 @@ app-translations:
 	for lang in de nl fr tr; do \
 		msgmerge --update -v ../po/${app_name}-$$lang.po ../${app_name}.pot ; \
 	done
-	
+
 	# am ar az bg ca cs da de el en_GB es et eu fr he hi hr hu ia id is it ko lt nb ne nl pl pt pt_BR ro ru sk sr sv tr uk vi zh_CN
-		
+
 clean:
 	rm -rfv ../release/{source,i386,amd64,armel,armhf}
 	rm -rfv ../release/*.{run,deb}
@@ -109,7 +109,7 @@ install:
 	mkdir -p "$(DESTDIR)$(sharedir)/pixmaps"
 	mkdir -p "$(DESTDIR)$(sharedir)/appdata"
 	mkdir -p "$(DESTDIR)/var/log/polo"
-	
+
 	#binary
 	install -m 0755 ${app_name}-gtk "$(DESTDIR)$(bindir)"
 	install -m 0755 ${app_name}-gtk3-helper "$(DESTDIR)$(bindir)"
@@ -135,7 +135,7 @@ install:
 		mkdir -p "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES"; \
 		msgfmt --check --verbose -o "$(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/${app_name}.mo" ../po/${app_name}-$$lang.po ; \
 	done
-	
+
 uninstall:
 
 	#binary

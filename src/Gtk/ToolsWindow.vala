@@ -44,7 +44,7 @@ public class ToolsWindow : Gtk.Dialog {
 
 		set_transient_for(parent);
 		set_modal(true);
-		
+
         window_position = WindowPosition.CENTER_ON_PARENT;
         destroy_with_parent = true;
         skip_taskbar_hint = true;
@@ -56,7 +56,7 @@ public class ToolsWindow : Gtk.Dialog {
 		vbox_main = get_content_area();
 		vbox_main.set_size_request (600, 450);
 		vbox_main.margin = 6;
-		
+
 		// get action area
 		vbox_actions = (Box) get_action_area();
 		vbox_actions.margin = 6;
@@ -76,11 +76,11 @@ public class ToolsWindow : Gtk.Dialog {
 		col_name.title = " " + _("Utility") + " ";
 		col_name.resizable = false;
 		tv.append_column(col_name);
-		
+
 		var cell_icon = new CellRendererPixbuf ();
 		col_name.pack_start (cell_icon, false);
 		col_name.set_attributes(cell_icon, "pixbuf", 3);
-		
+
 		var cell_name = new CellRendererText ();
 		col_name.pack_start (cell_name, false);
 		col_name.set_attributes(cell_name, "text", 0);
@@ -93,7 +93,7 @@ public class ToolsWindow : Gtk.Dialog {
 		cell_status.xalign = 0.5f;
 		col_status.pack_start (cell_status, false);
 		col_status.set_attributes(cell_status, "text", 2);
-		
+
 		var col_desc = new TreeViewColumn();
 		col_desc.title = " " + _("Required for") + " ";
 		tv.append_column(col_desc);
@@ -123,7 +123,7 @@ public class ToolsWindow : Gtk.Dialog {
 	}
 
 	public void tv_refresh(){
-		
+
 		var store = new Gtk.ListStore (4, typeof (string), typeof (string), typeof (string), typeof(Gdk.Pixbuf));
 
 		//status icons
@@ -139,7 +139,7 @@ public class ToolsWindow : Gtk.Dialog {
 			return strcmp(a.command,b.command);
 		};
 		list.sort((owned)func);
-		
+
 		foreach (var tool in list){
 			store.append(out iter);
 			store.set(iter, 0, tool.command);
@@ -147,14 +147,14 @@ public class ToolsWindow : Gtk.Dialog {
 			store.set(iter, 2, tool.available ? _("Found") : _("Missing"));
 			store.set(iter, 3, tool.available ? pix_ok : pix_missing);
 		}
-		
+
 		tv.set_model(store);
 		tv.columns_autosize();
 	}
 }
 
 public class Tool : GLib.Object{
-	
+
 	public string command = "";
 	public string name = "";
 	public string description = "";

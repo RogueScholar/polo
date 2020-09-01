@@ -39,7 +39,7 @@ public class DevicePopover : Gtk.Popover {
 	private MainWindow window{
 		get { return App.main_window; }
 	}
-	
+
 	FileViewPane _pane;
 	private FileViewPane? pane {
 		get{
@@ -86,7 +86,7 @@ public class DevicePopover : Gtk.Popover {
 	private bool manage_mode = false;
 
 	public DevicePopover(Gtk.Widget? _relative_to, FileViewPane? parent_pane){
-		
+
 		this.relative_to = _relative_to;
 
 		this._pane = parent_pane;
@@ -95,11 +95,11 @@ public class DevicePopover : Gtk.Popover {
 
 		this.closed.connect(on_closed);
 	}
-	
+
 	private void init_ui(){
 
 		log_debug("DevicePopover(): init_ui()");
-		
+
 		//vbox_main
 		vbox_main = new Gtk.Box(Orientation.VERTICAL, 0);
 		vbox_main.margin = 0;
@@ -126,7 +126,7 @@ public class DevicePopover : Gtk.Popover {
 	private void init_devices() {
 
 		log_debug("DevicePopover(): init_devices()");
-		
+
 		// treeview
 		treeview = new Gtk.TreeView();
 		treeview.get_selection().mode = Gtk.SelectionMode.SINGLE;
@@ -147,11 +147,11 @@ public class DevicePopover : Gtk.Popover {
 		//scrolled.vexpand = true;
 
 		scrolled.add(treeview);
-		
+
 		vbox_main.add(scrolled);
 
 		// name ---------------------------------------------
-		
+
 		var col = new TreeViewColumn();
 		col.title = _("Device");
 		col.clickable = false;
@@ -159,9 +159,9 @@ public class DevicePopover : Gtk.Popover {
 		//col.expand = true;
 		treeview.append_column(col);
 		col_name = col;
-		
+
 		// icon --------------------------------------
-		
+
 		var cell_pix = new Gtk.CellRendererPixbuf();
 		cell_pix.xpad = 3;
 		//cell_pix.ypad = 3;
@@ -186,27 +186,27 @@ public class DevicePopover : Gtk.Popover {
 		});
 
 		// text ---------------------------------------
-		
+
 		var cell_text = new CellRendererText ();
 		col.pack_start (cell_text, false);
 		cell_name = cell_text;
-		
+
 		// render
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 
 			Device dev;
 			model.get (iter, 0, out dev, -1);
 
 			string name = "";
-			
+
 			if ((dev.pkname.length == 0) && (dev.type != "loop")){
-					
+
 				if (dev.vendor.length > 0){
 					name += " " + dev.vendor;
 				}
-				
+
 				if (dev.model.length > 0){
 					name += " " + dev.model;
 				}
@@ -243,19 +243,19 @@ public class DevicePopover : Gtk.Popover {
 					name += " (%s)".printf(dev.parent.partlabel);
 				}
 			}
-		
+
 			crt.text = name.strip();
 		});
 
 		// size ---------------------------------------------
-		
+
 		col = new TreeViewColumn();
 		col.title = _("Size");
 		col.clickable = false;
 		col.resizable = false;
 		treeview.append_column(col);
 		col_size = col;
-		
+
 		// text
 		cell_text = new CellRendererText();
 		//cell_text.width = 50;
@@ -264,7 +264,7 @@ public class DevicePopover : Gtk.Popover {
 
 		// render
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 
 			Device dev;
@@ -281,7 +281,7 @@ public class DevicePopover : Gtk.Popover {
 
 		// render
 		col.set_cell_data_func (cell_prg, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as CellRendererProgress2;
 
 			Device dev;
@@ -298,17 +298,17 @@ public class DevicePopover : Gtk.Popover {
 
 			crt.text = "";
 		});
-		
+
 		// text --------------------------------------
-		
+
 		/*cell_text = new CellRendererText();
 		cell_text.xalign = 1.0f;
 		col.pack_start (cell_text, false);
 		cell_name = cell_text;
-		
+
 		// render
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 
 			Device dev;
@@ -318,33 +318,33 @@ public class DevicePopover : Gtk.Popover {
 		});*/
 
 		// fs ---------------------------------------------
-		
+
 		col = new TreeViewColumn();
 		col.title = _("FS");
 		col.clickable = false;
 		col.resizable = false;
 		treeview.append_column(col);
 		col_fs = col;
-		
+
 		// icon --------------------------------------
-		
+
 		cell_pix = new Gtk.CellRendererPixbuf();
 		cell_pix.xpad = 3;
 		//cell_pix.ypad = 3;
 		col.pack_start(cell_pix, false);
 
 		col.set_attributes(cell_pix, "pixbuf", 2);
-		
+
 		// text --------------------------------
-		
+
 		cell_text = new CellRendererText();
 		cell_text.xalign = 0.0f;
 		col.pack_start (cell_text, false);
 		cell_name = cell_text;
-		
+
 		// render
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 
 			Device dev;
@@ -354,24 +354,24 @@ public class DevicePopover : Gtk.Popover {
 		});
 
 		// mount ---------------------------------------------
-		
+
 		col = new TreeViewColumn();
 		col.title = _("Mount Path");
 		col.clickable = false;
 		col.resizable = false;
 		treeview.append_column(col);
 		col_mp = col;
-		
+
 		// text --------------------------------
-		
+
 		cell_text = new CellRendererText();
 		cell_text.xalign = 0.0f;
 		col.pack_start (cell_text, false);
 		cell_name = cell_text;
-		
+
 		// render
 		col.set_cell_data_func (cell_text, (cell_layout, cell, model, iter) => {
-			
+
 			var crt = cell as Gtk.CellRendererText;
 
 			Device dev;
@@ -392,7 +392,7 @@ public class DevicePopover : Gtk.Popover {
 		//var cursor = new Gdk.Cursor.from_name(Gdk.Display.get_default(), "pointer");
 		//scrolled.get_window().set_cursor(cursor);
 
-		treeview.row_activated.connect(treeview_row_activated); 
+		treeview.row_activated.connect(treeview_row_activated);
 
 		/*
 		// connect signal for shift+F10
@@ -411,18 +411,18 @@ public class DevicePopover : Gtk.Popover {
 	}
 
 	/*private bool show_context_menu(){
-		
+
 		var selected = get_selected();
-		
+
 		if (selected.size != 1){ return false; }
-		
+
 		context_menu = new DeviceContextMenu(selected[0], this);
-		
+
 		return context_menu.show_menu(null);
 	}*/
 
 	public Gee.ArrayList<Device> get_selected(){
-		
+
 		var list = new Gee.ArrayList<Device>();
 
 		TreeIter iter;
@@ -446,7 +446,7 @@ public class DevicePopover : Gtk.Popover {
 		log_debug("DevicePopover(): treeview_row_activated()");
 
 		if (!manage_mode){
-			
+
 			btn_open_clicked();
 		}
 		else{
@@ -455,11 +455,11 @@ public class DevicePopover : Gtk.Popover {
 	}
 
 	// actions ----------------------------------
-	
+
 	private void init_actions(){
 
 		log_debug("DevicePopover(): init_actions()");
-		
+
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		vbox_main.add(hbox);
 
@@ -471,11 +471,11 @@ public class DevicePopover : Gtk.Popover {
 		hbox.hexpand = true;
 
 		// spacer -----------------------------------
-		
+
 		var dummy = new Gtk.Label("");
 		dummy.hexpand = true;
 		hbox.add(dummy);
-		
+
 		// actions ----------------------------------
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
@@ -484,7 +484,7 @@ public class DevicePopover : Gtk.Popover {
 		bbox_actions = box;
 
 		// ------------------------------------------------------------------------------
-		
+
 		var bbox = new Gtk.ButtonBox(Gtk.Orientation.VERTICAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND);
 		bbox.spacing = 3;
@@ -498,11 +498,11 @@ public class DevicePopover : Gtk.Popover {
 		//button.image_position = PositionType.TOP;
 		bbox.add(button);
 		btn_open = button;
-		
+
 		button.clicked.connect(btn_open_clicked);
 
 		// ------------------------------------------------------------------------------
-		
+
 		bbox = new Gtk.ButtonBox(Gtk.Orientation.VERTICAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		bbox.spacing = 3;
@@ -515,7 +515,7 @@ public class DevicePopover : Gtk.Popover {
 		button.always_show_image = true;
 		bbox.add(button);
 		btn_mount = button;
-		
+
 		button.clicked.connect(btn_mount_clicked);
 
 		// unmount -----------------------
@@ -525,11 +525,11 @@ public class DevicePopover : Gtk.Popover {
 		button.always_show_image = true;
 		bbox.add(button);
 		btn_unmount = button;
-		
+
 		button.clicked.connect(btn_unmount_clicked);
 
 		// ------------------------------------------------------------------------------
-		
+
 		bbox = new Gtk.ButtonBox(Gtk.Orientation.VERTICAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		bbox.spacing = 3;
@@ -542,7 +542,7 @@ public class DevicePopover : Gtk.Popover {
 		button.always_show_image = true;
 		bbox.add(button);
 		btn_lock = button;
-		
+
 		button.clicked.connect(btn_lock_clicked);
 
 		// unlock -----------------------
@@ -552,7 +552,7 @@ public class DevicePopover : Gtk.Popover {
 		button.always_show_image = true;
 		bbox.add(button);
 		btn_unlock = button;
-		
+
 		button.clicked.connect(btn_unlock_clicked);
 
 		// ------------------------------------------------------------------------------
@@ -561,13 +561,13 @@ public class DevicePopover : Gtk.Popover {
 		bbox.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		bbox.spacing = 3;
 		box.add(bbox);
-		
+
 		// lock -----------------------
 
 		button = new Gtk.Button.with_label(_("Backup"));
 		bbox.add(button);
 		btn_backup = button;
-		
+
 		button.clicked.connect(btn_backup_clicked);
 
 		// unlock -----------------------
@@ -575,11 +575,11 @@ public class DevicePopover : Gtk.Popover {
 		button = new Gtk.Button.with_label(_("Restore"));
 		bbox.add(button);
 		btn_restore = button;
-		
+
 		button.clicked.connect(btn_restore_clicked);
 
 		// ------------------------------------------------------------------------------
-		
+
 		bbox = new Gtk.ButtonBox(Gtk.Orientation.VERTICAL);
 		bbox.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		bbox.spacing = 3;
@@ -593,7 +593,7 @@ public class DevicePopover : Gtk.Popover {
 		//button.set_tooltip_text(_("Partition Manager"));
 		bbox.add(button);
 		btn_manage = button;
-		
+
 		button.clicked.connect(btn_manage_clicked);
 
 		// format -----------------------
@@ -603,14 +603,14 @@ public class DevicePopover : Gtk.Popover {
 			Device.get_block_devices();
 			refresh();
 		});
-		
+
 		button = new Gtk.Button.with_label(" " + _("Reformat") + " ↓");
 		//button.set_image(null);
 		button.always_show_image = true;
 		//button.set_tooltip_text(_("Reformat"));
 		bbox.add(button);
 		btn_format = button;
-		
+
 		button.clicked.connect(()=>{
 			var dev = get_selected_device();
 			if (dev != null){
@@ -633,7 +633,7 @@ public class DevicePopover : Gtk.Popover {
 		//button.set_tooltip_text(_("Eject"));
 		bbox.add(button);
 		btn_eject = button;
-		
+
 		button.clicked.connect(btn_eject_clicked);
 
 		// properties -----------------------
@@ -646,7 +646,7 @@ public class DevicePopover : Gtk.Popover {
 		btn_properties = button;
 
 		//gtk_apply_css( { button }, "padding-top: 0px; padding-bottom: 0px; margin-top: 0px; margin-bottom: 0px;");
-		
+
 		button.clicked.connect(btn_properties_clicked);
 
 		// close -----------------------
@@ -663,7 +663,7 @@ public class DevicePopover : Gtk.Popover {
 		//bbox.spacing = 6;
 		hbox.add(bbox);
 		bbox_manage = bbox;
-		
+
 		//bbox.hexpand = true;
 
 		// customize -----------------------
@@ -672,11 +672,11 @@ public class DevicePopover : Gtk.Popover {
 		bbox.add(button);
 
 		button.clicked.connect(()=>{
-			
+
 			var win = new DevicePopoverSettingsWindow(App.main_window);
 
 			win.settings_changed.connect(on_settings_changed);
-			
+
 			win.show_all();
 		});
 
@@ -688,11 +688,11 @@ public class DevicePopover : Gtk.Popover {
 		bbox.add(button);
 
 		button.clicked.connect(btn_manage_mode);
-		
+
 		bbox_actions.set_no_show_all(true);
 
 		// spacer -----------------------------------
-		
+
 		dummy = new Gtk.Label("");
 		dummy.hexpand = true;
 		hbox.add(dummy);
@@ -725,9 +725,9 @@ public class DevicePopover : Gtk.Popover {
 		var paths = treeview.get_selection().get_selected_rows(out model);
 
 		foreach(var treepath in paths){
-			
+
 			TreeIter iter;
-			
+
 			if (model.get_iter(out iter, treepath)){
 				Device dev;
 				model.get (iter, 0, out dev, -1);
@@ -741,8 +741,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_open_clicked(){
 
 		var device = get_selected_device();
-		
-		if ((device != null) && !device.has_children){ 
+
+		if ((device != null) && !device.has_children){
 			DeviceContextMenu.browse_device(device, pane, window);
 			this.hide();
 		}
@@ -751,7 +751,7 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_mount_clicked(){
 
 		var device = get_selected_device();
-		
+
 		if (device != null){
 			DeviceContextMenu.mount_device(device, pane, window);
 			//refresh_devices();
@@ -761,8 +761,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_unmount_clicked(){
 
 		var device = get_selected_device();
-		
-		if (device != null){ 
+
+		if (device != null){
 			DeviceContextMenu.unmount_device(device, pane, window);
 			//refresh_devices();
 		}
@@ -771,8 +771,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_lock_clicked(){
 
 		var device = get_selected_device();
-		
-		if (device != null){ 
+
+		if (device != null){
 			DeviceContextMenu.lock_device(device, pane, window);
 			//refresh_devices();
 		}
@@ -781,8 +781,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_unlock_clicked(){
 
 		var device = get_selected_device();
-		
-		if (device != null){ 
+
+		if (device != null){
 			DeviceContextMenu.unlock_device(device, pane, window);
 			//refresh_devices();
 		}
@@ -791,9 +791,9 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_backup_clicked(){
 
 		var device = get_selected_device();
-		
+
 		if ((device != null) && (view != null)){
-			
+
 			backup_device(device);
 		}
 	}
@@ -801,8 +801,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_restore_clicked(){
 
 		var device = get_selected_device();
-		
-		if ((device != null) && (view != null)){ 
+
+		if ((device != null) && (view != null)){
 
 			restore_device(device);
 		}
@@ -811,7 +811,7 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_eject_clicked(){
 
 		var device = get_selected_device();
-		
+
 		if (device != null){
 			eject_device(device);
 		}
@@ -820,8 +820,8 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_manage_clicked(){
 
 		var device = get_selected_device();
-		
-		if (device != null){ 
+
+		if (device != null){
 			DeviceContextMenu.manage_disk(device, pane, window);
 		}
 	}
@@ -829,7 +829,7 @@ public class DevicePopover : Gtk.Popover {
 	private void btn_properties_clicked(){
 
 		var device = get_selected_device();
-		
+
 		if (device != null){
 			var win = new FilePropertiesWindow.for_device(device);
 			win.show_all();
@@ -837,7 +837,7 @@ public class DevicePopover : Gtk.Popover {
 	}
 
 	// refresh ----------------------------
-	
+
 	public void show_popup(){
 
 		log_debug("DevicePopover(): show_popup()");
@@ -849,16 +849,16 @@ public class DevicePopover : Gtk.Popover {
 		refresh();
 
 		vbox_main.set_size_request(App.dm_width, App.dm_height);
-		
+
 		gtk_show(this);
 	}
-	
+
 	private void refresh(){
 
 		log_debug("DevicePopover(): refresh()");
-		
+
 		//refresh_places();
-		
+
 		refresh_devices();
 
 		refresh_actions();
@@ -867,16 +867,16 @@ public class DevicePopover : Gtk.Popover {
 	private void refresh_devices(){
 
 		log_debug("DevicePopover(): refresh_devices()");
-		
+
 		var model = new Gtk.TreeStore(3, typeof(Device), typeof(string), typeof(Gdk.Pixbuf));
 		treeview.set_model(model);
 
 		var list = Device.get_devices();
 
 		list.sort();
-		
+
 		foreach(var dev in list){
-			
+
 			if (dev.pkname.length == 0){ // type = disk, loop
 
 				if (!App.dm_show_snap && dev.mount_path.has_prefix("/snap/")){ continue; }
@@ -918,7 +918,7 @@ public class DevicePopover : Gtk.Popover {
 		if (dev.size_bytes < 100 * KB){ return null; }
 
 		if (dev.fstype == "swap") { return null; }
-		
+
 		TreeIter iter;
 		model.append(out iter, iter_parent);
 		model.set(iter, 0, dev);
@@ -926,23 +926,23 @@ public class DevicePopover : Gtk.Popover {
 		model.set(iter, 2, dev.get_icon_fstype(16));
 		return iter;
 	}
-	
+
 	private void refresh_actions(){
 
 		var dev = get_selected_device();
 
 		/// note: unmount, backup, restore, format, manage is always visible. disable if not applicable.
-		
+
 		if (dev != null){
 
 			btn_open.sensitive = (dev.fstype.length > 0);
-			
+
 			btn_mount.sensitive = !dev.is_mounted && (dev.fstype.length > 0) && !dev.has_children;
 
 			btn_unmount.sensitive = dev.is_mounted && !dev.is_system_device;
-			
+
 			btn_lock.sensitive = dev.is_on_encrypted_partition && !dev.is_system_device;
-			
+
 			btn_unlock.sensitive = dev.is_encrypted_partition;
 
 			btn_backup.sensitive = !dev.is_system_device; // cannot be unmounted
@@ -954,7 +954,7 @@ public class DevicePopover : Gtk.Popover {
 			btn_format.sensitive = (dev.fstype.length > 0) && !dev.is_system_device; // cannot be unmounted
 
 			var pix = dev.get_icon_fstype(16);
-			
+
 			if (pix != null){
 				btn_format.set_image(new Gtk.Image.from_pixbuf(pix));
 			}
@@ -969,17 +969,17 @@ public class DevicePopover : Gtk.Popover {
 		else{
 
 			btn_open.sensitive = false;
-			
+
 			btn_mount.sensitive = false;
-			
+
 			btn_unmount.sensitive = false;
 
 			btn_lock.sensitive = false;
-			
+
 			btn_unlock.sensitive = false;
 
 			btn_backup.sensitive = false;
-			
+
 			btn_restore.sensitive = false;
 
 			btn_format.sensitive = false;
@@ -1003,7 +1003,7 @@ public class DevicePopover : Gtk.Popover {
 		if (image_file.length == 0){ return; }
 
 		string format = "";
-		
+
 		if (image_file.down().has_suffix(".gz")){
 			format = "gz";
 		}
@@ -1017,7 +1017,7 @@ public class DevicePopover : Gtk.Popover {
 		if (dev.is_mounted){
 			bool ok = dev.unmount();
 			log_debug("unmounted: %s".printf(ok.to_string()));
-			
+
 		}
 
 		if (dev.is_mounted){
@@ -1059,7 +1059,7 @@ public class DevicePopover : Gtk.Popover {
 			gtk_messagebox(txt, msg, window, true);
 			return;
 		}
-		
+
 		var action = new ProgressPanelDeviceWriterTask(pane);
 		action.set_parameters(DiskAction.RESTORE, image_file, dev, "");
 		pane.file_operations.add(action);
@@ -1096,7 +1096,7 @@ public class DevicePopover : Gtk.Popover {
 		filter = create_file_filter(_("Raw Disk Image"), { "*.img" });
 		chooser.add_filter(filter);
 		var filter_img = filter;
-		
+
 		if (chooser.run() != Gtk.ResponseType.ACCEPT) {
 			chooser.destroy();
 			return "";
@@ -1107,7 +1107,7 @@ public class DevicePopover : Gtk.Popover {
 		var fltr = chooser.get_filter();
 
 		string extension = "";
-		
+
 		if (fltr == filter_gz){
 			extension = ".gz";
 		}
@@ -1134,7 +1134,7 @@ public class DevicePopover : Gtk.Popover {
 		string disk = (dev.pkname_toplevel.length > 0) ? dev.pkname_toplevel : dev.kname;
 
 		string cmd = "polo-disk eject --device /dev/%s".printf(disk);
-		
+
 		this.sensitive = false;
 
 		gtk_set_busy(true, App.main_window);
@@ -1159,7 +1159,3 @@ public class DevicePopover : Gtk.Popover {
 	}
 
 }
-
-
-
-

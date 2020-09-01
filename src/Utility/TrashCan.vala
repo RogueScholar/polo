@@ -35,7 +35,7 @@ public class TrashCan : FileItem {
 	public string user_id = "";
 	public string user_name = "";
 	public string user_home = "";
-	
+
 	//public new signal void changed();
 	public new signal void query_completed();
 
@@ -49,14 +49,14 @@ public class TrashCan : FileItem {
 	}
 
 	public static bool use_gio;
-	
+
 	static construct {
-		
+
 		use_gio = cmd_exists("gio");
 	}
 
 	public TrashCan(int _user_id, string _user_name, string _user_home) {
-		
+
 		this.is_trash = true;
 		this.user_id = _user_id.to_string();
 		this.user_name = _user_name;
@@ -64,7 +64,7 @@ public class TrashCan : FileItem {
 	}
 
 	public void query_items(bool wait){
-		
+
 		thread_cancelled = false;
 
 		try {
@@ -86,7 +86,7 @@ public class TrashCan : FileItem {
 	public void query_items_thread(){
 
 		log_debug("TrashCan: query_items(): %s".printf(string.nfill(30,'-')));
-		
+
 		this.children.clear();
 		this.trash_can_size = 0;
 
@@ -103,7 +103,7 @@ public class TrashCan : FileItem {
 				if (dir_exists(trash_path)){
 					load_trash_directory(trash_path, mnt.mount_point);
 				}
-				
+
 				trash_path = path_combine(mnt.mount_point, ".Trash-%s".printf(user_id));
 				//log_debug("trash_path=%s".printf(trash_path));
 				if (dir_exists(trash_path)){
@@ -117,8 +117,8 @@ public class TrashCan : FileItem {
 		thread_running = false;
 
 		log_debug("TrashCan: query_items():end %s".printf(string.nfill(30,'-')));
-		
-		query_completed();		
+
+		query_completed();
 	}
 
 	private void load_trash_directory(string trash_path, string mount_path = ""){
@@ -126,7 +126,7 @@ public class TrashCan : FileItem {
 		log_debug("TrashCan: load_trash_directory: %s".printf(trash_path), true);
 
 		remove_orphaned_trashinfo(trash_path);
-		
+
 		string dir_files = path_combine(trash_path, "files");
 		string dir_info = path_combine(trash_path, "info");
 		//string dir_expunged = path_combine(trash_path, "expunged");
@@ -147,23 +147,23 @@ public class TrashCan : FileItem {
 	private void remove_orphaned_trashinfo(string trash_path){
 
 		//log_debug("Trash: remove_orphaned_trashinfo(): %s".printf(trash_path));
-		
+
 		string dir_files = path_combine(trash_path, "files");
 		string dir_info = path_combine(trash_path, "info");
 		//string dir_expunged = path_combine(trash_path, "expunged");
-		
+
 		var dir = new FileItem.from_path(dir_info);
 		dir.query_children(1, false);
-		
+
 		foreach(var item in dir.children.values){
-			
+
 			string item_name = item.file_name.replace(".trashinfo","");
 			string info_file = path_combine(dir_info, item_name) + ".trashinfo";
 			string data_file = path_combine(dir_files, item_name);
 
 			//log_debug("Trash: info_file: %s".printf(info_file));
 			//log_debug("Trash: data_file: %s".printf(data_file));
-			
+
 			if (!file_or_dir_exists(data_file)){
 				// delete the orphaned .trashinfo file
 				log_msg("Trash: Deleting orphaned file: %s".printf(info_file));
@@ -178,9 +178,9 @@ public class TrashCan : FileItem {
 		Path=/home/teejee/Pictures/Terminal_106.png
 		DeletionDate=2017-03-26T13:45:41
 		*/
-		
+
 		//log_debug("TrashCan: read_trash_info: item_name: %s".printf(item_name), true);
-		
+
 		string orig_path = "";
 		DateTime trash_date = new DateTime.now_utc();
 
@@ -190,7 +190,7 @@ public class TrashCan : FileItem {
 
 		string file_info_text = "[Trash Info]\n";
 
-		if (file_exists(info_file)){ 
+		if (file_exists(info_file)){
 
 			file_info_text = file_read(info_file);
 			foreach(string line in file_info_text.split("\n")){
@@ -213,7 +213,7 @@ public class TrashCan : FileItem {
 		}
 		else{
 			// .trashinfo file is missing for item in /files
-			var fi = new FileItem.from_path(trash_file); 
+			var fi = new FileItem.from_path(trash_file);
 			trash_date = fi.changed;
 		}
 
@@ -222,8 +222,8 @@ public class TrashCan : FileItem {
 		//log_debug("info_file: %s".printf(info_file));
 
 		// set some properties to be passed to children
-		
-		
+
+
 		var item = this.add_child_from_disk(trash_file, 0);
 		item.is_trashed_item = true;
 		item.trash_basepath = file_parent(trash_file);
@@ -232,7 +232,7 @@ public class TrashCan : FileItem {
 		item.trash_deletion_date = trash_date;
 		item.trash_info_file = info_file;
 		item.trash_data_file = trash_file;
-		
+
 		if (item.trash_original_path.length > 0){
 			item.display_name = file_basename(item.trash_original_path);
 		}
@@ -296,12 +296,12 @@ public class TrashCan : FileItem {
 	public static bool empty_trash(){
 
 		string cmd_name = use_gio ? "gio trash" : "gvfs-trash";
-			
+
 		string cmd = "%s --empty".printf(cmd_name);
-		
+
 		string std_out, std_err;
 		int status = exec_sync(cmd, out std_out, out std_err);
-		
+
 		return (status == 0);
 	}
 }

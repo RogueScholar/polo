@@ -27,7 +27,7 @@ using Gtk;
 using TeeJee.Logging;
 
 public class ExtendedTreeView : Gtk.TreeView{
-	
+
 	//private Gtk.TreePath? blocked_selection_path = null;
 
 	public ExtendedTreeView (){
@@ -43,7 +43,7 @@ public class ExtendedTreeView : Gtk.TreeView{
 	private bool on_button_press_event (Gdk.EventButton event){
 
 		log_debug("on_button_press_event");
-		
+
 		//if (event.button == 1)
 		//	return block_selection (event);
 
@@ -54,7 +54,7 @@ public class ExtendedTreeView : Gtk.TreeView{
 		if (control_pressed){ log_debug("control_pressed"); }
 		if (shift_pressed){ log_debug("shift_pressed"); }
 		if (mouse_left_pressed){ log_debug("mouse_left_pressed"); }
-		
+
 		if (control_pressed){
 			//set_as_drag_source(true);
 			this.get_selection().set_select_function ((sel, mod, path, cursel) => { return false; });
@@ -64,14 +64,14 @@ public class ExtendedTreeView : Gtk.TreeView{
 		//if (control_pressed){
 		//	return true;
 		//}
-		
+
 		//switch (keyval) {
         //case Gdk.Key.D:
-			
+
 		//	return true;
 		//	break;
 		}
-		
+
 
 		// not handled
 		return false;
@@ -81,7 +81,7 @@ public class ExtendedTreeView : Gtk.TreeView{
 	private bool on_button_release_event (Gdk.EventButton event){
 
 		log_debug("on_button_release_event");
-		
+
 		// re-enable selection
 		Gtk.TreeSelection selection = this.get_selection ();
 		selection.set_select_function ((sel, mod, path, cursel) => { return true; });
@@ -97,16 +97,16 @@ public class ExtendedTreeView : Gtk.TreeView{
 		{
 			this.set_cursor (path, column, false);
 		}
-		
+
 		this.blocked_selection_path = null;
 
 		// not handled
 		return false;
 	}*/
-	
+
 	/*
 	private bool block_selection (Gdk.EventButton event){
-		
+
 		// Here we intercept mouse clicks on selected items, so that we can
 		// drag multiple items without the click selecting only one item.
 
@@ -128,4 +128,3 @@ public class ExtendedTreeView : Gtk.TreeView{
 		return false;
 	}*/
 }
-

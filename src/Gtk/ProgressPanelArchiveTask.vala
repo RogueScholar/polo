@@ -36,7 +36,7 @@ using TeeJee.Misc;
 public class ProgressPanelArchiveTask : ProgressPanel {
 
 	private ArchiveTask task;
-	
+
 	private FileItem dest_archive;
 	private FileItemArchive? archive;
 
@@ -51,7 +51,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	private Gtk.Label lbl_elapsed_value;
 	private Gtk.Label lbl_remaining_value;
 	private Gtk.Label lbl_speed_value;
-	
+
 	//actions
 	private Gtk.Button btn_background;
 	private Gtk.Button btn_pause;
@@ -64,10 +64,10 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 	private Gtk.Label lbl_prg_ratio;
 	private Gtk.ProgressBar prg_ratio;
-	
+
 	private uint tmr_password = 0;
 	private uint tmr_next = 0;
-	
+
 	private bool was_restarted = false;
 	public bool create_new_folder = true;
 	private FileItem? previous_archive = null;
@@ -77,7 +77,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 	public ProgressPanelArchiveTask(FileViewPane _pane,
 		Gee.ArrayList<FileItem> _items, FileActionType _action, bool _create_new_folder){
-	
+
 		base(_pane, _items, _action);
 
 		task = new ArchiveTask(window);
@@ -116,7 +116,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
-		
+
 		var label = new Gtk.Label("<b>" + txt + ": </b>");
 		label.set_use_markup(true);
 		label.xalign = 0.0f;
@@ -129,11 +129,11 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		label.margin_bottom = 12;
 		hbox.add(label);
 		lbl_header = label;
-		
+
 		init_labels();
-		
+
 		init_progress_bar();
-		
+
 		init_command_buttons();
 	}
 
@@ -141,7 +141,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
-		
+
 		//grid_stats
 		var grid_stats = new Grid();
 		grid_stats.set_column_spacing(20);
@@ -155,7 +155,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		int row = -1;
 
 		//lbl_file_count -----------------------------------------
-		
+
 		var lbl_file_count = new Gtk.Label(_("Files:"));
 		lbl_file_count.xalign = 0.0f;
 		grid_stats.attach(lbl_file_count, 0, ++row, 1, 1);
@@ -166,7 +166,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_file_count_value, 1, row, 1, 1);
 
 		//lbl_elapsed -----------------------------------------
-		
+
 		var lbl_elapsed = new Gtk.Label(_("Elapsed:"));
 		lbl_elapsed.xalign = 0.0f;
 		grid_stats.attach(lbl_elapsed, 0, ++row, 1, 1);
@@ -177,7 +177,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_elapsed_value, 1, row, 1, 1);
 
 		//lbl_remaining -----------------------------------------
-		
+
 		var lbl_remaining = new Gtk.Label(_("Remaining:"));
 		lbl_remaining.xalign = 0.0f;
 		grid_stats.attach(lbl_remaining, 0, ++row, 1, 1);
@@ -188,7 +188,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_remaining_value, 1, row, 1, 1);
 
 		//lbl_speed -----------------------------------------
-		
+
 		var lbl_speed = new Gtk.Label(_("Speed:"));
 		lbl_speed.xalign = 0.0f;
 		grid_stats.attach(lbl_speed, 0, ++row, 1, 1);
@@ -201,7 +201,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		row = -1;
 
 		//lbl_data -------------------------------------------------
-		
+
 		var lbl_data = new Gtk.Label(_("Data:"));
 		lbl_data.xalign = 0.0f;
 		//lbl_data.margin_start = 12;
@@ -213,7 +213,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_data_value, 3, row, 1, 1);
 
 		//lbl_processed ------------------------------------------
-		
+
 		var lbl_processed = new Gtk.Label(_("Processed:"));
 		lbl_processed.xalign = 0.0f;
 		//lbl_processed.margin_start = 12;
@@ -225,7 +225,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_processed_value, 3, row, 1, 1);
 
 		//lbl_compressed -----------------------------------------
-		
+
 		var lbl_compressed = new Gtk.Label(_("Compressed:"));
 		lbl_compressed.xalign = 0.0f;
 		//lbl_compressed.margin_start = 12;
@@ -237,7 +237,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		grid_stats.attach(lbl_compressed_value, 3, row, 1, 1);
 
 		//lbl_ratio -----------------------------------------
-		
+
 		var lbl_ratio = new Gtk.Label(_("Ratio:"));
 		lbl_ratio.xalign = 0.0f;
 		//lbl_ratio.margin_start = 12;
@@ -257,7 +257,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
-		
+
 		var label = new Gtk.Label(_("Progress:"));
 		label.xalign = 0.0f;
 		hbox.add(label);
@@ -265,9 +265,9 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		label = new Gtk.Label("");
 		label.xalign = 0.0f;
 		hbox.add(label);
-		
+
 		lbl_prg_status = label;
-		
+
 		var prg = new Gtk.ProgressBar();
 		//prg.show_text = true;
 		contents.add(prg);
@@ -285,7 +285,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		label = new Gtk.Label("");
 		label.xalign = 0.0f;
 		hbox.add(label);
-		
+
 		lbl_prg_ratio = label;
 
 		prg = new Gtk.ProgressBar();
@@ -297,7 +297,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		var hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
 		contents.add(hbox);
-		
+
 		//hbox_actions
 		var hbox_actions = new Gtk.Box(Gtk.Orientation.HORIZONTAL,6);
 		hbox_actions.margin_top = 6;
@@ -344,7 +344,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		});
 
 		//btn_stop -----------------------------------------------------
-		
+
 		btn_stop = new Gtk.Button();
 		btn_stop.set_tooltip_text (_("Stop"));
 		hbox_actions.add(btn_stop);
@@ -367,7 +367,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		btn_finish.no_show_all = true;
 		hbox_actions.add(btn_finish);
 		hbox_actions.set_child_packing(btn_finish,false,false,0,PackType.START);
-		
+
 		btn_finish.label = _("OK");
 		btn_finish.always_show_image = true;
 		btn_finish.image_position = PositionType.LEFT;
@@ -377,7 +377,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			finish();
 			gtk_do_events();
 		});
-		
+
 		btn_background.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
 		btn_pause.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
 		btn_stop.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED);
@@ -390,7 +390,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	public override void execute(){
 
 		log_debug("ProgressPanelArchiveTask: execute(%s): %d".printf(action_type.to_string(), items.size));
-		
+
 		if (items.size == 0){
 			log_error("items.size=0");
 			return;
@@ -410,7 +410,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			}
 			break;
 		}
-		
+
 		start_task();
 	}
 
@@ -427,7 +427,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		case FileActionType.COMPRESS:
 			task.compress((FileItemArchive)dest_archive);
 			break;
-			
+
 		case FileActionType.EXTRACT:
 
 			if (!was_restarted){
@@ -452,25 +452,25 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		case FileActionType.LIST_ARCHIVE:
 			task.open(archives[0], false);
 			break;
-			
+
 		case FileActionType.TEST_ARCHIVE:
 			//task.test(archive, false);
 			break;
 		}
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add(500, update_status);
 	}
 
 	public override void init_status(){
 
 		log_debug("ProgressPanelArchiveTask: init_status()");
-		
+
 		spinner.start();
 		spinner.visible = true;
 		gtk_do_events();
-		
+
 		//lbl_status.label = "Preparing...";
 		progress_prev = 0.0;
 		task.progress = 0.0;
@@ -480,7 +480,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		btn_pause.set_tooltip_text (_("Pause"));
 		btn_pause.image = IconManager.lookup_image("media-playback-pause", 16);
 	}
-	
+
 	public override bool update_status(){
 
 		log_debug("ProgressPanelArchiveTask: update_status()");
@@ -498,7 +498,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			if (task.archive != null){
 				lbl_header.label = "<b>" + task.archive.file_name + "</b>";
 			}
-			
+
 			// status line
 			//lbl_status.label = task.stat_status_line;
 
@@ -536,7 +536,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			prg_ratio.fraction = task.compression_ratio / 100.0;
 
 			lbl_prg_ratio.label = task.stat_compression_ratio;
-			
+
 			gtk_do_events();
 
 			break;
@@ -547,11 +547,11 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			// prompt for password
 			tmr_password = Timeout.add(200, prompt_for_password_and_restart_task);
 			return false;
-			
+
 		case AppStatus.FINISHED:
 			finish();
 			return false;
-			
+
 		case AppStatus.CANCELLED:
 			finish();
 			return false;
@@ -559,21 +559,21 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 
 		return true;
 	}
-	
+
 	public override void cancel(){
 
 		log_debug("ProgressPanelArchiveTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
-		
+
 		task_complete();
-		
+
 		finish();
 	}
 
@@ -582,7 +582,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 		log_debug("ProgressPanelArchiveTask: finish()");
 
 		stop_status_timer();
-		
+
 		var status = task.get_exit_code();
 
 		log_debug("status: %d".printf(status));
@@ -599,7 +599,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			case ArchiveAction.TEST:
 				gtk_messagebox("","Archive is OK", window,false);
 				break;
-			}	
+			}
 		}
 		else if (status == 0){ // valid archive, success
 			//task_is_running = false;
@@ -629,7 +629,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			//task_is_running = false;
 		}
 		else if (!aborted && !file_cancelled){
-			
+
 			// valid archive, error
 			switch (task.action){
 			case ArchiveAction.TEST:
@@ -651,7 +651,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			}
 			break;
 		}
-		
+
 		pane.file_operations.remove(this);
 		pane.refresh_file_action_panel();
 		pane.refresh_message_panel();
@@ -661,7 +661,7 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 	private bool prompt_for_password_and_restart_task(){
 
 		log_debug("ProgressPanelArchiveTask: prompt_for_password_and_restart_task()");
-		
+
 		if (tmr_password > 0) {
 			Source.remove(tmr_password);
 			tmr_password = 0;
@@ -679,28 +679,24 @@ public class ProgressPanelArchiveTask : ProgressPanel {
 			file_cancelled = true;
 			finish();
 		}
-		
+
 		return false;
 	}
 
 	private bool start_next_task(){
 
 		log_debug("ProgressPanelArchiveTask: start_next_task()");
-		
+
 		if (tmr_next > 0) {
 			Source.remove(tmr_next);
 			tmr_next = 0;
 		}
 
 		was_restarted = false;
-		
+
 		start_task(); // start next
-		
+
 		return false;
 	}
 
 }
-
-
-
-

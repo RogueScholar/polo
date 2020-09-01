@@ -52,7 +52,7 @@ public class FilePermissionsBox : Gtk.Box {
 		//base(Gtk.Orientation.VERTICAL, 6); // issue with vala
 		Object(orientation: Gtk.Orientation.VERTICAL, spacing: 6); // work-around
 		margin = 12;
-		
+
 		window = parent_window;
 
 		panel_mode = _panel_mode;
@@ -66,7 +66,7 @@ public class FilePermissionsBox : Gtk.Box {
 		file_item.query_file_info();
 
 		group_label = _group_label;
-		
+
 		init_ui_for_file();
 
 		this.show_all();
@@ -75,13 +75,13 @@ public class FilePermissionsBox : Gtk.Box {
 	private void init_ui_for_file(){
 
 		gtk_container_remove_children(this);
-		
+
 		if ((file_item == null) || (file_item.perms.length == 0)){ return; }
-			
+
 		if ((file_item is FileItemArchive) || (file_item is FileItemCloud)){ return; }
-		
+
 		log_debug("FilePermissionsBox: init_ui_for_file()");
-		
+
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 6);
 		this.add(vbox);
 
@@ -275,5 +275,3 @@ public class FilePermissionsBox : Gtk.Box {
 		file_item.query_file_info();
 	}
 }
-
-

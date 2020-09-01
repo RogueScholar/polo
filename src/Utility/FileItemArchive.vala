@@ -57,7 +57,7 @@ public class FileItemArchive : FileItem {
 	public ArchiveTask task = null;
 	public Gee.ArrayList<string> extract_list = new Gee.ArrayList<string>();
 	public string extraction_path = "";
-	
+
 	public string error_msg = "";
 
 	public override string display_path {
@@ -91,14 +91,14 @@ public class FileItemArchive : FileItem {
 			if (_local_path.length == 0){
 				return "";
 			}
-			
+
 			if (file_exists(_local_path)){
 				var ctl_file = _local_path + ".%lld".printf(modified_unix_time);
 				if (file_exists(ctl_file)){
 					return _local_path;
 				}
 			}
-			
+
 			_local_path = "";
 			return _local_path;
 		}
@@ -108,7 +108,7 @@ public class FileItemArchive : FileItem {
 			file_write(ctl_file, "");
 		}
 	}
-	
+
 	// contructors -------------------------------
 
 	public FileItemArchive.from_path_and_type(string _file_path, FileType _file_type, bool _is_base) {
@@ -130,23 +130,23 @@ public class FileItemArchive : FileItem {
 	public static FileItemArchive? convert_file_item(FileItem item){
 
 		if (item is FileItemArchive){ return (FileItemArchive) item; }
-			
+
 		log_debug("FileItemArchive: convert_file_item()");
 
 		if (FileItem.is_archive_by_extension(item.file_path)){ // && !FileItem.is_package_by_extension(item.file_path) // allow package extraction
-			
+
 			var arch = new FileItemArchive.from_path_and_type(item.file_path, FileType.DIRECTORY, true);
-			
+
 			if (item.parent != null){
 				arch.parent = item.parent;
 				arch.parent.children[arch.file_name] = arch;
 			}
 			return arch;
 		}
-		
+
 		return null;
 	}
-	
+
 	// base class overrides ---------------------------------------------------
 
 	public override void query_file_info() {
@@ -156,11 +156,11 @@ public class FileItemArchive : FileItem {
 		}
 		return;
 	}
-	
+
 	public override void query_children(int depth, bool follow_symlinks) {
 
 		log_debug("FileItemArchive: query_children(): enter");
-		
+
 		/* Queries the file item's children using the file_path
 		 * depth = -1, recursively find and add all children from disk
 		 * depth =  1, find and add direct children
@@ -191,9 +191,9 @@ public class FileItemArchive : FileItem {
 		else{
 			password = ""; // clear password, since archive has changed
 		}
-		
+
 		// check if directory and continue -------------------
-		
+
 		if (!is_directory) {
 			//query_file_info();
 			query_children_running = false;
@@ -213,7 +213,7 @@ public class FileItemArchive : FileItem {
 		}
 
 		// query children ----------------------
-		
+
 		window = App.main_window;
 		task = new ArchiveTask(window);
 		task.open(this, true);
@@ -236,11 +236,11 @@ public class FileItemArchive : FileItem {
 		if ((task.status == AppStatus.FINISHED) && (this.children.size > 0)){
 			cached_date = file_get_modified_date(file_path);
 		}
-		
+
 		// -------------------------------------
 
 		update_counts();
-		
+
 		if (depth < 0){
 			get_dir_size_recursively(true);
 		}
@@ -276,13 +276,13 @@ public class FileItemArchive : FileItem {
 		//query_children_aborted = false; // reset
 	}
 
-	public override FileItem add_child(string item_file_path, FileType item_file_type, int64 item_size, 
+	public override FileItem add_child(string item_file_path, FileType item_file_type, int64 item_size,
 		int64 item_size_compressed, bool item_query_file_info){
 
 		//log_debug("FileItemArchive: add_child: %s ---------------".printf(item_file_path));
 
 		mutex_children.lock();
-		
+
 		FileItemArchive item = null;
 
 		// check existing ----------------------------
@@ -290,7 +290,7 @@ public class FileItemArchive : FileItem {
 		bool existing_file = false;
 
 		string item_name = file_basename(item_file_path);
-		
+
 		if (children.has_key(item_name) && (children[item_name].file_name == item_name)){
 
 			existing_file = true;
@@ -303,20 +303,20 @@ public class FileItemArchive : FileItem {
 			if (item == null){
 				item = new FileItemArchive.from_path_and_type(item_file_path, item_file_type, false);
 			}
-			
+
 			// set relationships
 			item.parent = this;
 			this.children[item.file_name] = item;
 		}
-		
+
 		// set properties -----------------------------------
-		
+
 		item.set_properties();
-		
+
 		if (item.parent is FileItemArchive){
 			item.archive_base_item = ((FileItemArchive) item.parent).archive_base_item;
 		}
-		
+
 		item.is_stale = false; // mark fresh
 
 		// ---------------------------------------------
@@ -348,7 +348,7 @@ public class FileItemArchive : FileItem {
 	}
 
 	// ----------------------------------------------------------
-	
+
 	public bool prompt_for_password(Gtk.Window _window){
 
 		log_debug("FileItemArchive: prompt_for_password()");
@@ -362,7 +362,7 @@ public class FileItemArchive : FileItem {
 		}
 
 		msg += _("Enter Password to Unlock") + ":";
-		
+
 		password = PasswordDialog.prompt_user(_window, false, "", msg);
 
 		return (password.length > 0);
@@ -377,7 +377,7 @@ public class FileItemArchive : FileItem {
 		item_count = 0;
 		file_count = 0;
 		dir_count = 0;
-		
+
 		foreach(var child in children.values){
 			if (child.is_directory){
 				dir_count++;
@@ -393,11 +393,11 @@ public class FileItemArchive : FileItem {
 	protected void set_properties(){
 
 		set_content_type_from_extension();
-		
+
 		can_read = true;
 		can_write = false;
 		can_execute = false;
-		
+
 		can_trash = false;
 		can_delete = false;
 		can_rename = false;

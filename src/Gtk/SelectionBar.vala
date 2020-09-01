@@ -40,7 +40,7 @@ public class SelectionBar : Gtk.Box {
 	protected MainWindow window {
 		get { return App.main_window; }
 	}
-	
+
 	protected FileViewPane pane;
 
 	protected FileViewList view {
@@ -57,7 +57,7 @@ public class SelectionBar : Gtk.Box {
 	private Gtk.RadioButton opt_select;
 	private Gtk.RadioButton opt_filter;
 	private Gtk.CheckButton chk_match_start;
-	
+
 	private Gtk.Box hbox;
 
 	public string text {
@@ -87,13 +87,13 @@ public class SelectionBar : Gtk.Box {
 		//var label = new Gtk.Label(_("Pattern:"));
 		//label.xalign = 0.0f;
 		//hbox.add(label);
-		
+
 		add_entry();
 
 		add_toggle_buttons();
 
 		add_option_match_start();
-		
+
 		add_close_button();
 
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -134,9 +134,9 @@ public class SelectionBar : Gtk.Box {
 		});
 
 		txt.key_press_event.connect((event) => {
-			
+
 			string key_name = Gdk.keyval_name(event.keyval);
-			
+
 			switch (key_name.down()){
 			case "escape":
 				close_panel(true);
@@ -155,7 +155,7 @@ public class SelectionBar : Gtk.Box {
 			add_action_delayed();
 			return false;
 		});
-		
+
 		//txt.set_no_show_all(true);
 	}
 
@@ -173,7 +173,7 @@ public class SelectionBar : Gtk.Box {
 			execute_action();
 		});
 	}
-	
+
 	private void add_toggle_buttons(){
 
 		var button = new Gtk.RadioButton.with_label_from_widget (null, _("Select"));
@@ -186,7 +186,7 @@ public class SelectionBar : Gtk.Box {
 				execute_action();
 			}
 		});
-		
+
 		button = new Gtk.RadioButton.with_label_from_widget (button, _("Filter"));
 		hbox.add(button);
 		opt_filter = button;
@@ -203,14 +203,14 @@ public class SelectionBar : Gtk.Box {
 
 		var button = new Gtk.Button.with_label(_("Close"));
 		hbox.add(button);
-		
+
 		button.clicked.connect((event) => {
 			close_panel(true);
 		});
 	}
 
 	public void toggle(bool filter_mode){
-		
+
 		if (this.visible){
 			close_panel(true);
 		}
@@ -218,13 +218,13 @@ public class SelectionBar : Gtk.Box {
 			open_panel("", filter_mode);
 		}
 	}
-	
+
 	public void open_panel(string initial_text, bool filter_mode){
 
 		if (this.visible) { return; }
 
 		log_debug("SelectionBar: show_panel()");
-		
+
 		txt_pattern.text = initial_text;
 		txt_pattern.grab_focus_without_selecting();
 		txt_pattern.move_cursor(Gtk.MovementStep.BUFFER_ENDS, 1, false);
@@ -237,7 +237,7 @@ public class SelectionBar : Gtk.Box {
 		}
 
 		execute_action();
-		
+
 		gtk_show(this);
 
 		window.update_accelerators_for_edit();
@@ -246,7 +246,7 @@ public class SelectionBar : Gtk.Box {
 	public void close_panel(bool force){
 
 		if (!this.visible) { return; }
-		
+
 		log_debug("SelectionBar: hide_panel()");
 
 		if (opt_filter.active){
@@ -264,7 +264,7 @@ public class SelectionBar : Gtk.Box {
 	}
 
 	private uint tmr_action = 0;
-	
+
 	private void add_action_delayed(){
 		clear_action_delayed();
 		tmr_action = Timeout.add(200, execute_action);
@@ -280,7 +280,7 @@ public class SelectionBar : Gtk.Box {
 	private bool execute_action(){
 
 		clear_action_delayed();
-		
+
 		if (opt_select.active){
 			select_items_by_pattern();
 		}
@@ -290,7 +290,7 @@ public class SelectionBar : Gtk.Box {
 
 		return false;
 	}
-	
+
 	private void select_items_by_pattern(){
 
 		if (view.current_item == null) { return; }
@@ -301,7 +301,7 @@ public class SelectionBar : Gtk.Box {
 		view.clear_selections();
 
 		if (txt_pattern.text.length == 0){ return; }
-			
+
 		var list = new Gee.ArrayList<string>();
 		foreach(var item in view.current_item.children.values){
 			if (chk_match_start.active && item.file_name.down().has_prefix(txt_pattern.text)){
@@ -332,4 +332,3 @@ public class SelectionBar : Gtk.Box {
 	}
 
 }
-

@@ -97,7 +97,7 @@ public class Settings : Gtk.Box, IPaneActive {
 
 		header_box = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		add(header_box);
-		
+
 		switcher = new Gtk.StackSwitcher();
 		switcher.margin = 6;
 		header_box.add (switcher);
@@ -157,12 +157,12 @@ public class Settings : Gtk.Box, IPaneActive {
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
 		vbox.homogeneous = false;
 		hbox.add(vbox);
-		
+
 		// --------------------------
-		
+
 		var sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_option = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		var vbox_items = add_group(vbox, _("GTK Theme"), 0);
 		add_option_gtk_theme(vbox_items, sg_label, sg_option);
 
@@ -199,12 +199,12 @@ public class Settings : Gtk.Box, IPaneActive {
 		var separator = new Gtk.Separator(Gtk.Orientation.VERTICAL);
 		separator.margin_start = 12;
 		hbox.add(separator);
-		
+
 		vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
 		vbox.homogeneous = false;
 		hbox.add(vbox);
 		vbox_toolbar = vbox;
-		
+
 		// toolbar --------------
 
 		vbox_items = add_group(vbox, _("Toolbar"), 0);
@@ -226,7 +226,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		add_toolbar_item_devices(vbox_items);
 		add_toolbar_item_terminal(vbox_items);
 		add_toolbar_item_properties(vbox_items);
-		
+
 		// new column  ---------------------------------
 
 		separator = new Gtk.Separator(Gtk.Orientation.VERTICAL);
@@ -237,7 +237,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		vbox.homogeneous = false;
 		hbox.add(vbox);
 		vbox_pathbar = vbox;
-		
+
 		// pathbar --------------------------
 
 		vbox_items = add_group(vbox, _("Pathbar"), 0);
@@ -601,14 +601,14 @@ public class Settings : Gtk.Box, IPaneActive {
 		chk.set_tooltip_text(_("Show combined HeaderBar instead of Toolbar and Pathbars [Restart Required]"));
 		box.add(chk);
 		chk_headerbar_enabled = chk;
-		
+
 		chk.active = App.headerbar_enabled_temp;
 
 		chk.toggled.connect(chk_headerbar_toggled);
 	}
 
 	private void chk_headerbar_toggled(){
-		
+
 		if (App.headerbar_enabled_temp == chk_headerbar_enabled.active){ return; }
 
 		App.headerbar_enabled_temp = chk_headerbar_enabled.active;
@@ -628,7 +628,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		var chk = new Gtk.CheckButton.with_label(_("Window buttons on left"));
 		chk.set_tooltip_text(_("Show window buttons on the left side [Restart Required]"));
 		box.add(chk);
- 
+
 		chk.active = App.headerbar_window_buttons_left;
 
 		chk.toggled.connect(()=>{
@@ -646,7 +646,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		box.add(chk);
 
 		chk_headerbar_show_pathbar = chk;
- 
+
 		chk.active = App.headerbar_show_pathbars;
 
 		chk.toggled.connect(()=>{
@@ -662,7 +662,7 @@ public class Settings : Gtk.Box, IPaneActive {
 	}
 
 	private void restart_app(){
-		
+
 		var res = gtk_messagebox_yes_no(_("Restart Application ?"),
 			_("Changes will take effect after application is restarted.\nYour session will be maintained.\n\nRestart now?"),window,false);
 
@@ -672,9 +672,9 @@ public class Settings : Gtk.Box, IPaneActive {
 			App.session_lock.remove();
 			exec_process_new_session("polo-gtk");
 			exit(0);
-		} 
+		}
 	}
-	
+
 	private void add_pathbar_option_unified(Gtk.Container box){
 
 		var chk = new Gtk.CheckButton.with_label(_("Global"));
@@ -717,7 +717,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		});
 
 		gtk_suppress_context_menu(link);
-		
+
 		label = new Gtk.Label("");
 		label.hexpand = true;
 		hbox.add(label);
@@ -774,7 +774,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			window.pathbar.refresh();
 		});
 	}*/
-	
+
 	private void add_pathbar_item_bookmarks(Gtk.Container box){
 
 		var chk = new Gtk.CheckButton.with_label(_("Bookmarks"));
@@ -954,7 +954,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			window.pathbar.refresh_icon_visibility();
 		});
 	}
-	
+
 	/*private void add_pathbar_item_close(Gtk.Container box){
 
 		var chk = new Gtk.CheckButton.with_label(_("Close"));
@@ -1145,7 +1145,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			}
 		});
 	}
-	
+
 	private void add_option_gtk_theme(Gtk.Box box, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_option){
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL,6);
@@ -1167,7 +1167,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		combo.set_tooltip_text(_("GTK theme to use"));
 		hbox.add (combo);
 		sg_option.add_widget(combo);
-		
+
 		combo.set_tooltip_text(_("This application is designed for the Arc GTK theme. It may not look right with other themes."));
 
 		// render text
@@ -1185,16 +1185,16 @@ public class Settings : Gtk.Box, IPaneActive {
 			typeof(string));
 
 		combo.set_model (store);
-		
+
 		TreeIter iter;
 		int index = -1;
-		
+
 		////index++;
 		//store.append(out iter);
 		//store.set (iter, 0, "system", 1, _("System Default"), -1);
-		
+
 		foreach(var theme in GtkTheme.themes){
-			
+
 			index++;
 			store.append(out iter);
 			store.set (iter, 0, theme.name, 1,  theme.name, -1);
@@ -1203,7 +1203,7 @@ public class Settings : Gtk.Box, IPaneActive {
 				combo.active = index;
 			}
 		}
-		
+
 		combo.changed.connect(() => {
 			App.gtk_theme = gtk_combobox_get_value(combo, 0, App.gtk_theme);
 			GtkTheme.set_gtk_theme(App.gtk_theme);
@@ -1216,7 +1216,7 @@ public class Settings : Gtk.Box, IPaneActive {
 	private void init_tab_general() {
 
 		log_debug("Settings: init_tab_general()");
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 24);
 		box.margin_start = 6;
 		stack.add_titled (box, _("General"), _("General"));
@@ -1226,16 +1226,16 @@ public class Settings : Gtk.Box, IPaneActive {
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 12);
 		vbox.homogeneous = false;
 		box.add(vbox);
-		
+
 		// ---------------------------------
 
 		var vbox_group = add_group(vbox, _("Defaults"), 6);
-		
+
 		var sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 		var sg_option = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
-		
+
 		add_option_folder_handler(vbox_group, sg_label, sg_option);
-		
+
 		add_option_view_mode(vbox_group, sg_label, sg_option);
 
 		add_option_terminal(vbox_group, sg_label, sg_option);
@@ -1243,15 +1243,15 @@ public class Settings : Gtk.Box, IPaneActive {
 		//add_option_single_click_browse(vbox_items);
 
 		// --------------------------------
-		
+
 		vbox_group = add_group(vbox, _("Confirmation"), 0);
-		
+
 		add_option_confirm_delete(vbox_group);
 
 		add_option_confirm_trash(vbox_group);
 
 		// ----------------------------------------
-		
+
 		vbox_group = add_group(vbox, _("Session & Startup"), 0);
 
 		sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
@@ -1260,9 +1260,9 @@ public class Settings : Gtk.Box, IPaneActive {
 		add_option_maximize_on_startup(vbox_group);
 
 		add_option_restore_last_session(vbox_group);
-		
+
 		add_option_single_instance_mode(vbox_group);
-		
+
 		//add_option_minimize_to_tray(vbox_group);
 
 		//add_option_autostart(vbox_group);
@@ -1393,12 +1393,12 @@ public class Settings : Gtk.Box, IPaneActive {
 			typeof(string));
 
 		combo.set_model (store);
-		
+
 		TreeIter iter;
 		int index = -1;
-		
+
 		foreach(var shell in Shell.get_installed_shells()){
-			
+
 			index++;
 			store.append(out iter);
 			store.set (iter, 0, shell.cmd, 1, shell.display_name, -1);
@@ -1434,7 +1434,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		sg_option.add_widget(combo);
 
 		// app icon --------
-		
+
 		var cell_pix = new Gtk.CellRendererPixbuf();
 		cell_pix.xpad = 3;
 		combo.pack_start(cell_pix, false);
@@ -1448,12 +1448,12 @@ public class Settings : Gtk.Box, IPaneActive {
 
 			pixcell.pixbuf = IconManager.lookup(app.icon,16);
 		});
-		
+
 		// app name -----------------
-		
+
 		var cell_text = new CellRendererText();
 		combo.pack_start(cell_text, false);
-		
+
 		combo.set_cell_data_func (cell_text, (cell_text, cell, model, iter) => {
 			DesktopApp app;
 			model.get (iter, 0, out app, -1);
@@ -1461,7 +1461,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		});
 
 		// model ----------------------
-		
+
 		// add items
 		var store = new Gtk.ListStore(1, typeof(DesktopApp));
 
@@ -1486,7 +1486,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		combo.set_model (store);
 
 		combo.changed.connect(() => {
-			
+
 			if ((combo.model == null) || (combo.active < 0)) { return; }
 
 			TreeIter iter0;
@@ -1564,7 +1564,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		box.add(chk);
 
 		chk.set_tooltip_text(_("Application will be started during system startup and will run minimized in system tray."));
-		
+
 		chk.active = App.autostart;
 
 		chk.toggled.connect(()=>{
@@ -1602,7 +1602,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		box.add(chk);
 
 		chk.set_tooltip_text(_("Query items in subfolders when a folder is loaded.\n\nEnabled - Folders display item count in 'Size' column\n\nDisabled - Folders display size of directory file in 'Size' column"));
-		
+
 		chk.active = App.query_subfolders;
 
 		chk.toggled.connect(()=>{
@@ -1615,7 +1615,7 @@ public class Settings : Gtk.Box, IPaneActive {
 	private void init_tab_view() {
 
 		log_debug("Settings: init_tab_view()");
-		
+
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 12);
 		box.margin_start = 6;
 		stack.add_titled (box, _("View"), _("View"));
@@ -1662,7 +1662,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		// ------------------------
 
 		vbox = add_group(box, _("Tile View"), 12);
-		
+
 		add_scale_tileview_icon_size(vbox, sg_label, sg_scale);
 
 		add_scale_tileview_row_spacing(vbox, sg_label, sg_scale);
@@ -1753,7 +1753,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			App.listview_icon_size = listview_icon_sizes[index];
 
 			log_debug("refreshing_views");
-			
+
 			foreach(var v in window.views){
 				v.listview_icon_size = App.listview_icon_size;
 				v.refresh(false, false);
@@ -1827,9 +1827,9 @@ public class Settings : Gtk.Box, IPaneActive {
 		var vbox = add_sub_group(box, _("Options"), 0);
 
 		add_option_listview_emblems(vbox);
-		
+
 		add_option_listview_thumbs(vbox);
-		
+
 		add_option_listview_transparency(vbox);
 	}
 
@@ -2011,9 +2011,9 @@ public class Settings : Gtk.Box, IPaneActive {
 		var vbox = add_sub_group(box, _("Options"), 0);
 
 		add_option_iconview_emblems(vbox);
-		
+
 		add_option_iconview_thumbs(vbox);
-		
+
 		add_option_iconview_transparency(vbox);
 
 		add_option_iconview_trim_names(vbox);
@@ -2214,9 +2214,9 @@ public class Settings : Gtk.Box, IPaneActive {
 		var vbox = add_sub_group(box, _("Options"), 0);
 
 		add_option_tileview_emblems(vbox);
-		
+
 		add_option_tileview_thumbs(vbox);
-		
+
 		add_option_tileview_transparency(vbox);
 	}
 
@@ -2291,11 +2291,11 @@ public class Settings : Gtk.Box, IPaneActive {
 	private void init_tab_columns() {
 
 		log_debug("Settings: init_tab_columns()");
-		
+
 		var box = new ColumnSelectionBox(parent_window, false);
 		box.refresh_list_view_columns();
 		box.margin_start = 6;
-		
+
 		stack.add_titled (box, _("Columns"), _("Columns"));
 	}
 
@@ -2328,7 +2328,7 @@ public class Settings : Gtk.Box, IPaneActive {
 	private void init_tab_advanced() {
 
 		log_debug("Settings: init_tab_advanced()");
-		
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 12);
 		box.margin_start = 6;
 		stack.add_titled (box, _("Advanced"), _("Advanced"));
@@ -2336,7 +2336,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		// column 1 ---------------------------------
 
 		var vbox = add_column_group(box, true);
-		
+
 		var vbox_group = add_group(vbox, _("Virtual Machine"), 6);
 
 		var sg_label = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
@@ -2347,7 +2347,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		add_option_kvm_smp(vbox_group, sg_label, sg_option);
 
 		add_option_kvm_cpu_limit(vbox_group, sg_label, sg_option);
-		
+
 		add_option_kvm_vga(vbox_group, sg_label, sg_option);
 
 		add_option_kvm_memory(vbox_group, sg_label, sg_option);
@@ -2360,7 +2360,7 @@ public class Settings : Gtk.Box, IPaneActive {
 
 		add_option_menu_disk_usage(vbox_group);
 
-		if (App.tool_exists("polo-clamav")) { 
+		if (App.tool_exists("polo-clamav")) {
 			add_option_menu_clamav(vbox_group);
 		}
 
@@ -2369,7 +2369,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		add_option_menu_checksum(vbox_group);
 
 		add_option_menu_kvm(vbox_group);
-		
+
 		// column 3 ---------------------------------
 
 		if (App.tool_exists("polo-pdf") || App.tool_exists("polo-image")) {
@@ -2379,7 +2379,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			vbox = add_group(vbox, _("Replace Original Files?"), 0);
 		}
 
-		if (App.tool_exists("polo-pdf")) { 
+		if (App.tool_exists("polo-pdf")) {
 
 			vbox_group = add_sub_group(vbox, _("PDF Actions"), 0);
 
@@ -2402,7 +2402,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			add_option_pdf_optimize(vbox_group);
 		}
 
-		if (App.tool_exists("polo-image")) { 
+		if (App.tool_exists("polo-image")) {
 
 			vbox_group = add_sub_group(vbox, _("Image Actions"), 0);
 
@@ -2436,7 +2436,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		// cmb_app
 		var combo = new Gtk.ComboBox();
 		hbox.add (combo);
-		
+
 		// render text
 		var cell_text = new CellRendererText();
 		combo.pack_start(cell_text, false);
@@ -2469,11 +2469,11 @@ public class Settings : Gtk.Box, IPaneActive {
 		string tt = _("CPU type to emulate for guest machine");
 		label.set_tooltip_text(tt);
 		combo.set_tooltip_text(tt);
-		
+
 		sg_label.add_widget(label);
 		sg_option.add_widget(combo);
 	}
-	
+
 	private void add_option_kvm_vga(Gtk.Box box, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_option){
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 12);
@@ -2528,7 +2528,7 @@ public class Settings : Gtk.Box, IPaneActive {
 
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 12);
 		box.add(hbox);
-		
+
 		var label = new Gtk.Label(_("CPU Cores"));
 		label.xalign = 0.0f;
 		//label.margin_end = 12;
@@ -2574,7 +2574,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		string tt = _("Limit the CPU usage for VM process. It is recommended to keep this below 90 to prevent the host system from becoming unresponsive when intensive tasks are running in the guest OS.");
 		label.set_tooltip_text(tt);
 		spin.set_tooltip_text(tt);
-		
+
 		sg_label.add_widget(label);
 		sg_option.add_widget(spin);
 	}
@@ -2668,7 +2668,7 @@ public class Settings : Gtk.Box, IPaneActive {
 		});
 	}
 
-		
+
 	private void add_option_pdf_split(Gtk.Box box){
 
 		var chk = new Gtk.CheckButton.with_label(_("Split"));
@@ -2897,7 +2897,7 @@ public class Settings : Gtk.Box, IPaneActive {
 	// helpers --------------
 
 	private Gtk.Box add_group(Gtk.Box box, string header_text, int spacing){
-		
+
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, spacing);
 		vbox.homogeneous = false;
 		box.add(vbox);
@@ -2911,12 +2911,12 @@ public class Settings : Gtk.Box, IPaneActive {
 			label.margin_bottom = 6;
 			vbox.margin_bottom = 6; // add box bottom padding only if group has a header
 		}
-		
+
 		return vbox;
 	}
 
 	private Gtk.Box add_sub_group(Gtk.Box box, string header_text, int spacing){
-		
+
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, spacing);
 		vbox.homogeneous = false;
 		box.add(vbox);
@@ -2930,9 +2930,9 @@ public class Settings : Gtk.Box, IPaneActive {
 			label.margin_bottom = 6;
 			vbox.margin_bottom = 6; // add box bottom padding only if group has a header
 		}
-		
+
 		return vbox;
-	} 
+	}
 
 	private Gtk.Box add_column_group(Gtk.Box box, bool first_column){
 
@@ -2941,7 +2941,7 @@ public class Settings : Gtk.Box, IPaneActive {
 			separator.margin_start = 12;
 			box.add(separator);
 		}
-		
+
 		var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 12);
 		vbox.margin_end = 24;
 		vbox.homogeneous = false;
@@ -2950,7 +2950,3 @@ public class Settings : Gtk.Box, IPaneActive {
 		return vbox;
 	}
 }
-
-
-
-

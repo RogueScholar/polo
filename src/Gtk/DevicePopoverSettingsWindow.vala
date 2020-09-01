@@ -34,19 +34,19 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public class DevicePopoverSettingsWindow : Gtk.Window {
-	
+
 	private Gtk.Box vbox_main;
 	private Gtk.SizeGroup size_label;
 	private Gtk.SizeGroup size_combo;
-	
+
 	private Gtk.Window window;
-	
+
 	public signal void settings_changed();
-	
+
 	public DevicePopoverSettingsWindow(Gtk.Window _window) {
 
 		log_debug("DevicePopoverSettingsWindow: DevicePopoverSettingsWindow()");
-		
+
 		set_transient_for(_window);
 		window_position = WindowPosition.CENTER_ON_PARENT;
 
@@ -60,7 +60,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		resizable = false;
 
 		set_title(_("Device Manager Settings"));
-		
+
 		vbox_main = new Gtk.Box(Orientation.VERTICAL, 6);
 		vbox_main.margin = 12;
 		vbox_main.set_size_request(400,300);
@@ -76,7 +76,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 	private void init_options() {
 
 		log_debug("DevicePopoverSettingsWindow: init_options()");
-		
+
 		size_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		size_combo = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 
@@ -87,7 +87,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		init_dm_show_mp(vbox_main);
 
 		init_dm_show_headers(vbox_main);
-		
+
 		init_dm_show_snap(vbox_main);
 
 		init_dm_disable_automount(vbox_main);
@@ -177,7 +177,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 12);
 		box.add(hbox);
 		hbox.add(new Gtk.Label(""));
-		
+
 		hbox = new Gtk.Box(Orientation.HORIZONTAL, 12);
 		box.add(hbox);
 
@@ -194,7 +194,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		hbox.add(spin);
 
 		spin.value_changed.connect(()=>{
-			
+
 			App.dm_width = (int) spin.get_value();
 
 			settings_changed();
@@ -222,7 +222,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		hbox.add(spin);
 
 		spin.value_changed.connect(()=>{
-			
+
 			App.dm_height = (int) spin.get_value();
 
 			settings_changed();
@@ -240,7 +240,7 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		chk.set_tooltip_text(_("Creates rule for udisks2 to prevent auto-mounting of removable devices.\n\nDevices will be mounted only when you open them using Polo or another file manager. This is good for security as partitions will remain unmounted till they are actually needed."));
 
 		string rules_file = "/etc/udev/rules.d/85-no-automount.rules";
-		
+
 		chk.active = file_exists(rules_file);
 
 		chk.toggled.connect(chk_automount_toggled);
@@ -249,11 +249,11 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 	private void chk_automount_toggled(Gtk.Widget widget){
 
 		Gtk.CheckButton chk = (Gtk.CheckButton) widget;
-		
+
 		string rules_file = "/etc/udev/rules.d/85-no-automount.rules";
-		
+
 		if (chk.active){
-				
+
 			if (!file_exists(rules_file)){
 
 				string rfile = path_combine(App.share_dir, "files/udisks2/udisks2-automount-disable.sh");
@@ -283,12 +283,12 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 		var label = new Gtk.Label("");
 		label.vexpand = true;
 		vbox_main.add(label);
-		
+
 		var box = new Gtk.ButtonBox(Orientation.HORIZONTAL);
 		box.set_layout(Gtk.ButtonBoxStyle.CENTER);
 		box.set_spacing(6);
 		vbox_main.add(box);
-		
+
 		var button = new Gtk.Button.with_label(_("Close"));
 		box.add(button);
 
@@ -299,5 +299,3 @@ public class DevicePopoverSettingsWindow : Gtk.Window {
 
 	}
 }
-
-

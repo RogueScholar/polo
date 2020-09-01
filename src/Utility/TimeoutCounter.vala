@@ -32,14 +32,14 @@ public class TimeoutCounter : GLib.Object {
 	public const int DEFAULT_SECONDS_TO_WAIT = 60;
 	public int seconds_to_wait = 60;
 	public bool exit_app = false;
-	
+
 	public void kill_process_on_timeout(
 		string process_to_kill, int seconds_to_wait = DEFAULT_SECONDS_TO_WAIT, bool exit_app = false){
 
 		this.process_to_kill = process_to_kill;
 		this.seconds_to_wait = seconds_to_wait;
 		this.exit_app = exit_app;
-			
+
 		try {
 			active = true;
 			new Thread<void>.try ("TimeoutCounter::start_counter_thread", start_counter_thread);
@@ -53,7 +53,7 @@ public class TimeoutCounter : GLib.Object {
 		this.process_to_kill = "";
 		this.seconds_to_wait = seconds_to_wait;
 		this.exit_app = true;
-			
+
 		try {
 			active = true;
 			new Thread<void>.try ("TimeoutCounter::start_counter_thread", start_counter_thread);
@@ -66,10 +66,10 @@ public class TimeoutCounter : GLib.Object {
 	public void stop(){
 		active = false;
 	}
-	
+
 	public void start_counter_thread(){
 		int secs = 0;
-		
+
 		while (active && (secs < seconds_to_wait)){
 			Thread.usleep((ulong) GLib.TimeSpan.MILLISECOND * 1000);
 			secs += 1;
@@ -91,4 +91,3 @@ public class TimeoutCounter : GLib.Object {
 		}
 	}
 }
-

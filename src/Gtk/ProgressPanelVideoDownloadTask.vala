@@ -38,11 +38,11 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	private VideoDownloadTask task;
 	private string url;
 	private bool fetch_in_progress = false;
-	
+
 	private const int FETCH_WAIT_INTERVAL = 15000;
 	private int fetch_wait_interval = FETCH_WAIT_INTERVAL;
-	
-	// ui 
+
+	// ui
 	public Gtk.Label lbl_status;
 	public Gtk.Label lbl_stats;
 	public Gtk.ProgressBar progressbar;
@@ -58,7 +58,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	}
 
 	public void init_ui_parser(){
-		
+
 		gtk_container_remove_children(contents);
 
 		string txt = _("Fetching info...");
@@ -70,7 +70,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		label.xalign = 0.0f;
 		label.margin_bottom = 12;
 		contents.add(label);
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		hbox_outer.margin_end = 6;
 		contents.add(hbox_outer);
@@ -122,7 +122,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	}
 
 	public void init_ui_selection(){
-		
+
 		gtk_container_remove_children(contents);
 
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
@@ -143,7 +143,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 
 		var vbox = new Gtk.Box(Orientation.VERTICAL, 0);
 		vbox.margin = 6;
-		
+
 		scrolled.add(vbox);
 		contents.add(scrolled);
 
@@ -157,8 +157,8 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 
 		if (task.list.size > 1){
 
-			// best 
-			
+			// best
+
 			radio = new Gtk.RadioButton.with_label_from_widget(last_radio, _("Best (audio + video)"));
 			vbox.add(radio);
 			last_radio = radio;
@@ -169,7 +169,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 			});
 
 			// best video
-			
+
 			radio = new Gtk.RadioButton.with_label_from_widget(last_radio, _("Best (audio only)"));
 			vbox.add(radio);
 			last_radio = radio;
@@ -180,7 +180,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 			});
 
 			// best audio
-			
+
 			radio = new Gtk.RadioButton.with_label_from_widget(last_radio, _("Best (video only)"));
 			vbox.add(radio);
 			last_radio = radio;
@@ -191,7 +191,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 			});
 
 			// best video + audio
-			
+
 			radio = new Gtk.RadioButton.with_label_from_widget(last_radio, _("Best Video + Best Audio (merge)"));
 			vbox.add(radio);
 			last_radio = radio;
@@ -201,9 +201,9 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 				log_debug("task.set_format: %s".printf(task.format));
 			});
 		}
-			
+
 		foreach(var item in task.list){
-			
+
 			radio = new Gtk.RadioButton.with_label_from_widget(last_radio, item.description);
 			vbox.add(radio);
 			last_radio = radio;
@@ -220,15 +220,15 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_info = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		ui_add_info_title(vbox_info, sg_label, sg_info);
 
 		ui_add_info_url(vbox_info, sg_label, sg_info);
-		
+
 		ui_add_info_duration(vbox_info, sg_label, sg_info);
 
 		ui_add_header(vbox_info);
-		
+
 		// image ---------------------------
 
 		try {
@@ -243,7 +243,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		}
 
 		// download -----------------------------------------
-		
+
 		var button = new Gtk.Button.with_label(_("Download"));
 		button.set_tooltip_text(_("Download Selected Format"));
 		hbox.add(button);
@@ -281,20 +281,20 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public void ui_add_info_title(Gtk.Box box, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_info){
 
 		if (task.title.length == 0){ return; }
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Title") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -310,20 +310,20 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public void ui_add_info_duration(Gtk.Box box, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_info){
 
 		if (task.duration.length == 0){ return; }
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Duration") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -339,20 +339,20 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public void ui_add_info_url(Gtk.Box box, Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_info){
 
 		if (task.url.length == 0){ return; }
-		
+
 		var hbox = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		box.add(hbox);
 
 		// label ----------------
-		
+
 		var label = new Gtk.Label (_("Web Page") + ":");
 		label.xalign = 1.0f;
 		hbox.add(label);
-		
+
 		sg_label.add_widget(label);
 
 		// entry ----------------
-		
+
 		var entry = new Gtk.Entry();
 		entry.hexpand = true;
 		entry.set_size_request(200,-1);
@@ -368,7 +368,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public void init_ui_download(){
 
 		gtk_container_remove_children(contents);
-		
+
 		//string txt = _("Download");
 
 		// heading ----------------
@@ -378,7 +378,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		label.xalign = 0.0f;
 		//label.margin_bottom = 12;
 		contents.add(label);*/
-		
+
 		var hbox_outer = new Gtk.Box(Orientation.HORIZONTAL, 6);
 		contents.add(hbox_outer);
 
@@ -445,16 +445,16 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 
 		show_all();
 	}
-	
+
 	public override void execute(){
 
 		log_debug("ProgressPanelVideoDownloadTask: execute(%s)");
 
 		task = new VideoDownloadTask(url, destination.file_path);
-		
+
 		pane.refresh_file_action_panel();
 		pane.clear_messages();
-		
+
 		start_task();
 	}
 
@@ -466,7 +466,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		lbl_status.label = "Preparing...";
 		lbl_stats.label = "";
 	}
-	
+
 	public override void start_task(){
 
 		log_debug("ProgressPanelVideoDownloadTask: start_task()");
@@ -485,14 +485,14 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		}
 
 		gtk_do_events();
-		
+
 		tmr_status = Timeout.add(500, update_status);
 	}
 
 	public override bool update_status() {
 
 		if (task.is_running){
-			
+
 			log_debug("ProgressPanelVideoDownloadTask: update_status()");
 
 			if (task.current_file.length > 0){
@@ -502,26 +502,26 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 			if (fetch_in_progress){
 
 				if (fetch_wait_interval < 0){
-					
+
 					string txt = _("Could not fetch video info");
 					string msg = "%s\n\n%s".printf(
 						_("Check your internet connectivity."),_("Try pasting the URL again."));
 					gtk_messagebox(txt, msg, window, true);
-					
+
 					cancel();
 				}
 
 				fetch_wait_interval -= 500;
 				//log_debug("fetch_wait_interval: %d".printf(fetch_wait_interval));
 			}
-			
+
 			//lbl_stats.label = task.stat_status_line;
 
 			if (progressbar != null){
 				progressbar.fraction = task.progress;
 				lbl_stats.label = task.stat_status_line;
 			}
-			
+
 			gtk_do_events();
 		}
 		else{
@@ -534,11 +534,11 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public override void cancel(){
 
 		log_debug("ProgressPanelVideoDownloadTask: cancel()");
-		
+
 		aborted = true;
 
 		stop_status_timer();
-		
+
 		if (task != null){
 			task.stop();
 		}
@@ -549,15 +549,15 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 	public override void finish(){
 
 		log_debug("task.finish()");
-		
+
 		task_complete();
 
 		stop_status_timer();
-		
+
 		if (!aborted && (task.format.length == 0)){
-			
+
 			log_debug("task.list_size: %d".printf(task.list.size));
-			
+
 			if (task.list.size > 0){
 
 				if (task.list.size == 1){
@@ -566,7 +566,7 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 				else{
 					task.format = "best";
 				}
-				
+
 				task.current_file = task.title;
 				init_ui_selection();
 			}
@@ -577,9 +577,9 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 				string msg = "%s\n\n%s".printf(
 						_("Check if the link is from a supported website."),
 						_("Update youtube-dl to a newer version."));
-						
+
 				gtk_messagebox(txt, msg, window, true);
-					
+
 				cancel();
 			}
 		}
@@ -595,7 +595,3 @@ public class ProgressPanelVideoDownloadTask : ProgressPanel {
 		}
 	}
 }
-
-
-
-

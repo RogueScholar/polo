@@ -37,7 +37,7 @@ public class DevicesMenu : Gtk.Menu, IPaneActive {
 	public DevicesMenu(){
 
 		reserve_toggle_size = false;
-		
+
 		build_menu();
 	}
 
@@ -71,7 +71,7 @@ public class DevicesMenu : Gtk.Menu, IPaneActive {
 		var sg_mp = new Gtk.SizeGroup(SizeGroupMode.HORIZONTAL);
 
 		foreach(var dev in list){
-			
+
 			// menu_item
 			var menu_item = new Gtk.MenuItem();
 			this.append(menu_item);
@@ -206,5 +206,3 @@ public class DevicesMenu : Gtk.Menu, IPaneActive {
 		this.popdown();
 	}
 }
-
-

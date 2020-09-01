@@ -33,7 +33,7 @@ using TeeJee.System;
 using TeeJee.Misc;
 
 public enum PathbarStyle{
-	
+
 	COMPACT,
 	ARROWS,
 	BUTTONS,
@@ -59,7 +59,7 @@ public enum PathbarStyle{
     }
 
     public static PathbarStyle from_string(string text) {
-		
+
         switch (text.down()) {
             case "compact":
                 return COMPACT;
@@ -98,7 +98,7 @@ public class PathbarStyleMenu : Gtk.Menu {
 		button = _button;
 
 		reserve_toggle_size = false;
-		
+
 		build_menu();
 
 		//log_debug("PathbarStyleMenu(): exit");
@@ -108,7 +108,7 @@ public class PathbarStyleMenu : Gtk.Menu {
 
 		var sg_label = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
 		var sg_image = new Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL);
-		
+
 		foreach(var style in PathbarStyle.all()){
 
 			var item = add_item(this, style.to_string(), style.get_image(380), sg_label, sg_image);
@@ -122,13 +122,13 @@ public class PathbarStyleMenu : Gtk.Menu {
 
 		this.show_all();
 	}
-	
+
 	public Gtk.MenuItem add_item(Gtk.Menu menu, string text, Gtk.Image image,
 		Gtk.SizeGroup sg_label, Gtk.SizeGroup sg_icon){
 
 		var menu_item = new Gtk.MenuItem();
 		menu.append(menu_item);
-			
+
 		var box = new Gtk.Box(Orientation.HORIZONTAL, 3);
 		menu_item.add(box);
 
@@ -138,7 +138,7 @@ public class PathbarStyleMenu : Gtk.Menu {
 		//label.margin_end = 6;
 		box.add(label);
 		sg_label.add_widget(label);
-		
+
 		// image
 		box.add(image);
 		sg_icon.add_widget(image);
@@ -158,5 +158,3 @@ public class PathbarStyleMenu : Gtk.Menu {
 		return true;
 	}
 }
-
-

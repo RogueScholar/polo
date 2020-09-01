@@ -56,7 +56,7 @@ public class FilePreviewBox : Gtk.Box {
 	private void init_ui(){
 
 		init_ui_image();
-		
+
 		this.expand = true;
 	}
 
@@ -71,17 +71,17 @@ public class FilePreviewBox : Gtk.Box {
 
 		gtk_hide(image);
 	}
-	
+
 	public void preview_file(FileItem _file_item){
 
 		log_debug("FilePreviewBox: preview_file()");
-		
+
 		file_item = _file_item;
-		
+
 		if (file_item.is_image_gdk_supported){
 
 			if (preview_image()){
-				
+
 				return;
 			}
 		}
@@ -90,7 +90,7 @@ public class FilePreviewBox : Gtk.Box {
 	}
 
 	private bool preview_image(){
-	
+
 		log_debug("FilePreviewBox: preview_image()");
 
 		gtk_show(image);
@@ -113,7 +113,7 @@ public class FilePreviewBox : Gtk.Box {
 		log_debug("FilePreviewBox: preview_thumbnail()");
 
 		gtk_show(image);
-		
+
 		ThumbTask task;
 		var thumb = file_item.get_image(256, true, false, false, out task);
 
@@ -124,7 +124,7 @@ public class FilePreviewBox : Gtk.Box {
 			}
 			thumb = file_item.get_image(256, true, false, false, out task);
 		}
-		
+
 		if (thumb != null) {
 			image.pixbuf = thumb;
 			log_debug("setting from file_item.get_image()");
@@ -145,5 +145,3 @@ public class FilePreviewBox : Gtk.Box {
 		return true;
 	}
 }
-
-

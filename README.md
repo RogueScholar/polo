@@ -49,7 +49,7 @@ _Dual-pane layout with ListView_
 _Options for creating archives - Supports all encoder options, encryption, and
 split archives_
 
-![](images/polo_compress.png)![](images/polo_compress_expanded.png)  
+![](images/polo_compress.png)![](images/polo_compress_expanded.png)
 ![](images/polo_compress_progress.png)
 
 _Support for browsing cloud storage accounts_
